@@ -1,15 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
-const sourceDir = path.join(__dirname, '..', 'node_modules', '@expo', 'metro-runtime', 'assets');
+const assetsDir = path.join(__dirname, '..', 'node_modules', '@expo', 'metro-runtime', 'assets');
 const targetDir = path.join(__dirname, '..', 'assets');
 
-if (!fs.existsSync(targetDir)){
-    fs.mkdirSync(targetDir);
+if (fs.existsSync(assetsDir)) {
+  const files = fs.readdirSync(assetsDir);
+  files.forEach(file => {
+    const src = path.join(assetsDir, file);
+    const dest = path.join(targetDir, file);
+    fs.copyFileSync(src, dest);
+  });
+} else {
+  console.warn(`Directory ${assetsDir} does not exist. Skipping asset copy.`);
 }
-
-fs.readdirSync(sourceDir).forEach(file => {
-    if (file.endsWith('.png')) {
-        fs.copyFileSync(path.join(sourceDir, file), path.join(targetDir, file));
-    }
-});

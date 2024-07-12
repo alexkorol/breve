@@ -26,30 +26,40 @@ interface TabsContentProps {
 const Tabs: React.FC<TabsProps> = ({ defaultValue, children, style }) => {
   const [activeTab, setActiveTab] = useState(defaultValue);
 
-  const handleTabPress = (value: string, onPress?: () => void) => {
+  const handleTabPress = (value: string) => {
     setActiveTab(value);
-    if (onPress) onPress();
+  };
+
+  const renderChildren = () => {
+    return React.Children.map(children, (child) => {
+      if (React.isValidElement(child)) {
+        return React.cloneElement(child, {
+          activeTab,
+          handleTabPress,
+        });
+      }
+      return child;
+    });
   };
 
   return (
     <View style={style}>
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, { activeTab, handleTabPress });
-        }
-        return child;
-      })}
+      {renderChildren()}
     </View>
   );
 };
 
 const TabsList: React.FC<TabsListProps> = ({ children, style }) => {
-  return <View style={[styles.tabsList, style]}>{children}</View>;
+  return (
+    <View style={[styles.tabsList, style]}>
+      {children}
+    </View>
+  );
 };
 
 const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, onPress }) => {
   return (
-    <TouchableOpacity onPress={() => handleTabPress(value, onPress)}>
+    <TouchableOpacity onPress={onPress} style={styles.tabsTrigger}>
       {children}
     </TouchableOpacity>
   );
@@ -57,8 +67,8 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, onPress }) =
 
 const TabsContent: React.FC<TabsContentProps> = ({ value, children }) => {
   return (
-    <View style={styles.tabsContent}>
-      {value === activeTab ? children : null}
+    <View>
+      {children}
     </View>
   );
 };
@@ -69,8 +79,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 10,
   },
-  tabsContent: {
-    padding: 20,
+  tabsTrigger: {
+    padding: 10,
   },
 });
 
