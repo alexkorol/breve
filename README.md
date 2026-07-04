@@ -6,13 +6,13 @@ Spaced repetition for code challenges, technical interviews, and Python/ML knowl
 
 - **Three exercise types** — multiple choice, flip-style flashcards (Again/Hard/Good/Easy), and fill-in-the-blank code.
 - **SM-2 spaced repetition** — cards you miss come back within the session and again the next day; cards you know drift out to weeks. Mastery at a 21-day interval.
-- **A full curriculum** — 274 cards in 21 decks across six tracks:
-  - *Python*: Fundamentals · Advanced · Lists, Dicts & Pairs
-  - *Coding Interview*: DS&A · Patterns: Intervals & Arrays · Patterns: Trees, Graphs & DP · SQL
-  - *ML & Data*: ML Fundamentals · Metrics: Precision & Recall · Data Cleaning & Prep · Pandas & NumPy
-  - *AI Engineering*: Deep Learning Core · Transformers & LLMs · RAG, Agents & Evals · FastAPI & Serving · LLM Judges & Bias
-  - *My Projects*: LedgerLens · SongCraft RAG · prosody-judge (self-quiz decks)
-  - *Credentials*: AI-103 Azure AI Apps · Hugging Face Agents Course
+- **A full curriculum** — 489 cards in 37 decks across six tracks:
+  - *Python* (6): Fundamentals · Advanced · Lists, Dicts & Pairs · Strings & Regex · Gotchas & Debugging · OOP & Testing
+  - *Coding Interview* (8): Big-O · DS&A · Intervals & Arrays · Binary Search · Lists/Stacks/Queues · Strings & Hashing · Trees, Graphs & DP · SQL
+  - *ML & Data* (7): ML Fundamentals · Statistics & Probability · Metrics · Data Cleaning · Pandas & NumPy · scikit-learn · Features & Model Selection
+  - *AI Engineering* (10): Deep Learning Core · Transformers & LLMs · Prompt Engineering · Embeddings & Retrieval · RAG, Agents & Evals · FastAPI & Serving · Inference & Serving · LLM Judges & Bias · Fine-tuning · AI System Design
+  - *My Projects* (3): LedgerLens · SongCraft RAG · prosody-judge (self-quiz decks)
+  - *Credentials* (3): AI-103 Azure AI Apps · HF Agents Course · Azure AI Services
 - **Daily Review** — one tap pulls everything due across all decks, plus a 30-review daily goal ring.
 - **Streaks and stats** — daily streak, reviews today/all-time, mastered count.
 - **Installable PWA** — offline-capable, add to home screen, no app store.

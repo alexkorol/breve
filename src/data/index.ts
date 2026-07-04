@@ -20,30 +20,62 @@ import { projProsodyJudge } from './projProsodyJudge';
 import { projLedgerlens } from './projLedgerlens';
 import { credAi103 } from './credAi103';
 import { credHfAgents } from './credHfAgents';
+import { pyStrings } from './pyStrings';
+import { pyGotchas } from './pyGotchas';
+import { pyOopTesting } from './pyOopTesting';
+import { bigO } from './bigO';
+import { patternsBinsearch } from './patternsBinsearch';
+import { patternsLinked } from './patternsLinked';
+import { patternsStringsHash } from './patternsStringsHash';
+import { statsProb } from './statsProb';
+import { featureEng } from './featureEng';
+import { sklearnWorkflow } from './sklearnWorkflow';
+import { promptEng } from './promptEng';
+import { finetuning } from './finetuning';
+import { embeddingsDeep } from './embeddingsDeep';
+import { inferenceOpt } from './inferenceOpt';
+import { aiSysDesign } from './aiSysDesign';
+import { azureAiServices } from './azureAiServices';
 
 /** Curriculum order: decks appear grouped by track, in this sequence. */
 export const decks: Deck[] = [
   pythonBasics,
   pythonAdvanced,
   pyPairs,
+  pyStrings,
+  pyGotchas,
+  pyOopTesting,
+  bigO,
   dsaInterview,
   patternsIntervals,
+  patternsBinsearch,
+  patternsLinked,
+  patternsStringsHash,
   patternsGraphsDp,
   sqlInterview,
   mlFundamentals,
+  statsProb,
   mlMetrics,
   dataCleaning,
   pandasNumpy,
+  sklearnWorkflow,
+  featureEng,
   dlCore,
   llmTransformers,
+  promptEng,
+  embeddingsDeep,
   aiEngineering,
   fastapiServing,
+  inferenceOpt,
   llmEvalBias,
+  finetuning,
+  aiSysDesign,
   projLedgerlens,
   projSongcraft,
   projProsodyJudge,
   credAi103,
   credHfAgents,
+  azureAiServices,
 ];
 
 /** Virtual deck: every card in the curriculum, for cross-deck daily review. */
