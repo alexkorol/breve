@@ -3,7 +3,7 @@ import type { AppState } from './types';
 import type { Grade } from './srs';
 import { applyGrade, newProgress } from './srs';
 import { loadState, saveState, dayKey, yesterdayKey } from './storage';
-import { decks } from './data';
+import { decks, DAILY_REVIEW_ID, dailyReviewDeck } from './data';
 import { Home } from './components/Home';
 import { Session } from './components/Session';
 
@@ -37,7 +37,10 @@ export default function App() {
   }, []);
 
   if (view.name === 'study') {
-    const deck = decks.find((d) => d.id === view.deckId);
+    const deck =
+      view.deckId === DAILY_REVIEW_ID
+        ? dailyReviewDeck()
+        : decks.find((d) => d.id === view.deckId);
     if (deck) {
       return (
         <Session

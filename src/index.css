@@ -119,45 +119,79 @@ button {
   color: var(--text-dim);
 }
 
-/* "Up next" hero card (Codecademy Go "Today" pattern) */
-.up-next {
+/* "Today" hero card with daily goal ring (Codecademy Go / Duolingo pattern) */
+.today-card {
   background: linear-gradient(
     160deg,
-    color-mix(in srgb, var(--deck-color, var(--accent)) 18%, var(--bg-raised)),
-    var(--bg-raised) 65%
+    color-mix(in srgb, var(--accent) 14%, var(--bg-raised)),
+    var(--bg-raised) 70%
   );
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 16px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.up-next-label {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-dim);
-}
-
-.up-next-body {
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
-.up-next-body h3 {
+.today-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.today-info h3 {
   margin: 0;
   font-size: 18px;
 }
 
-.up-next-body p {
-  margin: 2px 0 0;
+.today-info p {
+  margin: 0 0 6px;
   font-size: 13px;
   color: var(--text-dim);
+}
+
+.today-info .btn {
+  padding: 10px 18px;
+  font-size: 15px;
+}
+
+.ring {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.ring-track {
+  fill: none;
+  stroke: var(--bg-inset);
+  stroke-width: 6;
+}
+
+.ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.ring-num {
+  fill: var(--text);
+  font-size: 17px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.ring-goal {
+  fill: var(--text-dim);
+  font-size: 10px;
+  text-anchor: middle;
 }
 
 .track {
@@ -317,6 +351,18 @@ button {
   flex-direction: column;
   gap: 16px;
   flex: 1;
+  animation: card-in 0.22s ease;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .prompt {

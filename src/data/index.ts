@@ -9,6 +9,9 @@ import { mlFundamentals } from './mlFundamentals';
 import { mlMetrics } from './mlMetrics';
 import { dataCleaning } from './dataCleaning';
 import { pandasNumpy } from './pandasNumpy';
+import { dlCore } from './dlCore';
+import { llmTransformers } from './llmTransformers';
+import { aiEngineering } from './aiEngineering';
 
 /** Curriculum order: decks appear grouped by track, in this sequence. */
 export const decks: Deck[] = [
@@ -22,4 +25,22 @@ export const decks: Deck[] = [
   mlMetrics,
   dataCleaning,
   pandasNumpy,
+  dlCore,
+  llmTransformers,
+  aiEngineering,
 ];
+
+/** Virtual deck: every card in the curriculum, for cross-deck daily review. */
+export const DAILY_REVIEW_ID = 'daily-review';
+
+export function dailyReviewDeck(): Deck {
+  return {
+    id: DAILY_REVIEW_ID,
+    title: 'Daily Review',
+    description: 'Everything due today, across all decks.',
+    icon: '📆',
+    color: '#2dd4bf',
+    track: '',
+    cards: decks.flatMap((d) => d.cards),
+  };
+}
