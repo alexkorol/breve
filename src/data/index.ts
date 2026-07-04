@@ -15,6 +15,11 @@ import { aiEngineering } from './aiEngineering';
 import { pyPairs } from './pyPairs';
 import { fastapiServing } from './fastapiServing';
 import { llmEvalBias } from './llmEvalBias';
+import { projSongcraft } from './projSongcraft';
+import { projProsodyJudge } from './projProsodyJudge';
+import { projLedgerlens } from './projLedgerlens';
+import { credAi103 } from './credAi103';
+import { credHfAgents } from './credHfAgents';
 
 /** Curriculum order: decks appear grouped by track, in this sequence. */
 export const decks: Deck[] = [
@@ -34,6 +39,11 @@ export const decks: Deck[] = [
   aiEngineering,
   fastapiServing,
   llmEvalBias,
+  projLedgerlens,
+  projSongcraft,
+  projProsodyJudge,
+  credAi103,
+  credHfAgents,
 ];
 
 /** Virtual deck: every card in the curriculum, for cross-deck daily review. */

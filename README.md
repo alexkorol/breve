@@ -6,11 +6,13 @@ Spaced repetition for code challenges, technical interviews, and Python/ML knowl
 
 - **Three exercise types** — multiple choice, flip-style flashcards (Again/Hard/Good/Easy), and fill-in-the-blank code.
 - **SM-2 spaced repetition** — cards you miss come back within the session and again the next day; cards you know drift out to weeks. Mastery at a 21-day interval.
-- **A full curriculum** — 172 cards in 13 decks across four tracks:
-  - *Python*: Fundamentals · Advanced
+- **A full curriculum** — 274 cards in 21 decks across six tracks:
+  - *Python*: Fundamentals · Advanced · Lists, Dicts & Pairs
   - *Coding Interview*: DS&A · Patterns: Intervals & Arrays · Patterns: Trees, Graphs & DP · SQL
   - *ML & Data*: ML Fundamentals · Metrics: Precision & Recall · Data Cleaning & Prep · Pandas & NumPy
-  - *AI Engineering*: Deep Learning Core · Transformers & LLMs · RAG, Agents & Evals
+  - *AI Engineering*: Deep Learning Core · Transformers & LLMs · RAG, Agents & Evals · FastAPI & Serving · LLM Judges & Bias
+  - *My Projects*: LedgerLens · SongCraft RAG · prosody-judge (self-quiz decks)
+  - *Credentials*: AI-103 Azure AI Apps · Hugging Face Agents Course
 - **Daily Review** — one tap pulls everything due across all decks, plus a 30-review daily goal ring.
 - **Streaks and stats** — daily streak, reviews today/all-time, mastered count.
 - **Installable PWA** — offline-capable, add to home screen, no app store.
