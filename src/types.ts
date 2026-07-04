@@ -1,0 +1,76 @@
+export type CardType = 'mcq' | 'flash' | 'fill';
+
+interface BaseCard {
+  id: string;
+  type: CardType;
+  /** Optional code snippet shown in a monospace block. */
+  code?: string;
+}
+
+/** Multiple choice question. `answer` indexes into `choices`. */
+export interface McqCard extends BaseCard {
+  type: 'mcq';
+  prompt: string;
+  choices: string[];
+  answer: number;
+  explanation?: string;
+}
+
+/** Flip-style recall card, self-graded Again/Hard/Good/Easy. */
+export interface FlashCard extends BaseCard {
+  type: 'flash';
+  front: string;
+  back: string;
+}
+
+/**
+ * Code with a `____` blank, answered by tapping a token chip
+ * (Codecademy Go-style) rather than typing.
+ */
+export interface FillCard extends BaseCard {
+  type: 'fill';
+  prompt: string;
+  code: string;
+  /** Accepted answers; the first one is shown in the chip bank. */
+  answers: string[];
+  /** Wrong tokens mixed into the chip bank. */
+  distractors: string[];
+  explanation?: string;
+}
+
+export type Card = McqCard | FlashCard | FillCard;
+
+export interface Deck {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  /** Curriculum section this deck belongs to, e.g. "Coding Interview". */
+  track: string;
+  cards: Card[];
+}
+
+/** SM-2-style scheduling state for one card. */
+export interface CardProgress {
+  ease: number;
+  /** Current interval in days; 0 means learning/relearning. */
+  interval: number;
+  /** Epoch ms when the card is next due. */
+  due: number;
+  reps: number;
+  lapses: number;
+}
+
+export interface Stats {
+  streak: number;
+  /** Local date key (YYYY-MM-DD) of the last day with at least one review. */
+  lastStudyDay: string;
+  totalReviews: number;
+  reviewsByDay: Record<string, number>;
+}
+
+export interface AppState {
+  progress: Record<string, CardProgress>;
+  stats: Stats;
+}

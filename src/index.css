@@ -1,0 +1,623 @@
+:root {
+  --bg: #0d1117;
+  --bg-raised: #161b22;
+  --bg-inset: #010409;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --accent: #2dd4bf;
+  --accent-dark: #14b8a6;
+  --green: #3fb950;
+  --red: #f85149;
+  --amber: #d29922;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  overscroll-behavior-y: none;
+}
+
+code,
+pre {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, Menlo, monospace;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+#root {
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 100dvh;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
+}
+
+/* ---------- Home ---------- */
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.streak {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat strong {
+  font-size: 20px;
+}
+
+.stat span {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* "Up next" hero card (Codecademy Go "Today" pattern) */
+.up-next {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--deck-color, var(--accent)) 18%, var(--bg-raised)),
+    var(--bg-raised) 65%
+  );
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.up-next-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.up-next-body {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.up-next-body h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.up-next-body p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.track {
+  margin-bottom: 22px;
+}
+
+.track-title {
+  margin: 0 0 10px;
+  padding: 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.deck-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deck-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--deck-color, var(--accent));
+  border-radius: var(--radius);
+  padding: 14px;
+  transition: transform 0.08s ease, border-color 0.15s ease;
+}
+
+.deck-card:active {
+  transform: scale(0.98);
+}
+
+.deck-icon {
+  font-size: 30px;
+  flex-shrink: 0;
+}
+
+.deck-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.deck-info h3 {
+  margin: 0 0 2px;
+  font-size: 16px;
+}
+
+.deck-info p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.deck-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+
+.deck-progress-fill {
+  height: 100%;
+  background: var(--deck-color, var(--accent));
+  border-radius: 2px;
+}
+
+.deck-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+.badge.due {
+  background: rgba(210, 153, 34, 0.15);
+  color: var(--amber);
+}
+
+.badge.fresh {
+  background: rgba(45, 212, 191, 0.12);
+  color: var(--accent);
+}
+
+.badge.done {
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--green);
+}
+
+.footnote {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+/* ---------- Session ---------- */
+
+.session-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.progress-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+  transition: width 0.25s ease;
+}
+
+.session-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  min-width: 44px;
+  text-align: right;
+}
+
+.card-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.prompt {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.prompt code,
+.choice code,
+.feedback code,
+.flash-back code {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.9em;
+  color: var(--accent);
+}
+
+.code-block {
+  margin: 0;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #c9d1d9;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choice {
+  text-align: left;
+  background: var(--bg-raised);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 15px;
+  transition: border-color 0.12s ease, transform 0.08s ease;
+}
+
+.choice:not(:disabled):active {
+  transform: scale(0.98);
+  border-color: var(--accent);
+}
+
+.choice.correct {
+  border-color: var(--green);
+  background: rgba(63, 185, 80, 0.1);
+}
+
+.choice.wrong {
+  border-color: var(--red);
+  background: rgba(248, 81, 73, 0.1);
+}
+
+.choice.faded {
+  opacity: 0.45;
+}
+
+/* Bottom feedback sheet (Sololearn/Duolingo pattern) */
+.sheet {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px 20px 0 0;
+  padding: 18px 16px calc(env(safe-area-inset-bottom) + 16px);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  box-shadow: 0 -12px 32px rgba(1, 4, 9, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: slide-up 0.2s ease;
+  z-index: 10;
+}
+
+.sheet strong {
+  font-size: 17px;
+}
+
+.sheet.ok {
+  border-top: 3px solid var(--green);
+}
+
+.sheet.bad {
+  border-top: 3px solid var(--red);
+}
+
+.sheet.ok strong {
+  color: var(--green);
+}
+
+.sheet.bad strong {
+  color: var(--red);
+}
+
+.sheet p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+@keyframes slide-up {
+  from {
+    transform: translate(-50%, 24px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn {
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform 0.08s ease, opacity 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #04211d;
+}
+
+.btn.block {
+  width: 100%;
+}
+
+.btn.bottom {
+  margin-top: auto;
+}
+
+.reveal {
+  margin-top: auto;
+}
+
+/* Token chip bank (Codecademy Go practice pattern) */
+.chip-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 15px;
+  background: var(--bg-raised);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: transform 0.08s ease, opacity 0.12s ease, border-color 0.12s ease;
+}
+
+.chip:not(:disabled):active {
+  transform: scale(0.95);
+  border-color: var(--accent);
+}
+
+.chip.used {
+  opacity: 0.35;
+  border-style: dashed;
+}
+
+.code-blank {
+  display: inline-block;
+  min-width: 3.5ch;
+  font: inherit;
+  text-align: center;
+  background: rgba(45, 212, 191, 0.08);
+  border: 1.5px dashed var(--accent);
+  border-radius: 8px;
+  padding: 0 8px;
+  margin: 0 2px;
+  color: var(--accent);
+  vertical-align: baseline;
+}
+
+.code-blank.filled {
+  border-style: solid;
+  background: rgba(45, 212, 191, 0.14);
+}
+
+.code-blank.filled.ok {
+  border-color: var(--green);
+  color: var(--green);
+  background: rgba(63, 185, 80, 0.12);
+}
+
+.code-blank.filled.bad {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(248, 81, 73, 0.12);
+}
+
+.flash-back {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  animation: pop-in 0.18s ease;
+}
+
+.grade-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: auto;
+}
+
+.grade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-radius: var(--radius);
+  padding: 12px 4px;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-raised);
+}
+
+.grade small {
+  font-weight: 500;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.grade.again {
+  color: var(--red);
+}
+
+.grade.hard {
+  color: var(--amber);
+}
+
+.grade.good {
+  color: var(--accent);
+}
+
+.grade.easy {
+  color: var(--green);
+}
+
+/* ---------- Session end ---------- */
+
+.session-end {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px;
+}
+
+.end-emoji {
+  font-size: 56px;
+}
+
+.session-end h2 {
+  margin: 0;
+}
+
+.session-end p {
+  margin: 0 0 16px;
+  color: var(--text-dim);
+}
