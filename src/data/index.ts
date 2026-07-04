@@ -12,11 +12,15 @@ import { pandasNumpy } from './pandasNumpy';
 import { dlCore } from './dlCore';
 import { llmTransformers } from './llmTransformers';
 import { aiEngineering } from './aiEngineering';
+import { pyPairs } from './pyPairs';
+import { fastapiServing } from './fastapiServing';
+import { llmEvalBias } from './llmEvalBias';
 
 /** Curriculum order: decks appear grouped by track, in this sequence. */
 export const decks: Deck[] = [
   pythonBasics,
   pythonAdvanced,
+  pyPairs,
   dsaInterview,
   patternsIntervals,
   patternsGraphsDp,
@@ -28,6 +32,8 @@ export const decks: Deck[] = [
   dlCore,
   llmTransformers,
   aiEngineering,
+  fastapiServing,
+  llmEvalBias,
 ];
 
 /** Virtual deck: every card in the curriculum, for cross-deck daily review. */

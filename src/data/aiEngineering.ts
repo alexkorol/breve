@@ -143,6 +143,26 @@ export const aiEngineering: Deck = {
         'system sets persistent behavior, user is the request, assistant is the model’s side (you replay all three as conversation history — the API is stateless).',
     },
     {
+      id: 'aie-langgraph',
+      type: 'flash',
+      front: 'LangGraph in one breath — the concepts to name if asked.',
+      back: 'A framework that models an agent workflow as an explicit graph: nodes are functions or LLM calls that read and update a shared typed state; edges define control flow, with conditional edges doing the routing ("if the model called a tool, go to the tool node, else finish"); a checkpointer persists state so runs can pause, resume, and support human-in-the-loop approval. Versus a plain while-loop: same idea, but the graph gives you branching, retries, and resumability declaratively.',
+    },
+    {
+      id: 'aie-langgraph-when',
+      type: 'mcq',
+      prompt: 'When does LangGraph (or any graph framework) earn its complexity over a plain loop?',
+      choices: [
+        'Branching workflows, parallel steps, persistence/resume, or human-in-the-loop approval',
+        'Always — raw API calls are considered legacy',
+        'Only for OpenAI models',
+        'When you need streaming responses',
+      ],
+      answer: 0,
+      explanation:
+        'A linear pipeline or single tool-loop is clearer as plain code. Graphs pay off when control flow gets genuinely stateful. "I’d start with a simple loop and reach for LangGraph when the workflow demands it" is a strong senior answer.',
+    },
+    {
       id: 'aie-latency-cost',
       type: 'flash',
       front: 'Production LLM costs/latency are too high. List the levers.',
