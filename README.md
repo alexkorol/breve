@@ -1,5 +1,7 @@
 # Brĕve
 
+**▶ Open the app: [alexkorol.github.io/breve](https://alexkorol.github.io/breve/)** — then Share → Add to Home Screen on iPhone.
+
 Spaced repetition for code challenges, technical interviews, and Python/ML knowledge — a mobile-first PWA in the spirit of Sololearn / Codecademy Go.
 
 ## Features
