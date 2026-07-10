@@ -37,6 +37,7 @@ import { inferenceOpt } from './inferenceOpt';
 import { aiSysDesign } from './aiSysDesign';
 import { azureAiServices } from './azureAiServices';
 import { aiInterviewDrills } from './aiInterviewDrills';
+import { spanishInterlock } from './spanishInterlock';
 
 /**
  * Curriculum order: decks appear grouped by track, in this sequence.
@@ -87,6 +88,8 @@ export const decks: Deck[] = [
   pyStrings,
   pyGotchas,
   pyOopTesting,
+  // Spanish
+  spanishInterlock,
 ];
 
 /** Virtual deck: every card in the curriculum, for cross-deck daily review. */
