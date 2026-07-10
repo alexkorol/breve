@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FlashCard, CardProgress } from '../types';
 import type { Grade } from '../srs';
 import { previewInterval } from '../srs';
@@ -19,6 +19,21 @@ const GRADES: { grade: Grade; label: string; cls: string }[] = [
 
 export function FlashView({ card, progress, onGrade }: Props) {
   const [revealed, setRevealed] = useState(false);
+
+  // Desktop: space/enter reveals; 1–4 grade Again/Hard/Good/Easy.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (!revealed && (e.key === ' ' || e.key === 'Enter')) {
+        e.preventDefault();
+        setRevealed(true);
+      } else if (revealed) {
+        const n = Number(e.key);
+        if (n >= 1 && n <= 4) onGrade((n - 1) as Grade);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [revealed, onGrade]);
 
   return (
     <div className="card-view">

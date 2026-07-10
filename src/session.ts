@@ -3,7 +3,10 @@ import type { Card, CardProgress, Deck } from './types';
 export const MAX_NEW_PER_SESSION = 8;
 export const MAX_DUE_PER_SESSION = 30;
 
-function shuffle<T>(items: T[]): T[] {
+/** Reviews per day to stay on a ~3-month mastery pace. */
+export const DAILY_GOAL = 30;
+
+export function shuffle<T>(items: T[]): T[] {
   const arr = [...items];
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

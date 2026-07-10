@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { FillCard } from '../types';
 import { Rich } from './Rich';
 import { FeedbackSheet } from './FeedbackSheet';
@@ -24,6 +24,23 @@ export function FillView({ card, onResult }: Props) {
 
   const correct = picked !== null && card.answers.includes(picked);
   const [before, after] = card.code.split('____');
+
+  // Desktop: number keys pick chips; Enter checks.
+  useEffect(() => {
+    if (checked) return;
+    const onKey = (e: KeyboardEvent) => {
+      const n = Number(e.key);
+      if (n >= 1 && n <= chips.length) {
+        const token = chips[n - 1];
+        setPicked((p) => (p === token ? null : token));
+      } else if (e.key === 'Enter' && picked) {
+        e.preventDefault();
+        setChecked(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [checked, chips, picked]);
 
   const blankCls = checked
     ? `code-blank filled ${correct ? 'ok' : 'bad'}`

@@ -7,10 +7,12 @@ interface Props {
   progress: Record<string, CardProgress>;
   onPractice: () => void;
   onStudy: () => void;
+  /** Present only for user-imported decks. */
+  onRemove?: () => void;
   onBack: () => void;
 }
 
-export function DeckDetail({ deck, progress, onPractice, onStudy, onBack }: Props) {
+export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBack }: Props) {
   const { due, fresh } = deckCounts(deck, progress);
   const mastered = deck.cards.filter((c) => isMastered(progress[c.id])).length;
   const seen = deck.cards.filter((c) => progress[c.id]).length;
@@ -69,6 +71,17 @@ export function DeckDetail({ deck, progress, onPractice, onStudy, onBack }: Prop
         Study mode shows every question with its answer — read before practicing, or as a
         refresher. It doesn’t affect your review schedule.
       </p>
+
+      {onRemove && (
+        <button
+          className="link-btn danger"
+          onClick={() => {
+            if (window.confirm(`Remove the imported deck "${deck.title}"?`)) onRemove();
+          }}
+        >
+          Remove this imported deck
+        </button>
+      )}
     </div>
   );
 }

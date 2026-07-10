@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { McqCard } from '../types';
 import { Rich, CodeBlock } from './Rich';
 import { FeedbackSheet } from './FeedbackSheet';
@@ -22,6 +22,17 @@ export function McqView({ card, onResult }: Props) {
   const [picked, setPicked] = useState<number | null>(null);
   const answered = picked !== null;
   const correct = picked !== null && order[picked] === card.answer;
+
+  // Desktop: number keys pick a choice.
+  useEffect(() => {
+    if (answered) return;
+    const onKey = (e: KeyboardEvent) => {
+      const n = Number(e.key);
+      if (n >= 1 && n <= order.length) setPicked(n - 1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [answered, order.length]);
 
   return (
     <div className="card-view">

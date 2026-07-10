@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Rich } from './Rich';
 
 interface Props {
@@ -9,6 +10,17 @@ interface Props {
 
 /** Bottom feedback sheet (Sololearn/Duolingo pattern) with a pinned Continue. */
 export function FeedbackSheet({ correct, heading, explanation, onContinue }: Props) {
+  // Desktop: Enter advances.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onContinue();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onContinue]);
   return (
     <div className={`sheet ${correct ? 'ok' : 'bad'}`}>
       <strong>{heading}</strong>

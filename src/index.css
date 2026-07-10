@@ -471,6 +471,207 @@ button {
   color: var(--accent);
 }
 
+/* ---------- Week dots ---------- */
+
+.week-dots {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin-bottom: 14px;
+}
+
+.week-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.week-dot-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--bg-raised);
+  border: 1.5px solid var(--border);
+  color: var(--bg-raised);
+}
+
+.week-dot.hit .week-dot-circle {
+  background: rgba(45, 212, 191, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.week-dot.today .week-dot-circle {
+  border-color: var(--text);
+}
+
+.week-dot.future .week-dot-circle {
+  opacity: 0.4;
+}
+
+.week-dot-label {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+/* ---------- Stats screen ---------- */
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.stats-btn {
+  padding: 6px 12px;
+}
+
+.stats-section {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.stats-section h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 4px;
+  height: 90px;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  height: 100%;
+}
+
+.bar {
+  width: 100%;
+  max-width: 18px;
+  border-radius: 4px 4px 0 0;
+  background: var(--border);
+}
+
+.bar.goal {
+  background: var(--accent);
+}
+
+.bar-label {
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.chart-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.track-mastery {
+  margin-bottom: 12px;
+}
+
+.track-mastery-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.track-mastery-nums {
+  color: var(--text-dim);
+}
+
+.track-mastery .deck-progress {
+  position: relative;
+  height: 6px;
+}
+
+.deck-progress-fill.seen {
+  position: absolute;
+  inset: 0 auto 0 0;
+  opacity: 0.3;
+  background: var(--accent);
+}
+
+.track-mastery .deck-progress-fill:not(.seen) {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+}
+
+.weak-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.weak-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.weak-icon {
+  flex-shrink: 0;
+}
+
+.weak-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.weak-count {
+  color: var(--red);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.goal-line {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+.goal-line.reached {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.session-end .btn {
+  width: 100%;
+  max-width: 320px;
+}
+
+.session-end .btn + .btn {
+  margin-top: 8px;
+}
+
+.link-btn.danger {
+  color: var(--red);
+  margin: 14px auto 0;
+  display: block;
+}
+
 /* ---------- Data export/import ---------- */
 
 .data-row {

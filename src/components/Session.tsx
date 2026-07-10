@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Card, CardProgress, Deck } from '../types';
 import type { Grade } from '../srs';
 import { newProgress } from '../srs';
-import { buildSession } from '../session';
+import { buildSession, shuffle, DAILY_GOAL } from '../session';
 import { McqView } from './McqView';
 import { FillView } from './FillView';
 import { FlashView } from './FlashView';
@@ -10,28 +10,36 @@ import { FlashView } from './FlashView';
 interface Props {
   deck: Deck;
   progress: Record<string, CardProgress>;
+  /** Practice every card in the deck regardless of schedule (weak-card drills). */
+  forceAll?: boolean;
+  /** Live count of reviews done today, for the goal banner. */
+  reviewsToday: number;
   onReview: (cardId: string, grade: Grade) => void;
   onExit: () => void;
 }
 
-export function Session({ deck, progress, onReview, onExit }: Props) {
+export function Session({ deck, progress, forceAll, reviewsToday, onReview, onExit }: Props) {
   // Queue is captured once at session start; "again" cards get requeued.
-  const [queue, setQueue] = useState<Card[]>(() => buildSession(deck, progress));
+  const [queue, setQueue] = useState<Card[]>(() =>
+    forceAll ? shuffle(deck.cards) : buildSession(deck, progress),
+  );
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [firstTries, setFirstTries] = useState(0);
+  const [missedIds, setMissedIds] = useState<string[]>([]);
   // Forces a remount of the card view when the same card comes around again.
   const [pass, setPass] = useState(0);
 
   const card = queue[index];
-  const total = queue.length + 0; // queue grows when cards are requeued
+  const total = queue.length;
 
   const advance = (grade: Grade, wasRequeued: boolean) => {
     onReview(card.id, grade);
     if (!wasRequeued) {
       setFirstTries((f) => f + 1);
       if (grade >= 2) setCorrectCount((c) => c + 1);
+      else if (grade === 0) setMissedIds((m) => (m.includes(card.id) ? m : [...m, card.id]));
     }
     if (grade === 0) {
       // Requeue at the end for another try this session.
@@ -43,8 +51,20 @@ export function Session({ deck, progress, onReview, onExit }: Props) {
     setPass((p) => p + 1);
   };
 
+  const restartWith = (cards: Card[]) => {
+    setQueue(shuffle(cards));
+    setIndex(0);
+    setDone(0);
+    setCorrectCount(0);
+    setFirstTries(0);
+    setMissedIds([]);
+    setPass((p) => p + 1);
+  };
+
   if (!card) {
     const pct = firstTries > 0 ? Math.round((correctCount / firstTries) * 100) : 100;
+    const missedCards = deck.cards.filter((c) => missedIds.includes(c.id));
+    const goalReached = reviewsToday >= DAILY_GOAL;
     return (
       <div className="screen">
         <div className="session-end">
@@ -57,7 +77,16 @@ export function Session({ deck, progress, onReview, onExit }: Props) {
           ) : (
             <p>Nothing due in this deck right now — come back later.</p>
           )}
-          <button className="btn primary" onClick={onExit}>
+          <div className={`goal-line ${goalReached ? 'reached' : ''}`}>
+            {goalReached ? '🎯 Daily goal reached — ' : ''}
+            {Math.min(reviewsToday, 999)}/{DAILY_GOAL} today
+          </div>
+          {missedCards.length > 0 && (
+            <button className="btn ghost block" onClick={() => restartWith(missedCards)}>
+              Practice the {missedCards.length} you missed
+            </button>
+          )}
+          <button className="btn primary block" onClick={onExit}>
             Back to decks
           </button>
         </div>

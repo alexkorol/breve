@@ -92,7 +92,7 @@ export const decks: Deck[] = [
 /** Virtual deck: every card in the curriculum, for cross-deck daily review. */
 export const DAILY_REVIEW_ID = 'daily-review';
 
-export function dailyReviewDeck(): Deck {
+export function dailyReviewDeck(allDecks: Deck[] = decks): Deck {
   return {
     id: DAILY_REVIEW_ID,
     title: 'Daily Review',
@@ -100,6 +100,6 @@ export function dailyReviewDeck(): Deck {
     icon: '📆',
     color: '#2dd4bf',
     track: '',
-    cards: decks.flatMap((d) => d.cards),
+    cards: allDecks.flatMap((d) => d.cards),
   };
 }

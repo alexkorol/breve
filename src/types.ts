@@ -48,6 +48,8 @@ export interface Deck {
   color: string;
   /** Curriculum section this deck belongs to, e.g. "Coding Interview". */
   track: string;
+  /** True for user-imported decks (stored locally, removable). */
+  custom?: boolean;
   cards: Card[];
 }
 
