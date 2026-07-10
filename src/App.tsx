@@ -6,8 +6,18 @@ import { loadState, saveState, dayKey, yesterdayKey } from './storage';
 import { decks, DAILY_REVIEW_ID, dailyReviewDeck } from './data';
 import { Home } from './components/Home';
 import { Session } from './components/Session';
+import { DeckDetail } from './components/DeckDetail';
+import { StudyView } from './components/StudyView';
 
-type View = { name: 'home' } | { name: 'study'; deckId: string };
+type View =
+  | { name: 'home' }
+  | { name: 'deck'; deckId: string }
+  | { name: 'browse'; deckId: string }
+  | { name: 'study'; deckId: string };
+
+function findDeck(deckId: string) {
+  return deckId === DAILY_REVIEW_ID ? dailyReviewDeck() : decks.find((d) => d.id === deckId);
+}
 
 export default function App() {
   const [state, setState] = useState<AppState>(loadState);
@@ -36,22 +46,56 @@ export default function App() {
     });
   }, []);
 
+  const importState = useCallback((imported: AppState) => {
+    saveState(imported);
+    setState(imported);
+  }, []);
+
   if (view.name === 'study') {
-    const deck =
-      view.deckId === DAILY_REVIEW_ID
-        ? dailyReviewDeck()
-        : decks.find((d) => d.id === view.deckId);
+    const deck = findDeck(view.deckId);
     if (deck) {
+      const back = view.deckId === DAILY_REVIEW_ID ? { name: 'home' as const } : { name: 'deck' as const, deckId: view.deckId };
       return (
         <Session
           deck={deck}
           progress={state.progress}
           onReview={recordReview}
-          onExit={() => setView({ name: 'home' })}
+          onExit={() => setView(back)}
         />
       );
     }
   }
 
-  return <Home decks={decks} state={state} onOpenDeck={(deckId) => setView({ name: 'study', deckId })} />;
+  if (view.name === 'browse') {
+    const deck = findDeck(view.deckId);
+    if (deck) {
+      return <StudyView deck={deck} onBack={() => setView({ name: 'deck', deckId: view.deckId })} />;
+    }
+  }
+
+  if (view.name === 'deck') {
+    const deck = findDeck(view.deckId);
+    if (deck) {
+      return (
+        <DeckDetail
+          deck={deck}
+          progress={state.progress}
+          onPractice={() => setView({ name: 'study', deckId: view.deckId })}
+          onStudy={() => setView({ name: 'browse', deckId: view.deckId })}
+          onBack={() => setView({ name: 'home' })}
+        />
+      );
+    }
+  }
+
+  return (
+    <Home
+      decks={decks}
+      state={state}
+      onImport={importState}
+      onOpenDeck={(deckId) =>
+        setView(deckId === DAILY_REVIEW_ID ? { name: 'study', deckId } : { name: 'deck', deckId })
+      }
+    />
+  );
 }

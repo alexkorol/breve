@@ -36,30 +36,15 @@ import { embeddingsDeep } from './embeddingsDeep';
 import { inferenceOpt } from './inferenceOpt';
 import { aiSysDesign } from './aiSysDesign';
 import { azureAiServices } from './azureAiServices';
+import { aiInterviewDrills } from './aiInterviewDrills';
 
-/** Curriculum order: decks appear grouped by track, in this sequence. */
+/**
+ * Curriculum order: decks appear grouped by track, in this sequence.
+ * Track order leads with the AI-engineer focus.
+ */
 export const decks: Deck[] = [
-  pythonBasics,
-  pythonAdvanced,
-  pyPairs,
-  pyStrings,
-  pyGotchas,
-  pyOopTesting,
-  bigO,
-  dsaInterview,
-  patternsIntervals,
-  patternsBinsearch,
-  patternsLinked,
-  patternsStringsHash,
-  patternsGraphsDp,
-  sqlInterview,
-  mlFundamentals,
-  statsProb,
-  mlMetrics,
-  dataCleaning,
-  pandasNumpy,
-  sklearnWorkflow,
-  featureEng,
+  // AI Engineering
+  aiInterviewDrills,
   dlCore,
   llmTransformers,
   promptEng,
@@ -70,12 +55,38 @@ export const decks: Deck[] = [
   llmEvalBias,
   finetuning,
   aiSysDesign,
+  // My Projects
   projLedgerlens,
   projSongcraft,
   projProsodyJudge,
+  // Credentials
   credAi103,
   credHfAgents,
   azureAiServices,
+  // ML & Data
+  mlFundamentals,
+  statsProb,
+  mlMetrics,
+  dataCleaning,
+  pandasNumpy,
+  sklearnWorkflow,
+  featureEng,
+  // Coding Interview
+  bigO,
+  dsaInterview,
+  patternsIntervals,
+  patternsBinsearch,
+  patternsLinked,
+  patternsStringsHash,
+  patternsGraphsDp,
+  sqlInterview,
+  // Python
+  pythonBasics,
+  pythonAdvanced,
+  pyPairs,
+  pyStrings,
+  pyGotchas,
+  pyOopTesting,
 ];
 
 /** Virtual deck: every card in the curriculum, for cross-deck daily review. */

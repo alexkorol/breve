@@ -33,6 +33,30 @@ export function saveState(state: AppState): void {
   }
 }
 
+/** Download current progress as a JSON file (backup / device migration). */
+export function exportState(state: AppState): void {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `breve-progress-${dayKey()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/** Parse an exported progress file; throws on anything malformed. */
+export async function importStateFile(file: File): Promise<AppState> {
+  const parsed = JSON.parse(await file.text()) as Partial<AppState>;
+  if (!parsed || typeof parsed !== 'object' || typeof parsed.progress !== 'object') {
+    throw new Error('Not a Breve progress file');
+  }
+  const base = { progress: {}, stats: { streak: 0, lastStudyDay: '', totalReviews: 0, reviewsByDay: {} } };
+  return {
+    progress: parsed.progress ?? {},
+    stats: { ...base.stats, ...parsed.stats },
+  };
+}
+
 /** Local-timezone date key, e.g. "2026-07-03". */
 export function dayKey(date = new Date()): string {
   const y = date.getFullYear();
