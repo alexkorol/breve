@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
-import type { AppState, Deck } from './types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { AppState, Card, Deck } from './types';
 import type { Grade } from './srs';
 import { applyGrade, newProgress } from './srs';
 import {
@@ -9,19 +9,29 @@ import {
   yesterdayKey,
   loadCustomDecks,
   saveCustomDecks,
+  parseDeckFile,
+  getSetting,
 } from './storage';
+import { deckJsonFromHash } from './share';
 import { decks as builtinDecks, DAILY_REVIEW_ID, dailyReviewDeck } from './data';
 import { Home } from './components/Home';
 import { Session } from './components/Session';
 import { DeckDetail } from './components/DeckDetail';
 import { StudyView } from './components/StudyView';
 import { Stats } from './components/Stats';
+import { Settings } from './components/Settings';
+import { Generate } from './components/Generate';
+import { Postmortem } from './components/Postmortem';
 
 const WEAK_ID = 'weak-cards';
+const MISSES_ID = 'misses';
 
 type View =
   | { name: 'home' }
   | { name: 'stats' }
+  | { name: 'settings' }
+  | { name: 'generate' }
+  | { name: 'postmortem' }
   | { name: 'deck'; deckId: string }
   | { name: 'browse'; deckId: string }
   | { name: 'study'; deckId: string };
@@ -30,9 +40,43 @@ export default function App() {
   const [state, setState] = useState<AppState>(loadState);
   const [customDecks, setCustomDecks] = useState<Deck[]>(loadCustomDecks);
   const [view, setView] = useState<View>({ name: 'home' });
+  const [hidePersonal, setHidePersonal] = useState(getSetting('hidePersonal') === 'on');
+  const [shareNotice, setShareNotice] = useState('');
+  const [pendingShared, setPendingShared] = useState<Deck | null>(null);
 
-  const allDecks = useMemo(() => [...builtinDecks, ...customDecks], [customDecks]);
+  const allDecks = useMemo(() => {
+    const decks = [...builtinDecks, ...customDecks];
+    return hidePersonal ? decks.filter((d) => d.track !== 'My Projects') : decks;
+  }, [customDecks, hidePersonal]);
+
   const reviewsToday = state.stats.reviewsByDay[dayKey()] ?? 0;
+
+  const addDeck = useCallback((deck: Deck) => {
+    setCustomDecks((prev) => {
+      const next = [...prev, deck];
+      saveCustomDecks(next);
+      return next;
+    });
+  }, []);
+
+  // Shared-deck links: #deck=gz.… — validate and offer to import.
+  useEffect(() => {
+    if (!location.hash.startsWith('#deck=')) return;
+    void (async () => {
+      try {
+        const json = await deckJsonFromHash(location.hash);
+        if (!json) return;
+        const deck = parseDeckFile(json, [...builtinDecks, ...loadCustomDecks()]);
+        setPendingShared(deck);
+      } catch (e) {
+        setShareNotice(
+          `Couldn’t import shared deck: ${e instanceof Error ? e.message : 'invalid link'}`,
+        );
+      } finally {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    })();
+  }, [addDeck]);
 
   const findDeck = useCallback(
     (deckId: string): Deck | undefined => {
@@ -59,7 +103,7 @@ export default function App() {
     [allDecks, state.progress],
   );
 
-  const recordReview = useCallback((cardId: string, grade: Grade) => {
+  const recordReview = useCallback((cardId: string, grade: Grade, recallScore?: number) => {
     setState((prev) => {
       const current = prev.progress[cardId] ?? newProgress();
       const today = dayKey();
@@ -73,8 +117,10 @@ export default function App() {
         stats.streak = stats.lastStudyDay === yesterdayKey() ? stats.streak + 1 : 1;
         stats.lastStudyDay = today;
       }
+      const applied = applyGrade(current, grade);
+      const recall = recallScore ?? current.recall;
       const next: AppState = {
-        progress: { ...prev.progress, [cardId]: applyGrade(current, grade) },
+        progress: { ...prev.progress, [cardId]: recall === undefined ? applied : { ...applied, recall } },
         stats,
       };
       saveState(next);
@@ -87,14 +133,6 @@ export default function App() {
     setState(imported);
   }, []);
 
-  const addDeck = useCallback((deck: Deck) => {
-    setCustomDecks((prev) => {
-      const next = [...prev, deck];
-      saveCustomDecks(next);
-      return next;
-    });
-  }, []);
-
   const removeDeck = useCallback((deckId: string) => {
     setCustomDecks((prev) => {
       const next = prev.filter((d) => d.id !== deckId);
@@ -102,6 +140,30 @@ export default function App() {
       return next;
     });
     setView({ name: 'home' });
+  }, []);
+
+  const appendToMisses = useCallback((cards: Card[]) => {
+    setCustomDecks((prev) => {
+      const existing = prev.find((d) => d.id === MISSES_ID);
+      const next = existing
+        ? prev.map((d) => (d.id === MISSES_ID ? { ...d, cards: [...d.cards, ...cards] } : d))
+        : [
+            ...prev,
+            {
+              id: MISSES_ID,
+              title: 'Interview Misses',
+              description: 'Drills built from your own postmortems — never stumble twice.',
+              icon: '🎯',
+              color: '#f85149',
+              track: 'My Projects',
+              custom: true,
+              cards,
+            },
+          ];
+      saveCustomDecks(next);
+      return next;
+    });
+    setView({ name: 'deck', deckId: MISSES_ID });
   }, []);
 
   if (view.name === 'study') {
@@ -161,13 +223,60 @@ export default function App() {
     );
   }
 
+  if (view.name === 'settings') {
+    return (
+      <Settings
+        state={state}
+        onImport={importState}
+        onHidePersonalChange={setHidePersonal}
+        onBack={() => setView({ name: 'home' })}
+      />
+    );
+  }
+
+  if (view.name === 'generate') {
+    return (
+      <Generate
+        decks={allDecks}
+        onSave={(deck) => {
+          addDeck(deck);
+          setView({ name: 'deck', deckId: deck.id });
+        }}
+        onOpenSettings={() => setView({ name: 'settings' })}
+        onBack={() => setView({ name: 'home' })}
+      />
+    );
+  }
+
+  if (view.name === 'postmortem') {
+    return (
+      <Postmortem
+        onSave={appendToMisses}
+        onOpenSettings={() => setView({ name: 'settings' })}
+        onBack={() => setView({ name: 'home' })}
+      />
+    );
+  }
+
   return (
     <Home
       decks={allDecks}
       state={state}
-      onImport={importState}
+      shareNotice={shareNotice}
+      pendingShared={pendingShared}
+      onAcceptShared={() => {
+        if (pendingShared) {
+          addDeck(pendingShared);
+          setShareNotice(`Added "${pendingShared.title}" — find it under ${pendingShared.track}.`);
+          setPendingShared(null);
+        }
+      }}
+      onDismissShared={() => setPendingShared(null)}
       onAddDeck={addDeck}
       onOpenStats={() => setView({ name: 'stats' })}
+      onOpenSettings={() => setView({ name: 'settings' })}
+      onOpenGenerate={() => setView({ name: 'generate' })}
+      onOpenPostmortem={() => setView({ name: 'postmortem' })}
       onOpenDeck={(deckId) =>
         setView(deckId === DAILY_REVIEW_ID ? { name: 'study', deckId } : { name: 'deck', deckId })
       }

@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import type { CardProgress, Deck } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts } from '../session';
+import { downloadText } from '../storage';
+import { deckToShareUrl } from '../share';
 
 interface Props {
   deck: Deck;
@@ -13,7 +16,23 @@ interface Props {
 }
 
 export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBack }: Props) {
+  const [shareState, setShareState] = useState('');
   const { due, fresh } = deckCounts(deck, progress);
+
+  const share = async () => {
+    try {
+      const url = await deckToShareUrl(deck);
+      await navigator.clipboard.writeText(url);
+      setShareState('Link copied — anyone who opens it can add this deck.');
+    } catch {
+      setShareState('Couldn’t copy a link — use Export instead.');
+    }
+  };
+
+  const exportDeck = () => {
+    const { custom: _custom, ...clean } = deck;
+    downloadText(`${deck.id}.json`, JSON.stringify(clean, null, 2));
+  };
   const mastered = deck.cards.filter((c) => isMastered(progress[c.id])).length;
   const seen = deck.cards.filter((c) => progress[c.id]).length;
   const pct = Math.round((seen / deck.cards.length) * 100);
@@ -66,6 +85,17 @@ export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBa
           📖 Study cards · read all {deck.cards.length}
         </button>
       </div>
+
+      <div className="data-row">
+        <button className="link-btn" onClick={() => void share()}>
+          Share link
+        </button>
+        <span className="dot">·</span>
+        <button className="link-btn" onClick={exportDeck}>
+          Export deck file
+        </button>
+      </div>
+      {shareState && <p className="chart-note" style={{ textAlign: 'center' }}>{shareState}</p>}
 
       <p className="footnote">
         Study mode shows every question with its answer — read before practicing, or as a

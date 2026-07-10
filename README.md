@@ -8,6 +8,12 @@ Spaced repetition for code challenges, technical interviews, and Python/ML knowl
 
 - **Three exercise types** — multiple choice, flip-style flashcards (Again/Hard/Good/Easy), and fill-in-the-blank code.
 - **SM-2 spaced repetition** — cards you miss come back within the session and again the next day; cards you know drift out to weeks. Mastery at a 21-day interval.
+- **AI deck generation (bring your own key)** — paste a job description, article, notes, or upload a .md/.txt file; Claude generates a validated deck you review card-by-card before saving. Your Anthropic API key lives only in your browser; requests go straight to the API.
+- **Recall mode** — answer flashcards from memory (typed, or dictated where supported) before seeing the back; Claude grades you against the model answer with feedback, and the score drives the SRS grade. Optional 60-second interview-pressure timer. Falls back to classic flip when offline.
+- **Interview postmortems** — jot what tripped you up after an interview or mock; each stumble becomes targeted drill cards in a persistent "Interview Misses" deck.
+- **Readiness scores** — per-track readiness blending retention with recall-mode grades, a 13-week volume trend, and an exportable markdown readiness report.
+- **Deck sharing without a server** — every deck exports as a file or a copyable link (the deck travels gzip-compressed inside the URL fragment); recipients get an add-deck banner. A "hide My Projects" toggle keeps personal decks out of sight.
+- **Data durability** — persistent-storage request, backup age tracking with nudges, one-tap backup, and restore.
 - **Study mode** — every deck has a readable "study cards" view mirroring its questions one-to-one (question + answer + explanation), for refreshing before you practice. No effect on the review schedule.
 - **Stats & weak-card drills** — 14-day activity chart, mastery by track, and a "toughest cards" list (2+ misses) with one-tap targeted practice.
 - **Custom decks** — import your own decks as JSON files (see format below); they live on-device and are removable any time.

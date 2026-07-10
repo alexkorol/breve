@@ -54,6 +54,10 @@ export function saveCustomDecks(decks: Deck[]): void {
   }
 }
 
+export function isValidCard(c: unknown): c is Card {
+  return validCard(c);
+}
+
 function validCard(c: unknown): c is Card {
   if (!c || typeof c !== 'object') return false;
   const card = c as Record<string, unknown>;
@@ -126,6 +130,24 @@ export function parseDeckFile(text: string, existing: Deck[]): Deck {
   };
 }
 
+/** Simple persisted UI/config values ("breve:<name>"). */
+export function getSetting(name: string): string {
+  try {
+    return localStorage.getItem(`breve:${name}`) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+export function setSetting(name: string, value: string): void {
+  try {
+    if (value) localStorage.setItem(`breve:${name}`, value);
+    else localStorage.removeItem(`breve:${name}`);
+  } catch {
+    // non-fatal
+  }
+}
+
 /** Download current progress as a JSON file (backup / device migration). */
 export function exportState(state: AppState): void {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -135,6 +157,26 @@ export function exportState(state: AppState): void {
   a.download = `breve-progress-${dayKey()}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  setSetting('lastBackup', dayKey());
+}
+
+/** Download any text file (deck exports, readiness reports). */
+export function downloadText(filename: string, text: string, type = 'application/json'): void {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/** Days since the last manual backup, or Infinity if never backed up. */
+export function daysSinceBackup(): number {
+  const last = getSetting('lastBackup');
+  if (!last) return Infinity;
+  const then = new Date(last).getTime();
+  return Math.floor((Date.now() - then) / 86400000);
 }
 
 /** Parse an exported progress file; throws on anything malformed. */

@@ -3,9 +3,12 @@ import type { Card, CardProgress, Deck } from '../types';
 import type { Grade } from '../srs';
 import { newProgress } from '../srs';
 import { buildSession, shuffle, DAILY_GOAL } from '../session';
+import { aiAvailable } from '../ai';
+import { getSetting } from '../storage';
 import { McqView } from './McqView';
 import { FillView } from './FillView';
 import { FlashView } from './FlashView';
+import { RecallView } from './RecallView';
 
 interface Props {
   deck: Deck;
@@ -14,7 +17,7 @@ interface Props {
   forceAll?: boolean;
   /** Live count of reviews done today, for the goal banner. */
   reviewsToday: number;
-  onReview: (cardId: string, grade: Grade) => void;
+  onReview: (cardId: string, grade: Grade, recallScore?: number) => void;
   onExit: () => void;
 }
 
@@ -28,14 +31,17 @@ export function Session({ deck, progress, forceAll, reviewsToday, onReview, onEx
   const [correctCount, setCorrectCount] = useState(0);
   const [firstTries, setFirstTries] = useState(0);
   const [missedIds, setMissedIds] = useState<string[]>([]);
+  // Cards where the user bailed out of recall mode into classic flip.
+  const [fallbackIds, setFallbackIds] = useState<string[]>([]);
   // Forces a remount of the card view when the same card comes around again.
   const [pass, setPass] = useState(0);
 
   const card = queue[index];
   const total = queue.length;
+  const recallMode = getSetting('recallMode') === 'on' && aiAvailable();
 
-  const advance = (grade: Grade, wasRequeued: boolean) => {
-    onReview(card.id, grade);
+  const advance = (grade: Grade, wasRequeued: boolean, recallScore?: number) => {
+    onReview(card.id, grade, recallScore);
     if (!wasRequeued) {
       setFirstTries((f) => f + 1);
       if (grade >= 2) setCorrectCount((c) => c + 1);
@@ -122,14 +128,22 @@ export function Session({ deck, progress, forceAll, reviewsToday, onReview, onEx
       {card.type === 'fill' && (
         <FillView key={key} card={card} onResult={(ok) => advance(ok ? 2 : 0, wasRequeued)} />
       )}
-      {card.type === 'flash' && (
-        <FlashView
-          key={key}
-          card={card}
-          progress={cardProgress}
-          onGrade={(g) => advance(g, wasRequeued)}
-        />
-      )}
+      {card.type === 'flash' &&
+        (recallMode && !fallbackIds.includes(card.id) ? (
+          <RecallView
+            key={key}
+            card={card}
+            onGrade={(g, score) => advance(g, wasRequeued, score)}
+            onFallback={() => setFallbackIds((f) => [...f, card.id])}
+          />
+        ) : (
+          <FlashView
+            key={key}
+            card={card}
+            progress={cardProgress}
+            onGrade={(g) => advance(g, wasRequeued)}
+          />
+        ))}
     </div>
   );
 }

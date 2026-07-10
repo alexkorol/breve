@@ -62,6 +62,8 @@ export interface CardProgress {
   due: number;
   reps: number;
   lapses: number;
+  /** Last recall-mode grade (0-100), when the card was answered from memory. */
+  recall?: number;
 }
 
 export interface Stats {

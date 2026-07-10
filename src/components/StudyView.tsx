@@ -7,7 +7,7 @@ interface Props {
 }
 
 /** One card rendered as reading material: question + answer + why. */
-function StudyItem({ card, index }: { card: Card; index: number }) {
+export function StudyItem({ card, index }: { card: Card; index: number }) {
   return (
     <div className="study-item">
       <div className="study-num">{index + 1}</div>

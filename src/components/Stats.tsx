@@ -1,7 +1,24 @@
-import type { AppState, Card, Deck } from '../types';
+import type { AppState, Card, CardProgress, Deck } from '../types';
 import { isMastered } from '../srs';
 import { DAILY_GOAL } from '../session';
-import { dayKey } from '../storage';
+import { dayKey, downloadText } from '../storage';
+
+/**
+ * Readiness per track: how prepared you'd be if this topic came up tomorrow.
+ * Base = retention (mastered 70%, seen 30%); recall-mode grades, when present,
+ * blend in as direct evidence of production ability.
+ */
+export function trackReadiness(cards: Card[], progress: Record<string, CardProgress>): number {
+  if (cards.length === 0) return 0;
+  const entries = cards.map((c) => progress[c.id]).filter(Boolean) as CardProgress[];
+  const masteredFrac = cards.filter((c) => isMastered(progress[c.id])).length / cards.length;
+  const seenFrac = entries.length / cards.length;
+  const base = 70 * masteredFrac + 30 * seenFrac;
+  const recalls = entries.map((p) => p.recall).filter((r): r is number => r !== undefined);
+  if (recalls.length === 0) return Math.round(base);
+  const avgRecall = recalls.reduce((a, b) => a + b, 0) / recalls.length;
+  return Math.round(0.6 * base + 0.4 * avgRecall);
+}
 
 interface Props {
   decks: Deck[];
@@ -23,6 +40,57 @@ function lastNDays(n: number): { key: string; label: string }[] {
 function cardTitle(card: Card): string {
   const text = card.type === 'flash' ? card.front : card.prompt;
   return text.length > 64 ? `${text.slice(0, 64)}…` : text;
+}
+
+/** Weekly review totals for the last 13 weeks (≈ the 90-day plan). */
+function weeklyCounts(state: AppState): { label: string; count: number }[] {
+  const weeks: { label: string; count: number }[] = [];
+  const monday = new Date();
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  for (let w = 12; w >= 0; w--) {
+    const start = new Date(monday);
+    start.setDate(monday.getDate() - w * 7);
+    let count = 0;
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(start);
+      day.setDate(start.getDate() + d);
+      count += state.stats.reviewsByDay[dayKey(day)] ?? 0;
+    }
+    weeks.push({ label: `${start.getMonth() + 1}/${start.getDate()}`, count });
+  }
+  return weeks;
+}
+
+function exportReport(decks: Deck[], state: AppState): void {
+  const tracks = [...new Set(decks.map((d) => d.track))];
+  const lines = [
+    `# Breve readiness report — ${dayKey()}`,
+    '',
+    `- Streak: ${state.stats.streak} days · Total reviews: ${state.stats.totalReviews}`,
+    '',
+    '| Track | Readiness | Mastered | Seen | Cards |',
+    '|---|---|---|---|---|',
+  ];
+  for (const track of tracks) {
+    const cards = decks.filter((d) => d.track === track).flatMap((d) => d.cards);
+    const mastered = cards.filter((c) => isMastered(state.progress[c.id])).length;
+    const seen = cards.filter((c) => state.progress[c.id]).length;
+    lines.push(
+      `| ${track} | ${trackReadiness(cards, state.progress)}% | ${mastered} | ${seen} | ${cards.length} |`,
+    );
+  }
+  const cardIndex = new Map<string, Card>();
+  for (const d of decks) for (const c of d.cards) cardIndex.set(c.id, c);
+  const weak = Object.entries(state.progress)
+    .filter(([id, p]) => p.lapses >= 2 && cardIndex.has(id))
+    .sort((a, b) => b[1].lapses - a[1].lapses)
+    .slice(0, 10);
+  if (weak.length > 0) {
+    lines.push('', '## Toughest cards', '');
+    for (const [id, p] of weak) lines.push(`- (×${p.lapses}) ${cardTitle(cardIndex.get(id)!)}`);
+  }
+  lines.push('', '_Readiness = 70% mastery + 30% coverage, blended 60/40 with recall-mode grades where present._');
+  downloadText(`breve-readiness-${dayKey()}.md`, lines.join('\n'), 'text/markdown');
 }
 
 export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
@@ -88,9 +156,10 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
       </section>
 
       <section className="stats-section">
-        <h3>Mastery by track</h3>
+        <h3>Readiness by track</h3>
         {tracks.map((track) => {
           const cards = decks.filter((d) => d.track === track).flatMap((d) => d.cards);
+          const readiness = trackReadiness(cards, state.progress);
           const mastered = cards.filter((c) => isMastered(state.progress[c.id])).length;
           const seen = cards.filter((c) => state.progress[c.id]).length;
           return (
@@ -98,20 +167,45 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
               <div className="track-mastery-head">
                 <span>{track}</span>
                 <span className="track-mastery-nums">
-                  {mastered}/{cards.length}
+                  {readiness}% · {mastered}/{cards.length} mastered
                 </span>
               </div>
               <div className="deck-progress">
                 <div className="deck-progress-fill seen" style={{ width: `${(seen / cards.length) * 100}%` }} />
                 <div
                   className="deck-progress-fill"
-                  style={{ width: `${(mastered / cards.length) * 100}%` }}
+                  style={{ width: `${readiness}%` }}
                 />
               </div>
             </div>
           );
         })}
-        <p className="chart-note">Dim = seen, bright = mastered (21-day interval).</p>
+        <p className="chart-note">
+          Readiness blends retention (mastery) with recall-mode grades where you’ve
+          practiced answering from memory. Dim bar = cards seen.
+        </p>
+        <button className="btn ghost block" onClick={() => exportReport(decks, state)}>
+          Export readiness report (.md)
+        </button>
+      </section>
+
+      <section className="stats-section">
+        <h3>Last 13 weeks</h3>
+        <div className="bar-chart" role="img" aria-label="Reviews per week, last 13 weeks">
+          {weeklyCounts(state).map((w, i) => (
+            <div key={i} className="bar-col">
+              <div
+                className={`bar ${w.count >= DAILY_GOAL * 5 ? 'goal' : ''}`}
+                style={{ height: `${Math.max(4, (w.count / Math.max(DAILY_GOAL * 7, ...weeklyCounts(state).map((x) => x.count))) * 72)}px` }}
+                title={`week of ${w.label}: ${w.count}`}
+              />
+              <span className="bar-label">{i === 0 || i === 12 ? w.label : ''}</span>
+            </div>
+          ))}
+        </div>
+        <p className="chart-note">
+          Review volume across the 90-day plan. Teal weeks hit 5+ goal-days of volume.
+        </p>
       </section>
 
       <section className="stats-section">

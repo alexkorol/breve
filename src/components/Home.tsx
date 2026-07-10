@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import type { AppState, Deck } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts, DAILY_GOAL } from '../session';
-import { dayKey, exportState, importStateFile, parseDeckFile } from '../storage';
+import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
 import { DAILY_REVIEW_ID } from '../data';
 
 const TRACKS_KEY = 'breve:ui:tracks';
@@ -10,36 +10,16 @@ const TRACKS_KEY = 'breve:ui:tracks';
 interface Props {
   decks: Deck[];
   state: AppState;
+  shareNotice: string;
+  pendingShared: Deck | null;
+  onAcceptShared: () => void;
+  onDismissShared: () => void;
   onOpenDeck: (deckId: string) => void;
   onOpenStats: () => void;
-  onImport: (state: AppState) => void;
+  onOpenSettings: () => void;
+  onOpenGenerate: () => void;
+  onOpenPostmortem: () => void;
   onAddDeck: (deck: Deck) => void;
-}
-
-/** Mon–Sun dots for the current week; filled when that day had reviews. */
-function WeekDots({ reviewsByDay }: { reviewsByDay: Record<string, number> }) {
-  const now = new Date();
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-  const todayKey = dayKey(now);
-  return (
-    <div className="week-dots" aria-label="Days practiced this week">
-      {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, i) => {
-        const d = new Date(monday);
-        d.setDate(monday.getDate() + i);
-        const key = dayKey(d);
-        const didPractice = (reviewsByDay[key] ?? 0) > 0;
-        const isToday = key === todayKey;
-        const isFuture = d > now && !isToday;
-        return (
-          <div key={i} className={`week-dot ${didPractice ? 'hit' : ''} ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''}`}>
-            <span className="week-dot-circle">{didPractice ? '✓' : ''}</span>
-            <span className="week-dot-label">{label}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
 }
 
 function GoalRing({ value, goal }: { value: number; goal: number }) {
@@ -68,6 +48,32 @@ function GoalRing({ value, goal }: { value: number; goal: number }) {
   );
 }
 
+/** Mon–Sun dots for the current week; filled when that day had reviews. */
+function WeekDots({ reviewsByDay }: { reviewsByDay: Record<string, number> }) {
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  const todayKey = dayKey(now);
+  return (
+    <div className="week-dots" aria-label="Days practiced this week">
+      {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, i) => {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const key = dayKey(d);
+        const didPractice = (reviewsByDay[key] ?? 0) > 0;
+        const isToday = key === todayKey;
+        const isFuture = d > now && !isToday;
+        return (
+          <div key={i} className={`week-dot ${didPractice ? 'hit' : ''} ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''}`}>
+            <span className="week-dot-circle">{didPractice ? '✓' : ''}</span>
+            <span className="week-dot-label">{label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function loadOpenTracks(firstTrack: string): Record<string, boolean> {
   try {
     const raw = localStorage.getItem(TRACKS_KEY);
@@ -78,7 +84,20 @@ function loadOpenTracks(firstTrack: string): Record<string, boolean> {
   return { [firstTrack]: true };
 }
 
-export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDeck }: Props) {
+export function Home({
+  decks,
+  state,
+  shareNotice,
+  pendingShared,
+  onAcceptShared,
+  onDismissShared,
+  onOpenDeck,
+  onOpenStats,
+  onOpenSettings,
+  onOpenGenerate,
+  onOpenPostmortem,
+  onAddDeck,
+}: Props) {
   const today = dayKey();
   const reviewsToday = state.stats.reviewsByDay[today] ?? 0;
   const totalCards = decks.reduce((n, d) => n + d.cards.length, 0);
@@ -91,9 +110,10 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>(() =>
     loadOpenTracks(tracks[0]),
   );
-  const fileInput = useRef<HTMLInputElement>(null);
   const deckInput = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState('');
+  const backupAge = daysSinceBackup();
+  const showBackupNudge = state.stats.totalReviews > 0 && backupAge > 7;
 
   const toggleTrack = (track: string) => {
     setOpenTracks((prev) => {
@@ -121,16 +141,6 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
   )[0];
   const freshestCount = freshest ? deckCounts(freshest, state.progress).fresh : 0;
 
-  const handleImport = async (file: File | undefined) => {
-    if (!file) return;
-    try {
-      onImport(await importStateFile(file));
-      setImportError('');
-    } catch {
-      setImportError('That file doesn’t look like a Breve progress export.');
-    }
-  };
-
   const handleDeckImport = async (file: File | undefined) => {
     if (!file) return;
     try {
@@ -149,6 +159,9 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
           <h1>Breve</h1>
         </div>
         <div className="header-actions">
+          <button className="streak stats-btn" onClick={onOpenSettings} title="Settings">
+            ⚙️
+          </button>
           <button className="streak stats-btn" onClick={onOpenStats} title="Your stats">
             📊
           </button>
@@ -157,6 +170,30 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
           </button>
         </div>
       </header>
+
+      {pendingShared && (
+        <div className="share-notice share-confirm">
+          <p>
+            Someone shared <strong>{pendingShared.icon} {pendingShared.title}</strong> (
+            {pendingShared.cards.length} cards) with you.
+          </p>
+          <div className="share-confirm-actions">
+            <button className="btn primary" onClick={onAcceptShared}>
+              Add deck
+            </button>
+            <button className="btn ghost" onClick={onDismissShared}>
+              No thanks
+            </button>
+          </div>
+        </div>
+      )}
+      {shareNotice && !pendingShared && <p className="share-notice">{shareNotice}</p>}
+      {showBackupNudge && (
+        <button className="backup-nudge" onClick={() => exportState(state)}>
+          ⚠️ It’s been {backupAge === Infinity ? 'a while' : `${backupAge} days`} since your
+          last backup — tap to export your progress.
+        </button>
+      )}
 
       <div className="today-card">
         <GoalRing value={reviewsToday} goal={DAILY_GOAL} />
@@ -191,6 +228,15 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
       </div>
 
       <WeekDots reviewsByDay={state.stats.reviewsByDay} />
+
+      <div className="ai-actions">
+        <button className="ai-action" onClick={onOpenGenerate}>
+          <span>✨</span> New deck from anything
+        </button>
+        <button className="ai-action" onClick={onOpenPostmortem}>
+          <span>📝</span> Interview postmortem
+        </button>
+      </div>
 
       <div className="stat-strip">
         <div className="stat">
@@ -275,23 +321,9 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
           Export progress
         </button>
         <span className="dot">·</span>
-        <button className="link-btn" onClick={() => fileInput.current?.click()}>
-          Import progress
-        </button>
-        <span className="dot">·</span>
         <button className="link-btn" onClick={() => deckInput.current?.click()}>
-          Add deck
+          Add deck file
         </button>
-        <input
-          ref={fileInput}
-          type="file"
-          accept="application/json"
-          hidden
-          onChange={(e) => {
-            void handleImport(e.target.files?.[0]);
-            e.target.value = '';
-          }}
-        />
         <input
           ref={deckInput}
           type="file"
@@ -306,7 +338,7 @@ export function Home({ decks, state, onOpenDeck, onOpenStats, onImport, onAddDec
       {importError && <p className="import-error">{importError}</p>}
 
       <p className="footnote">
-        Progress is saved on this device — export a backup any time. Tap a deck to practice
+        Progress is saved on this device — back it up from Settings. Tap a deck to practice
         or read its study cards.
       </p>
     </div>

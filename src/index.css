@@ -672,6 +672,285 @@ button {
   display: block;
 }
 
+/* ---------- Recall mode ---------- */
+
+.recall-input {
+  width: 100%;
+  background: var(--bg-inset);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  padding: 12px 14px;
+  outline: none;
+  resize: vertical;
+}
+
+.recall-input:focus {
+  border-color: var(--accent);
+}
+
+.recall-timer {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+
+.recall-timer-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 1s linear;
+}
+
+.recall-timer-fill.low {
+  background: var(--red);
+}
+
+.recall-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.recall-actions .btn {
+  flex: 1;
+}
+
+.btn.ghost.listening {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.recall-grading {
+  text-align: center;
+  color: var(--text-dim);
+  padding: 24px 0;
+  animation: pop-in 0.18s ease;
+}
+
+.recall-score {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  animation: pop-in 0.18s ease;
+}
+
+.recall-score-num {
+  font-size: 32px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.recall-score.ok .recall-score-num {
+  color: var(--green);
+}
+
+.recall-score.bad .recall-score-num {
+  color: var(--red);
+}
+
+.recall-score-info strong {
+  font-size: 14px;
+}
+
+.recall-score-info p {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+
+.grade.suggested {
+  border-color: var(--accent);
+  background: rgba(45, 212, 191, 0.1);
+}
+
+/* ---------- Generate / Postmortem ---------- */
+
+.gen-row {
+  display: flex;
+  justify-content: center;
+}
+
+.gen-options {
+  display: flex;
+  gap: 12px;
+  margin: 4px 0 12px;
+}
+
+.gen-options label {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.gen-options select {
+  background: var(--bg-raised);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  padding: 10px 12px;
+}
+
+.empty-note {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  color: var(--text-dim);
+  padding: 24px;
+}
+
+.review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.review-item .link-btn.danger {
+  margin: 2px 0 8px;
+  align-self: flex-end;
+  font-size: 12.5px;
+}
+
+/* ---------- Home extras ---------- */
+
+.ai-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ai-action {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ai-action:active {
+  border-color: var(--accent);
+}
+
+.share-confirm p {
+  margin: 0 0 10px;
+}
+
+.share-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.share-confirm-actions .btn {
+  padding: 9px 16px;
+  font-size: 14px;
+}
+
+.share-notice {
+  background: rgba(45, 212, 191, 0.1);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  color: var(--accent);
+  font-size: 13.5px;
+  padding: 10px 14px;
+  margin: 0 0 12px;
+}
+
+.backup-nudge {
+  width: 100%;
+  text-align: left;
+  background: rgba(210, 153, 34, 0.1);
+  border: 1px solid var(--amber);
+  border-radius: 10px;
+  color: var(--amber);
+  font-size: 13px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+
+/* ---------- Settings ---------- */
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-text {
+  flex: 1;
+}
+
+.setting-text strong {
+  font-size: 14px;
+}
+
+.setting-text p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.setting-row input[type='checkbox'] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.setting-row .btn {
+  padding: 8px 14px;
+  font-size: 13.5px;
+  flex-shrink: 0;
+}
+
+.setting-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+.setting-field input {
+  background: var(--bg-inset);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.setting-field input:focus {
+  border-color: var(--accent);
+}
+
 /* ---------- Data export/import ---------- */
 
 .data-row {
