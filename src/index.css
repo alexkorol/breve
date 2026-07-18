@@ -198,6 +198,20 @@ button {
   margin-bottom: 10px;
 }
 
+.focus-track {
+  margin-top: 14px;
+}
+
+.focus-header {
+  cursor: default;
+}
+
+.focus-header .link-btn {
+  flex: none;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 .track-header {
   width: 100%;
   display: flex;

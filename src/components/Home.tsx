@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
-import type { AppState, Deck } from '../types';
+import type { AppState, CardProgress, Deck } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts, DAILY_GOAL } from '../session';
 import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
 import { DAILY_REVIEW_ID } from '../data';
+import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
 
 const TRACKS_KEY = 'breve:ui:tracks';
 
@@ -74,6 +75,42 @@ function WeekDots({ reviewsByDay }: { reviewsByDay: Record<string, number> }) {
   );
 }
 
+function DeckCard({
+  deck,
+  progress,
+  onOpen,
+}: {
+  deck: Deck;
+  progress: Record<string, CardProgress>;
+  onOpen: (deckId: string) => void;
+}) {
+  const { due, fresh } = deckCounts(deck, progress);
+  const seen = deck.cards.filter((c) => progress[c.id]).length;
+  const pct = Math.round((seen / deck.cards.length) * 100);
+  const ready = due + fresh > 0;
+  return (
+    <button
+      className="deck-card"
+      style={{ ['--deck-color' as string]: deck.color }}
+      onClick={() => onOpen(deck.id)}
+    >
+      <div className="deck-icon">{deck.icon}</div>
+      <div className="deck-info">
+        <h3>{deck.title}</h3>
+        <p>{deck.description}</p>
+        <div className="deck-progress">
+          <div className="deck-progress-fill" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+      <div className="deck-badges">
+        {due > 0 && <span className="badge due">{due} due</span>}
+        {fresh > 0 && <span className="badge fresh">{fresh} new</span>}
+        {!ready && <span className="badge done">✓</span>}
+      </div>
+    </button>
+  );
+}
+
 function loadOpenTracks(firstTrack: string): Record<string, boolean> {
   try {
     const raw = localStorage.getItem(TRACKS_KEY);
@@ -112,6 +149,13 @@ export function Home({
   );
   const deckInput = useRef<HTMLInputElement>(null);
   const [importError, setImportError] = useState('');
+  const [focusReroll, setFocusReroll] = useState(() => loadFocusReroll(today));
+  const focusDecks = pickFocus(decks, state.progress, today, focusReroll);
+  const rerollFocus = () => {
+    const next = focusReroll + 1;
+    saveFocusReroll(today, next);
+    setFocusReroll(next);
+  };
   const backupAge = daysSinceBackup();
   const showBackupNudge = state.stats.totalReviews > 0 && backupAge > 7;
 
@@ -229,6 +273,22 @@ export function Home({
 
       <WeekDots reviewsByDay={state.stats.reviewsByDay} />
 
+      {focusDecks.length > 0 && (
+        <section className="track focus-track">
+          <div className="track-header focus-header">
+            <span className="track-name">🎯 Today’s focus</span>
+            <button className="link-btn" onClick={rerollFocus} title="Swap the suggested decks">
+              ↻ reroll
+            </button>
+          </div>
+          <div className="deck-list">
+            {focusDecks.map((deck) => (
+              <DeckCard key={deck.id} deck={deck} progress={state.progress} onOpen={onOpenDeck} />
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="ai-actions">
         <button className="ai-action" onClick={onOpenGenerate}>
           <span>✨</span> New deck from anything
@@ -282,34 +342,14 @@ export function Home({
             </button>
             {open && (
               <div className="deck-list">
-                {trackDecks.map((deck) => {
-                  const { due, fresh } = deckCounts(deck, state.progress);
-                  const seen = deck.cards.filter((c) => state.progress[c.id]).length;
-                  const pct = Math.round((seen / deck.cards.length) * 100);
-                  const ready = due + fresh > 0;
-                  return (
-                    <button
-                      key={deck.id}
-                      className="deck-card"
-                      style={{ ['--deck-color' as string]: deck.color }}
-                      onClick={() => onOpenDeck(deck.id)}
-                    >
-                      <div className="deck-icon">{deck.icon}</div>
-                      <div className="deck-info">
-                        <h3>{deck.title}</h3>
-                        <p>{deck.description}</p>
-                        <div className="deck-progress">
-                          <div className="deck-progress-fill" style={{ width: `${pct}%` }} />
-                        </div>
-                      </div>
-                      <div className="deck-badges">
-                        {due > 0 && <span className="badge due">{due} due</span>}
-                        {fresh > 0 && <span className="badge fresh">{fresh} new</span>}
-                        {!ready && <span className="badge done">✓</span>}
-                      </div>
-                    </button>
-                  );
-                })}
+                {trackDecks.map((deck) => (
+                  <DeckCard
+                    key={deck.id}
+                    deck={deck}
+                    progress={state.progress}
+                    onOpen={onOpenDeck}
+                  />
+                ))}
               </div>
             )}
           </section>
