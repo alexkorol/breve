@@ -124,5 +124,25 @@ export const pythonBasics: Deck = {
       explanation:
         'finally runs whether or not an exception occurred — even if the try block returns. else runs only when no exception was raised.',
     },
+    {
+      id: 'pyb-lcm-fold',
+      type: 'fill',
+      prompt: 'Fold an LCM across numbers (smallest value divisible by all of 1..20):',
+      code: 'import math\nresult = 1\nfor n in range(1, 21):\n    result = (result * n) // math.____(result, n)',
+      answers: ['gcd'],
+      distractors: ['lcm', 'sqrt', 'floor'],
+      explanation:
+        'lcm(a, b) = a * b // gcd(a, b) — dividing by the gcd removes the factors a and b already share. Initialize result BEFORE the loop or it resets to 1 every iteration. (Euler 5.)',
+    },
+    {
+      id: 'pyb-sqrt-power',
+      type: 'fill',
+      prompt: 'Square root without importing math — the trial-division bound in a primality check:',
+      code: 'for i in range(2, int(n ** ____) + 1):\n    if n % i == 0:\n        return False',
+      answers: ['0.5'],
+      distractors: ['2', '0.25', '-1'],
+      explanation:
+        'n ** 0.5 == math.sqrt(n): any composite has a factor at or below its square root. The + 1 matters because range excludes its stop — without it a perfect-square factor never gets tested.',
+    },
   ],
 };

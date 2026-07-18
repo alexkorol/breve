@@ -147,6 +147,54 @@ export const bigO: Deck = {
         'Each vertex dequeued once, each edge examined once. For grids: V = rows·cols, E ≈ 4V, so O(rows·cols).',
     },
     {
+      id: 'bo-counter-values',
+      type: 'mcq',
+      prompt: 'A scan keeps three counters (current streak, best streak, pass count) over n items. Extra space?',
+      choices: [
+        'O(1) — the number of variables is fixed, even though their values grow',
+        'O(n) — the counters can reach n',
+        'O(3) — three variables',
+        'O(n) — one update per item',
+      ],
+      answer: 0,
+      explanation:
+        'Space is about how much stored information grows with n, not how big a number a counter holds. Fixed counters/flags → O(1); a set/list/dict that can absorb every item → O(n).',
+    },
+    {
+      id: 'bo-early-exit',
+      type: 'mcq',
+      prompt: 'A check returns True at the first "fail" it sees. Best and worst case time?',
+      choices: [
+        'Best O(1), worst O(n) — and you quote the worst case unless asked otherwise',
+        'O(1) — it can exit immediately',
+        'O(n/2) on average, so O(n/2)',
+        'Best O(1), worst O(1)',
+      ],
+      answer: 0,
+      explanation:
+        'Early exit improves the best case but the fail might be last or absent, so the stated complexity stays O(n). Constants like n/2 get dropped anyway.',
+    },
+    {
+      id: 'bo-justify',
+      type: 'flash',
+      front: 'The one-sentence complexity justification — what is the template, and what two questions do you ask separately?',
+      back: '"O of n time because each item is checked once, and O of one extra space because only two counters are stored." Never the bare label. Ask separately: 1) how many items/combinations get examined? → time. 2) what NEW information is stored? → space. Separating the questions stops the time answer from bleeding into the space answer.',
+    },
+    {
+      id: 'bo-sieve',
+      type: 'mcq',
+      prompt: 'Sum all primes below 2,000,000. Trial-dividing each candidate up to its square root works but crawls. The scalable fix?',
+      choices: [
+        'Sieve of Eratosthenes — mark multiples once, O(n log log n) time, O(n) space',
+        'Check only odd numbers — halves the work but same complexity',
+        'Cache math.sqrt results',
+        'Multithread the trial division',
+      ],
+      answer: 0,
+      explanation:
+        'Trial division costs ~O(n√n) total; the sieve trades O(n) memory for near-linear time. The interview lesson: "correct" and "scales" are different bars — say which one you cleared and what you would reach for next.',
+    },
+    {
       id: 'bo-say-it',
       type: 'flash',
       front: 'The interview script for complexity — when and how do you bring it up?',

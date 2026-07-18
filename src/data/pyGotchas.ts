@@ -204,5 +204,20 @@ export const pyGotchas: Deck = {
       explanation:
         'n binds in the enclosing scope (walrus has no private scope), the condition passes, x = 30. If the condition failed, print(x) would NameError — conditional assignment leaves gaps.',
     },
+    {
+      id: 'gt-return-in-loop',
+      type: 'mcq',
+      prompt: 'What is wrong with this primality check?',
+      code: 'for i in range(2, int(n ** 0.5) + 1):\n    if n % i == 0:\n        return False\n    return True',
+      choices: [
+        'return True sits inside the loop — it answers after testing only the FIRST divisor; dedent it below the loop',
+        'The range bound is off by one',
+        'return False should come after the loop',
+        'Nothing — it works',
+      ],
+      answer: 0,
+      explanation:
+        'Early return False on any divisor is correct; return True must wait until EVERY candidate divisor has been checked, so it belongs after the loop at function level. Indentation IS control flow in Python.',
+    },
   ],
 };
