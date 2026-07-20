@@ -16,7 +16,7 @@ export interface McqCard extends BaseCard {
   explanation?: string;
 }
 
-/** Flip-style recall card, self-graded Again/Hard/Good/Easy. */
+/** Flip-style recall card, graded missed/got-it (plus a too-easy fast track). */
 export interface FlashCard extends BaseCard {
   type: 'flash';
   front: string;

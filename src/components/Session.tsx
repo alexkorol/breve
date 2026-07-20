@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import type { Card, CardProgress, Deck } from '../types';
 import type { Grade } from '../srs';
-import { newProgress } from '../srs';
 import { buildSession, shuffle, DAILY_GOAL } from '../session';
 import { aiAvailable } from '../ai';
 import { getSetting } from '../storage';
@@ -102,7 +101,6 @@ export function Session({ deck, progress, forceAll, reviewsToday, onReview, onEx
 
   // Was this card already seen earlier in the session (i.e. a requeue)?
   const wasRequeued = queue.slice(0, index).some((c) => c.id === card.id);
-  const cardProgress = progress[card.id] ?? newProgress();
   const key = `${card.id}:${pass}`;
 
   return (
@@ -137,12 +135,7 @@ export function Session({ deck, progress, forceAll, reviewsToday, onReview, onEx
             onFallback={() => setFallbackIds((f) => [...f, card.id])}
           />
         ) : (
-          <FlashView
-            key={key}
-            card={card}
-            progress={cardProgress}
-            onGrade={(g) => advance(g, wasRequeued)}
-          />
+          <FlashView key={key} card={card} onGrade={(g) => advance(g, wasRequeued)} />
         ))}
     </div>
   );

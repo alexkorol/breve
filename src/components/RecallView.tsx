@@ -12,7 +12,7 @@ interface Props {
   onFallback: () => void;
 }
 
-const GRADE_LABELS = ['Again', 'Hard', 'Good', 'Easy'] as const;
+const GRADE_LABELS = ['Missed', 'Almost', 'Got it', 'Nailed it'] as const;
 const TIMER_SECONDS = 60;
 
 type SpeechRecognitionCtor = new () => {
@@ -147,17 +147,29 @@ export function RecallView({ card, onGrade, onFallback }: Props) {
           <div className="flash-back">
             <Rich text={card.back} />
           </div>
-          <div className="grade-row">
-            {GRADE_LABELS.map((label, g) => (
-              <button
-                key={label}
-                className={`grade ${['again', 'hard', 'good', 'easy'][g]} ${g === result.grade ? 'suggested' : ''}`}
-                onClick={() => onGrade(g as Grade, result.score)}
-              >
-                <span>{label}</span>
-                {g === result.grade && <small>suggested</small>}
-              </button>
-            ))}
+          <div className="grade-actions">
+            <button
+              className="btn primary block"
+              onClick={() => onGrade(result.grade, result.score)}
+            >
+              Continue
+            </button>
+            <div className="grade-overrides">
+              {result.grade >= 2 ? (
+                <button className="link-btn" onClick={() => onGrade(0, result.score)}>
+                  Actually, I missed it
+                </button>
+              ) : (
+                <button className="link-btn" onClick={() => onGrade(2, result.score)}>
+                  Actually, I knew it
+                </button>
+              )}
+              {result.grade === 2 && (
+                <button className="link-btn" onClick={() => onGrade(3, result.score)}>
+                  Too easy
+                </button>
+              )}
+            </div>
           </div>
         </>
       )}

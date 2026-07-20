@@ -45,15 +45,6 @@ export function applyGrade(p: CardProgress, grade: Grade, now = Date.now()): Car
   return { ease, interval, due: now + Math.round(interval * DAY_MS), reps, lapses };
 }
 
-/** Preview of the interval a grade would produce, e.g. "1d", "12d". */
-export function previewInterval(p: CardProgress, grade: Grade): string {
-  if (grade === 0) return 'now';
-  const next = applyGrade(p, grade);
-  if (next.interval < 1) return `${Math.max(1, Math.round(next.interval * 24))}h`;
-  if (next.interval < 30) return `${Math.round(next.interval)}d`;
-  return `${(next.interval / 30).toFixed(1)}mo`;
-}
-
 /** A card counts as "mastered" once its interval reaches 3 weeks. */
 export function isMastered(p: CardProgress | undefined): boolean {
   return !!p && p.interval >= 21;

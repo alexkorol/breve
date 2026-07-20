@@ -904,11 +904,6 @@ button {
   color: var(--text-dim);
 }
 
-.grade.suggested {
-  border-color: var(--accent);
-  background: rgba(45, 212, 191, 0.1);
-}
-
 /* ---------- Generate / Postmortem ---------- */
 
 .gen-row {
@@ -1417,11 +1412,41 @@ button {
   animation: pop-in 0.18s ease;
 }
 
+.grade-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .grade-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-top: auto;
+}
+
+.grade-row.binary {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grade-row.binary .grade {
+  padding: 14px 0;
+  font-size: 15px;
+}
+
+.link-btn.too-easy {
+  align-self: center;
+  padding: 8px;
+}
+
+.grade-overrides {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.grade-overrides .link-btn {
+  padding: 8px 0;
 }
 
 .grade {
@@ -1447,16 +1472,8 @@ button {
   color: var(--red);
 }
 
-.grade.hard {
-  color: var(--amber);
-}
-
 .grade.good {
   color: var(--accent);
-}
-
-.grade.easy {
-  color: var(--green);
 }
 
 /* ---------- Session end ---------- */
