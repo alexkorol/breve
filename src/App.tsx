@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AppState, Card, Deck } from './types';
 import type { Grade } from './srs';
 import { applyGrade, newProgress } from './srs';
@@ -22,6 +22,8 @@ import { Stats } from './components/Stats';
 import { Settings } from './components/Settings';
 import { Generate } from './components/Generate';
 import { Postmortem } from './components/Postmortem';
+import { SurgeToast } from './components/SurgeToast';
+import { crossedCheckpoint, dayIntensity } from './flame';
 
 const WEAK_ID = 'weak-cards';
 const MISSES_ID = 'misses';
@@ -50,6 +52,16 @@ export default function App() {
   }, [customDecks, hidePersonal]);
 
   const reviewsToday = state.stats.reviewsByDay[dayKey()] ?? 0;
+
+  // Quick, non-invasive celebration when today's intensity crosses a checkpoint.
+  const [surge, setSurge] = useState<{ checkpoint: number; at: number } | null>(null);
+  const intensityToday = dayIntensity(state.stats);
+  const prevIntensity = useRef(intensityToday);
+  useEffect(() => {
+    const checkpoint = crossedCheckpoint(prevIntensity.current, intensityToday);
+    prevIntensity.current = intensityToday;
+    if (checkpoint !== undefined) setSurge({ checkpoint, at: Date.now() });
+  }, [intensityToday]);
 
   const addDeck = useCallback((deck: Deck) => {
     setCustomDecks((prev) => {
@@ -128,6 +140,24 @@ export default function App() {
     });
   }, []);
 
+  /** A full deck read counts as 1 toward daily intensity, once per deck per day. */
+  const recordDeckRead = useCallback((deckId: string) => {
+    setState((prev) => {
+      const today = dayKey();
+      const read = prev.stats.readsByDay[today] ?? [];
+      if (read.includes(deckId)) return prev;
+      const next: AppState = {
+        ...prev,
+        stats: {
+          ...prev.stats,
+          readsByDay: { ...prev.stats.readsByDay, [today]: [...read, deckId] },
+        },
+      };
+      saveState(next);
+      return next;
+    });
+  }, []);
+
   const importState = useCallback((imported: AppState) => {
     saveState(imported);
     setState(imported);
@@ -166,6 +196,7 @@ export default function App() {
     setView({ name: 'deck', deckId: MISSES_ID });
   }, []);
 
+  const screen = (() => {
   if (view.name === 'study') {
     const deck = findDeck(view.deckId);
     if (deck) {
@@ -192,7 +223,13 @@ export default function App() {
   if (view.name === 'browse') {
     const deck = findDeck(view.deckId);
     if (deck) {
-      return <StudyView deck={deck} onBack={() => setView({ name: 'deck', deckId: view.deckId })} />;
+      return (
+        <StudyView
+          deck={deck}
+          onRead={() => recordDeckRead(deck.id)}
+          onBack={() => setView({ name: 'deck', deckId: view.deckId })}
+        />
+      );
     }
   }
 
@@ -281,5 +318,21 @@ export default function App() {
         setView(deckId === DAILY_REVIEW_ID ? { name: 'study', deckId } : { name: 'deck', deckId })
       }
     />
+  );
+  })();
+
+  return (
+    <>
+      {screen}
+      {surge && (
+        <SurgeToast
+          key={surge.at}
+          checkpoint={surge.checkpoint}
+          streak={state.stats.streak}
+          intensity={intensityToday}
+          onDone={() => setSurge(null)}
+        />
+      )}
+    </>
   );
 }

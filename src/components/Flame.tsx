@@ -1,14 +1,32 @@
-import { flameTier } from '../flame';
+import { flameTier, intensityLevel } from '../flame';
 
 interface Props {
   streak: number;
+  /** Final rendered size in px — callers scale this by activity where wanted. */
   size?: number;
+  /**
+   * A day's activity count (reviews + deck reads). Blooms the flame brighter —
+   * a resting flame is deliberately a bit dim so an intense day visibly glows.
+   */
+  intensity?: number;
 }
 
-/** Streak flame whose color follows the physics-of-fire tier ladder. */
-export function Flame({ streak, size = 18 }: Props) {
+/**
+ * Streak flame: color follows the physics-of-fire tier ladder (streak length),
+ * brightness/bloom follows daily intensity.
+ */
+export function Flame({ streak, size = 18, intensity = 0 }: Props) {
   const tier = flameTier(streak);
   const lit = streak > 0;
+  const t = lit ? intensityLevel(intensity) : 0;
+  const glow = lit
+    ? [
+        `drop-shadow(0 0 ${(3 + 8 * t).toFixed(1)}px ${tier.outer})`,
+        t > 0 ? `brightness(${(1 + 0.45 * t).toFixed(2)}) saturate(${(1 + 0.35 * t).toFixed(2)})` : '',
+      ]
+        .filter(Boolean)
+        .join(' ')
+    : undefined;
   return (
     <svg
       className={`flame ${lit ? 'lit' : ''}`}
@@ -16,7 +34,7 @@ export function Flame({ streak, size = 18 }: Props) {
       height={size}
       viewBox="0 0 24 24"
       aria-label={`${tier.name} streak flame`}
-      style={lit ? { filter: `drop-shadow(0 0 4px ${tier.outer})` } : undefined}
+      style={glow ? { filter: glow } : undefined}
     >
       <path
         fill={tier.outer}

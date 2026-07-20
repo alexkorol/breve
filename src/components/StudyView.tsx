@@ -3,6 +3,8 @@ import { Rich, CodeBlock } from './Rich';
 
 interface Props {
   deck: Deck;
+  /** Called when the deck is read to the end — counts toward daily intensity. */
+  onRead?: () => void;
   onBack: () => void;
 }
 
@@ -63,7 +65,7 @@ export function StudyItem({ card, index }: { card: Card; index: number }) {
   );
 }
 
-export function StudyView({ deck, onBack }: Props) {
+export function StudyView({ deck, onRead, onBack }: Props) {
   return (
     <div className="screen">
       <header className="detail-header">
@@ -79,7 +81,13 @@ export function StudyView({ deck, onBack }: Props) {
           <StudyItem key={card.id} card={card} index={i} />
         ))}
       </div>
-      <button className="btn primary block" onClick={onBack}>
+      <button
+        className="btn primary block"
+        onClick={() => {
+          onRead?.();
+          onBack();
+        }}
+      >
         Done reading
       </button>
     </div>

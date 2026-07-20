@@ -6,7 +6,7 @@ const DECKS_KEY = 'breve:decks';
 function emptyState(): AppState {
   return {
     progress: {},
-    stats: { streak: 0, lastStudyDay: '', totalReviews: 0, reviewsByDay: {} },
+    stats: { streak: 0, lastStudyDay: '', totalReviews: 0, reviewsByDay: {}, readsByDay: {} },
   };
 }
 
@@ -185,7 +185,7 @@ export async function importStateFile(file: File): Promise<AppState> {
   if (!parsed || typeof parsed !== 'object' || typeof parsed.progress !== 'object') {
     throw new Error('Not a Breve progress file');
   }
-  const base = { progress: {}, stats: { streak: 0, lastStudyDay: '', totalReviews: 0, reviewsByDay: {} } };
+  const base = { progress: {}, stats: { streak: 0, lastStudyDay: '', totalReviews: 0, reviewsByDay: {}, readsByDay: {} } };
   return {
     progress: parsed.progress ?? {},
     stats: { ...base.stats, ...parsed.stats },

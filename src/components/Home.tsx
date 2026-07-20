@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react';
-import type { AppState, CardProgress, Deck } from '../types';
+import type { AppState, CardProgress, Deck, Stats } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts, DAILY_GOAL } from '../session';
 import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
 import { DAILY_REVIEW_ID } from '../data';
 import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
-import { flameTier } from '../flame';
+import { dayIntensity, flameTier, intensityLevel } from '../flame';
 import { Flame } from './Flame';
 
 const TRACKS_KEY = 'breve:ui:tracks';
@@ -51,8 +51,11 @@ function GoalRing({ value, goal }: { value: number; goal: number }) {
   );
 }
 
-/** Mon–Sun dots for the current week; filled when that day had reviews. */
-function WeekDots({ reviewsByDay }: { reviewsByDay: Record<string, number> }) {
+/**
+ * Mon–Sun flames for the current week: lit when that day had activity, sized
+ * and bloomed by how intense the day was.
+ */
+function WeekFlames({ stats }: { stats: Stats }) {
   const now = new Date();
   const monday = new Date(now);
   monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
@@ -63,12 +66,14 @@ function WeekDots({ reviewsByDay }: { reviewsByDay: Record<string, number> }) {
         const d = new Date(monday);
         d.setDate(monday.getDate() + i);
         const key = dayKey(d);
-        const didPractice = (reviewsByDay[key] ?? 0) > 0;
+        const n = dayIntensity(stats, key);
         const isToday = key === todayKey;
         const isFuture = d > now && !isToday;
         return (
-          <div key={i} className={`week-dot ${didPractice ? 'hit' : ''} ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''}`}>
-            <span className="week-dot-circle">{didPractice ? '✓' : ''}</span>
+          <div key={i} className={`week-dot ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''}`}>
+            <span className="week-flame-slot" title={`${key}: ${n}`}>
+              <Flame streak={n > 0 ? stats.streak || 1 : 0} intensity={n} size={14 + Math.round(10 * intensityLevel(n))} />
+            </span>
             <span className="week-dot-label">{label}</span>
           </div>
         );
@@ -216,7 +221,12 @@ export function Home({
             onClick={onOpenStats}
             title={`${flameTier(state.stats.streak).name} — tap for stats`}
           >
-            <Flame streak={state.stats.streak} /> {state.stats.streak}
+            <Flame
+              streak={state.stats.streak}
+              intensity={dayIntensity(state.stats)}
+              size={18 + Math.round(6 * intensityLevel(dayIntensity(state.stats)))}
+            />{' '}
+            {state.stats.streak}
           </button>
         </div>
       </header>
@@ -277,7 +287,7 @@ export function Home({
         </div>
       </div>
 
-      <WeekDots reviewsByDay={state.stats.reviewsByDay} />
+      <WeekFlames stats={state.stats} />
 
       {focusDecks.length > 0 && (
         <section className="track focus-track">

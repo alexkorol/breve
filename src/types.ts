@@ -72,6 +72,8 @@ export interface Stats {
   lastStudyDay: string;
   totalReviews: number;
   reviewsByDay: Record<string, number>;
+  /** Deck ids fully read per day; each read counts as 1 toward daily intensity. */
+  readsByDay: Record<string, string[]>;
 }
 
 export interface AppState {

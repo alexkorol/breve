@@ -2,7 +2,14 @@ import type { AppState, Card, CardProgress, Deck } from '../types';
 import { isMastered } from '../srs';
 import { DAILY_GOAL } from '../session';
 import { dayKey, downloadText } from '../storage';
-import { FLAME_TIERS, flameTier, nextFlameTier } from '../flame';
+import {
+  FLAME_TIERS,
+  INTENSITY_CHECKPOINTS,
+  dayIntensity,
+  flameTier,
+  intensityLevel,
+  nextFlameTier,
+} from '../flame';
 import { Flame } from './Flame';
 
 /**
@@ -97,8 +104,6 @@ function exportReport(decks: Deck[], state: AppState): void {
 
 export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
   const days = lastNDays(14);
-  const counts = days.map((d) => state.stats.reviewsByDay[d.key] ?? 0);
-  const max = Math.max(DAILY_GOAL, ...counts);
 
   const tracks = [...new Set(decks.map((d) => d.track))];
 
@@ -123,7 +128,8 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
       <div className="stat-strip">
         <div className="stat">
           <strong>
-            <Flame streak={state.stats.streak} /> {state.stats.streak}
+            <Flame streak={state.stats.streak} intensity={dayIntensity(state.stats)} />{' '}
+            {state.stats.streak}
           </strong>
           <span>day streak</span>
         </div>
@@ -146,12 +152,13 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
         <h3>Your flame</h3>
         {(() => {
           const streak = state.stats.streak;
+          const today = dayIntensity(state.stats);
           const tier = flameTier(streak);
           const next = nextFlameTier(streak);
           return (
             <>
               <div className="flame-current">
-                <Flame streak={streak} size={40} />
+                <Flame streak={streak} intensity={today} size={40} />
                 <div>
                   <strong>{tier.name}</strong>
                   <span className="flame-temp">
@@ -159,11 +166,12 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
                   </span>
                 </div>
               </div>
+              <h4 className="flame-subhead">Streak — color</h4>
               <div className="flame-ladder">
                 {FLAME_TIERS.slice(1).map((t) => (
                   <div key={t.name} className={`flame-rung ${streak >= t.minDays ? 'reached' : ''}`}>
-                    <Flame streak={t.minDays} size={22} />
-                    <span className="flame-rung-days">{t.minDays}d</span>
+                    <Flame streak={t.minDays} size={18} />
+                    <span className="flame-rung-days">{t.minDays}</span>
                   </div>
                 ))}
               </div>
@@ -172,6 +180,26 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
                   ? `The flame burns hotter the longer the streak — ${next.name} (${next.temp}) at ${next.minDays === 1 ? '1 day' : `${next.minDays} days`}, ${next.minDays - streak} to go.`
                   : 'Hottest tier reached — the flame doesn’t get hotter than this.'}
               </p>
+              <h4 className="flame-subhead">Today’s intensity — size &amp; glow</h4>
+              <div className="flame-ladder intensity">
+                {INTENSITY_CHECKPOINTS.map((c) => (
+                  <div key={c} className={`flame-rung ${today >= c ? 'reached' : ''}`}>
+                    <Flame
+                      streak={streak || 1}
+                      intensity={c}
+                      size={12 + Math.round(14 * intensityLevel(c))}
+                    />
+                    <span className="flame-rung-days">{c}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="chart-note">
+                {today} today ({state.stats.reviewsByDay[dayKey()] ?? 0} answered
+                {(state.stats.readsByDay[dayKey()]?.length ?? 0) > 0
+                  ? ` + ${state.stats.readsByDay[dayKey()]!.length} decks read`
+                  : ''}
+                ) — the more you practice in a day, the bigger and brighter the flame blooms.
+              </p>
             </>
           );
         })()}
@@ -179,19 +207,27 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
 
       <section className="stats-section">
         <h3>Last 14 days</h3>
-        <div className="bar-chart" role="img" aria-label="Reviews per day, last 14 days">
-          {days.map((d, i) => (
-            <div key={d.key} className="bar-col">
-              <div
-                className={`bar ${counts[i] >= DAILY_GOAL ? 'goal' : ''}`}
-                style={{ height: `${Math.max(4, (counts[i] / max) * 72)}px` }}
-                title={`${d.key}: ${counts[i]}`}
-              />
-              <span className="bar-label">{d.label}</span>
-            </div>
-          ))}
+        <div className="flame-graph" role="img" aria-label="Study intensity per day, last 14 days">
+          {days.map((d) => {
+            const n = dayIntensity(state.stats, d.key);
+            return (
+              <div key={d.key} className={`bar-col ${n >= DAILY_GOAL ? 'goal-day' : ''}`}>
+                <span className="flame-graph-slot" title={`${d.key}: ${n}`}>
+                  <Flame
+                    streak={n > 0 ? state.stats.streak || 1 : 0}
+                    intensity={n}
+                    size={12 + Math.round(22 * intensityLevel(n))}
+                  />
+                </span>
+                <span className="bar-label">{d.label}</span>
+              </div>
+            );
+          })}
         </div>
-        <p className="chart-note">Teal bars hit the {DAILY_GOAL}-review daily goal.</p>
+        <p className="chart-note">
+          Bigger, brighter flames = more intense days. Underlined days hit the {DAILY_GOAL}-review
+          goal.
+        </p>
       </section>
 
       <section className="stats-section">
