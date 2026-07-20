@@ -1,7 +1,8 @@
-import type { AppState, Card, CardProgress, Deck } from '../types';
-import { isMastered } from '../srs';
+import type { AppState, Card, Deck } from '../types';
+import { isMastered, trackReadiness } from '../srs';
 import { DAILY_GOAL } from '../session';
-import { dayKey, downloadText } from '../storage';
+import { dayKey } from '../storage';
+import { exportReport } from '../report';
 import {
   FLAME_TIERS,
   INTENSITY_CHECKPOINTS,
@@ -11,23 +12,6 @@ import {
   nextFlameTier,
 } from '../flame';
 import { Flame } from './Flame';
-
-/**
- * Readiness per track: how prepared you'd be if this topic came up tomorrow.
- * Base = retention (mastered 70%, seen 30%); recall-mode grades, when present,
- * blend in as direct evidence of production ability.
- */
-export function trackReadiness(cards: Card[], progress: Record<string, CardProgress>): number {
-  if (cards.length === 0) return 0;
-  const entries = cards.map((c) => progress[c.id]).filter(Boolean) as CardProgress[];
-  const masteredFrac = cards.filter((c) => isMastered(progress[c.id])).length / cards.length;
-  const seenFrac = entries.length / cards.length;
-  const base = 70 * masteredFrac + 30 * seenFrac;
-  const recalls = entries.map((p) => p.recall).filter((r): r is number => r !== undefined);
-  if (recalls.length === 0) return Math.round(base);
-  const avgRecall = recalls.reduce((a, b) => a + b, 0) / recalls.length;
-  return Math.round(0.6 * base + 0.4 * avgRecall);
-}
 
 interface Props {
   decks: Deck[];
@@ -68,38 +52,6 @@ function weeklyCounts(state: AppState): { label: string; count: number }[] {
     weeks.push({ label: `${start.getMonth() + 1}/${start.getDate()}`, count });
   }
   return weeks;
-}
-
-function exportReport(decks: Deck[], state: AppState): void {
-  const tracks = [...new Set(decks.map((d) => d.track))];
-  const lines = [
-    `# Breve readiness report — ${dayKey()}`,
-    '',
-    `- Streak: ${state.stats.streak} days · Total reviews: ${state.stats.totalReviews}`,
-    '',
-    '| Track | Readiness | Mastered | Seen | Cards |',
-    '|---|---|---|---|---|',
-  ];
-  for (const track of tracks) {
-    const cards = decks.filter((d) => d.track === track).flatMap((d) => d.cards);
-    const mastered = cards.filter((c) => isMastered(state.progress[c.id])).length;
-    const seen = cards.filter((c) => state.progress[c.id]).length;
-    lines.push(
-      `| ${track} | ${trackReadiness(cards, state.progress)}% | ${mastered} | ${seen} | ${cards.length} |`,
-    );
-  }
-  const cardIndex = new Map<string, Card>();
-  for (const d of decks) for (const c of d.cards) cardIndex.set(c.id, c);
-  const weak = Object.entries(state.progress)
-    .filter(([id, p]) => p.lapses >= 2 && cardIndex.has(id))
-    .sort((a, b) => b[1].lapses - a[1].lapses)
-    .slice(0, 10);
-  if (weak.length > 0) {
-    lines.push('', '## Toughest cards', '');
-    for (const [id, p] of weak) lines.push(`- (×${p.lapses}) ${cardTitle(cardIndex.get(id)!)}`);
-  }
-  lines.push('', '_Readiness = 70% mastery + 30% coverage, blended 60/40 with recall-mode grades where present._');
-  downloadText(`breve-readiness-${dayKey()}.md`, lines.join('\n'), 'text/markdown');
 }
 
 export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
@@ -260,7 +212,7 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
           practiced answering from memory. Dim bar = cards seen.
         </p>
         <button className="btn ghost block" onClick={() => exportReport(decks, state)}>
-          Export readiness report (.md)
+          Export weekly report for career_dev (.md)
         </button>
       </section>
 

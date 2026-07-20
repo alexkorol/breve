@@ -3,6 +3,7 @@ import type { AppState, CardProgress, Deck, Stats } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts, DAILY_GOAL } from '../session';
 import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
+import { exportReport, daysSinceReport } from '../report';
 import { DAILY_REVIEW_ID } from '../data';
 import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
 import { dayIntensity, flameTier, intensityLevel } from '../flame';
@@ -165,6 +166,10 @@ export function Home({
   };
   const backupAge = daysSinceBackup();
   const showBackupNudge = state.stats.totalReviews > 0 && backupAge > 7;
+  // Weekly steering loop: export the readiness report and drop it in career_dev's inbox.
+  const [reportExported, setReportExported] = useState(false);
+  const showReportNudge =
+    !reportExported && state.stats.totalReviews > 0 && daysSinceReport() >= 7;
 
   const toggleTrack = (track: string) => {
     setOpenTracks((prev) => {
@@ -252,6 +257,18 @@ export function Home({
         <button className="backup-nudge" onClick={() => exportState(state)}>
           ⚠️ It’s been {backupAge === Infinity ? 'a while' : `${backupAge} days`} since your
           last backup — tap to export your progress.
+        </button>
+      )}
+      {showReportNudge && (
+        <button
+          className="backup-nudge report-nudge"
+          onClick={() => {
+            exportReport(decks, state);
+            setReportExported(true);
+          }}
+        >
+          📤 Weekly report is ready — tap to export, then drop it in career_dev’s inbox to
+          steer the study plan.
         </button>
       )}
 

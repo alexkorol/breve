@@ -1020,6 +1020,12 @@ button {
   margin-bottom: 12px;
 }
 
+.backup-nudge.report-nudge {
+  background: rgba(45, 212, 191, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ---------- Settings ---------- */
 
 .setting-row {

@@ -1,4 +1,4 @@
-import type { CardProgress } from './types';
+import type { Card, CardProgress } from './types';
 
 /** 0 = again, 1 = hard, 2 = good, 3 = easy */
 export type Grade = 0 | 1 | 2 | 3;
@@ -48,4 +48,21 @@ export function applyGrade(p: CardProgress, grade: Grade, now = Date.now()): Car
 /** A card counts as "mastered" once its interval reaches 3 weeks. */
 export function isMastered(p: CardProgress | undefined): boolean {
   return !!p && p.interval >= 21;
+}
+
+/**
+ * Readiness per track: how prepared you'd be if this topic came up tomorrow.
+ * Base = retention (mastered 70%, seen 30%); recall-mode grades, when present,
+ * blend in as direct evidence of production ability.
+ */
+export function trackReadiness(cards: Card[], progress: Record<string, CardProgress>): number {
+  if (cards.length === 0) return 0;
+  const entries = cards.map((c) => progress[c.id]).filter(Boolean) as CardProgress[];
+  const masteredFrac = cards.filter((c) => isMastered(progress[c.id])).length / cards.length;
+  const seenFrac = entries.length / cards.length;
+  const base = 70 * masteredFrac + 30 * seenFrac;
+  const recalls = entries.map((p) => p.recall).filter((r): r is number => r !== undefined);
+  if (recalls.length === 0) return Math.round(base);
+  const avgRecall = recalls.reduce((a, b) => a + b, 0) / recalls.length;
+  return Math.round(0.6 * base + 0.4 * avgRecall);
 }
