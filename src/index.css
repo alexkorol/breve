@@ -93,6 +93,71 @@ button {
   font-size: 15px;
 }
 
+/* ---------- Streak flame ---------- */
+
+.flame {
+  vertical-align: -3px;
+}
+
+.flame.lit {
+  animation: flame-flicker 2.4s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scaleY(1); }
+  30% { transform: scaleY(1.06) scaleX(0.97); }
+  60% { transform: scaleY(0.95) scaleX(1.03); }
+  80% { transform: scaleY(1.04); }
+}
+
+.flame-current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.flame-current strong {
+  display: block;
+  font-size: 17px;
+}
+
+.flame-temp {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.flame-ladder {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 8px;
+  margin-bottom: 10px;
+}
+
+.flame-rung {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  opacity: 0.35;
+}
+
+.flame-rung.reached {
+  opacity: 1;
+}
+
+.flame-rung:not(.reached) .flame {
+  animation: none;
+}
+
+.flame-rung-days {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
 .stat-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

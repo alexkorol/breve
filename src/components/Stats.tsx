@@ -2,6 +2,8 @@ import type { AppState, Card, CardProgress, Deck } from '../types';
 import { isMastered } from '../srs';
 import { DAILY_GOAL } from '../session';
 import { dayKey, downloadText } from '../storage';
+import { FLAME_TIERS, flameTier, nextFlameTier } from '../flame';
+import { Flame } from './Flame';
 
 /**
  * Readiness per track: how prepared you'd be if this topic came up tomorrow.
@@ -120,7 +122,9 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
 
       <div className="stat-strip">
         <div className="stat">
-          <strong>🔥 {state.stats.streak}</strong>
+          <strong>
+            <Flame streak={state.stats.streak} /> {state.stats.streak}
+          </strong>
           <span>day streak</span>
         </div>
         <div className="stat">
@@ -137,6 +141,41 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
           <span>mastered</span>
         </div>
       </div>
+
+      <section className="stats-section">
+        <h3>Your flame</h3>
+        {(() => {
+          const streak = state.stats.streak;
+          const tier = flameTier(streak);
+          const next = nextFlameTier(streak);
+          return (
+            <>
+              <div className="flame-current">
+                <Flame streak={streak} size={40} />
+                <div>
+                  <strong>{tier.name}</strong>
+                  <span className="flame-temp">
+                    {streak > 0 ? `burning at ${tier.temp}` : 'study today to light it'}
+                  </span>
+                </div>
+              </div>
+              <div className="flame-ladder">
+                {FLAME_TIERS.slice(1).map((t) => (
+                  <div key={t.name} className={`flame-rung ${streak >= t.minDays ? 'reached' : ''}`}>
+                    <Flame streak={t.minDays} size={22} />
+                    <span className="flame-rung-days">{t.minDays}d</span>
+                  </div>
+                ))}
+              </div>
+              <p className="chart-note">
+                {next
+                  ? `The flame burns hotter the longer the streak — ${next.name} (${next.temp}) at ${next.minDays === 1 ? '1 day' : `${next.minDays} days`}, ${next.minDays - streak} to go.`
+                  : 'Hottest tier reached — the flame doesn’t get hotter than this.'}
+              </p>
+            </>
+          );
+        })()}
+      </section>
 
       <section className="stats-section">
         <h3>Last 14 days</h3>

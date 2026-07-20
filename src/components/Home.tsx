@@ -5,6 +5,8 @@ import { deckCounts, DAILY_GOAL } from '../session';
 import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
 import { DAILY_REVIEW_ID } from '../data';
 import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
+import { flameTier } from '../flame';
+import { Flame } from './Flame';
 
 const TRACKS_KEY = 'breve:ui:tracks';
 
@@ -209,8 +211,12 @@ export function Home({
           <button className="streak stats-btn" onClick={onOpenStats} title="Your stats">
             📊
           </button>
-          <button className="streak" onClick={onOpenStats} title="Day streak — tap for stats">
-            🔥 {state.stats.streak}
+          <button
+            className="streak"
+            onClick={onOpenStats}
+            title={`${flameTier(state.stats.streak).name} — tap for stats`}
+          >
+            <Flame streak={state.stats.streak} /> {state.stats.streak}
           </button>
         </div>
       </header>
