@@ -152,5 +152,39 @@ export const embeddingsDeep: Deck = {
       explanation:
         'Mixed-space corpora fail SILENTLY — similarity scores are garbage but code runs fine. Version the embedding model in index metadata and alarm on mismatch. Rhymes with your judge-versioning card.',
     },
+    {
+      id: 'ed-metadata-filter',
+      type: 'flash',
+      front: 'Metadata filtering in retrieval — what is it, and what is the trap?',
+      back: 'Structured labels per chunk (doc type, department, language, date, permissions, version) filter ELIGIBILITY before any semantic scoring — the bouncer at the door; vector search only ranks who got in. Wins: relevance, speed, enforced permissions, freshness. The trap: over-filtering silently removes relevant chunks before ranking ever sees them. Start broad, measure what gets excluded, tighten gradually.',
+    },
+    {
+      id: 'ed-mrr',
+      type: 'mcq',
+      prompt: 'System A puts the first relevant result at rank 1 for half of queries and rank 4 for the rest. What does MRR measure here?',
+      choices: [
+        'How early the FIRST relevant result appears: mean of 1/rank, so (1/1 + 1/4)/2 = 0.625',
+        'The fraction of relevant results in the top K',
+        'The fraction of all relevant chunks retrieved',
+        'Average rank of every relevant result',
+      ],
+      answer: 0,
+      explanation:
+        'Mean Reciprocal Rank rewards putting one right answer near the top — rank 1 scores 1.0, rank 4 scores 0.25. The metric trio: recall@K = coverage, precision@K = purity, MRR = how early.',
+    },
+    {
+      id: 'ed-multilingual',
+      type: 'mcq',
+      prompt: 'The corpus spans five languages. Translate everything to English before indexing?',
+      choices: [
+        'No — use multilingual embeddings to retrieve across languages, translate only returned results, and validate on your actual data',
+        'Yes — embeddings only work within one language',
+        'Yes — translation is cheaper than multilingual models',
+        'No — keep separate per-language indexes and query them all',
+      ],
+      answer: 0,
+      explanation:
+        'Multilingual embedding models map meaning across languages into one space, so pre-translating the corpus is wasted cost. The senior caveat: multilingual quality varies by language pair — build a small eval set (queries in one language, gold chunks in another), track recall@K, and error-analyze weak pairs.',
+    },
   ],
 };
