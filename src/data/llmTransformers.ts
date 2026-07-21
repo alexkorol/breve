@@ -96,7 +96,7 @@ export const llmTransformers: Deck = {
       id: 'llm-training-pipeline',
       type: 'flash',
       front: 'The three-stage LLM training pipeline: name each stage and what it contributes.',
-      back: '1) Pretraining: next-token prediction on web-scale text → raw capability. 2) SFT (supervised fine-tuning): curated instruction–response pairs → follows instructions, chat format. 3) Preference tuning (RLHF or the simpler DPO): learn from human A-vs-B preferences → helpful, honest, harmless behavior. Capability comes from stage 1; behavior from stages 2–3.',
+      back: '1. Pretraining: next-token prediction on web-scale text → raw capability.\n2. SFT (supervised fine-tuning): curated instruction–response pairs → follows instructions, chat format.\n3. Preference tuning (RLHF or the simpler DPO): learn from human A-vs-B preferences → helpful, honest, harmless behavior.\nCapability comes from stage 1; behavior from stages 2–3.',
     },
     {
       id: 'llm-temperature',

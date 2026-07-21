@@ -1760,3 +1760,9 @@ button {
 .study-nav .btn:disabled {
   opacity: 0.4;
 }
+
+/* Multi-line card text: each line after the first starts on its own row. */
+.rich-line {
+  display: block;
+  margin-top: 6px;
+}

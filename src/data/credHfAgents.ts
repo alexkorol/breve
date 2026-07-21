@@ -12,7 +12,7 @@ export const credHfAgents: Deck = {
       id: 'hfa-structure',
       type: 'flash',
       front: 'The Hugging Face Agents Course: structure and what the certificate requires.',
-      back: 'Unit 0 onboarding → Unit 1 agent fundamentals (earns the fundamentals certificate) → Unit 2 frameworks: smolagents, LlamaIndex, LangGraph → Unit 3 agentic RAG use case → Unit 4 final challenge. The completion certificate requires Unit 1, a use-case assignment, and a final agent scoring 30%+ on a GAIA benchmark subset, with a student leaderboard and no deadline.',
+      back: 'Unit 0: onboarding.\nUnit 1: agent fundamentals (earns the fundamentals certificate).\nUnit 2: frameworks; smolagents, LlamaIndex, LangGraph.\nUnit 3: agentic RAG use case.\nUnit 4: final challenge.\nThe completion certificate requires Unit 1, a use-case assignment, and a final agent scoring 30%+ on a GAIA benchmark subset, with a student leaderboard and no deadline.',
     },
     {
       id: 'hfa-react-loop',

@@ -18,7 +18,7 @@ export const credAi103: Deck = {
       id: 'a103-foundry-map',
       type: 'flash',
       front: 'Recite the Foundry deployment map: the seven concepts in order.',
-      back: 'Project (your workspace) → hub/resource (the Azure backing: quota, networking, keys) → model deployment (a catalog model instantiated under a deployment name) → endpoint (the URL your app calls) → auth (API key or Entra ID / managed identity) → evaluation (built-in eval runs over datasets) → monitoring (traces, token usage, content-filter hits). Every AI-103 scenario question lives somewhere on this map.',
+      back: '1. Project: your workspace.\n2. Hub/resource: the Azure backing (quota, networking, keys).\n3. Model deployment: a catalog model instantiated under a deployment name.\n4. Endpoint: the URL your app calls.\n5. Auth: API key or Entra ID / managed identity.\n6. Evaluation: built-in eval runs over datasets.\n7. Monitoring: traces, token usage, content-filter hits.\nEvery AI-103 scenario question lives somewhere on this map.',
     },
     {
       id: 'a103-before-call',

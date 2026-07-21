@@ -134,7 +134,7 @@ export const patternsStringsHash: Deck = {
       id: 'sh-str-hash-design',
       type: 'flash',
       front: '"How does a hash map actually work?": the 60-second whiteboard answer.',
-      back: 'hash(key) → integer → modulo bucket count → bucket index. Collisions handled by chaining (list per bucket) or open addressing (probe next slots. CPython dicts do this). Load factor grows → resize: new array, rehash everything (the amortized cost). Good hash = uniform spread. Bonus point: Python randomizes string hashes per process to block collision-DoS attacks.',
+      back: 'The path: hash(key) → integer → modulo bucket count → bucket index.\nCollisions: chaining (a list per bucket) or open addressing (probe next slots; CPython dicts do this).\nGrowth: when the load factor climbs, resize into a new array and rehash everything (the amortized cost).\nGood hash = uniform spread. Bonus point: Python randomizes string hashes per process to block collision-DoS attacks.',
     },
   ],
 };

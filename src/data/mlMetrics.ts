@@ -83,7 +83,7 @@ export const mlMetrics: Deck = {
       type: 'flash',
       front:
         'Interview: "How do precision and recall trade off?" (Hint: the classification threshold.)',
-      back: 'A classifier outputs a score; the threshold turns it into a decision. Raise the threshold → fewer, more confident positives → precision up, recall down. Lower it → you catch more but flag more junk → recall up, precision down. So you tune the threshold to the business cost of each error: the model doesn’t have one precision, it has a curve.',
+      back: 'A classifier outputs a score; the threshold turns it into a decision.\nRaise the threshold: fewer, more confident positives. Precision up, recall down.\nLower it: you catch more but flag more junk. Recall up, precision down.\nSo you tune the threshold to the business cost of each error: the model doesn’t have one precision, it has a curve.',
     },
     {
       id: 'met-f1',

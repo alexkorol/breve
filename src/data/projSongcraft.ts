@@ -134,7 +134,7 @@ export const projSongcraft: Deck = {
       id: 'sc-whiteboard',
       type: 'flash',
       front: 'WHITEBOARD DRILL: draw SongCraft cold, both flows. (Answer only after drawing.)',
-      back: 'Ingestion: PDFs → PyPDFLoader (page Documents + source metadata) → RecursiveCharacterTextSplitter (1000/200) → SHA-256 dedup → FastEmbed (bge-small, 384-d) → ChromaDB persisted to disk. Query: question → same embedder → Chroma cosine top-k=5 → chunks formatted into prompt → OpenRouter LLM → StrOutputParser → cited answer. Served via FastAPI with ainvoke. If you drew both without peeking, this card is done.',
+      back: 'Ingestion: PDFs → PyPDFLoader (page Documents + source metadata) → RecursiveCharacterTextSplitter (1000/200) → SHA-256 dedup → FastEmbed (bge-small, 384-d) → ChromaDB persisted to disk.\nQuery: question → same embedder → Chroma cosine top-k=5 → chunks formatted into prompt → OpenRouter LLM → StrOutputParser → cited answer.\nServed via FastAPI with ainvoke.',
     },
   ],
 };

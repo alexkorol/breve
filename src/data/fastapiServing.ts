@@ -127,7 +127,7 @@ export const fastapiServing: Deck = {
       id: 'fa-rag-layer',
       type: 'flash',
       front: 'Interview: "Walk me through the API layer of your RAG app."',
-      back: 'POST /query takes a Pydantic model (question, top_k, filters). An auth dependency validates the caller. Handler: embed the question → retrieve top-k chunks → build the prompt → call the LLM with a timeout and one retry → stream the answer with citations via SSE. Plus GET /health for the load balancer, structured logs with a request ID per query, and 503 with a friendly message when the LLM provider is down.',
+      back: 'POST /query takes a Pydantic model (question, top_k, filters); an auth dependency validates the caller.\nThe handler: embed the question → retrieve top-k chunks → build the prompt → call the LLM with a timeout and one retry → stream the answer with citations via SSE.\nAround it: GET /health for the load balancer, structured logs with a request ID per query, and 503 with a friendly message when the LLM provider is down.',
     },
   ],
 };

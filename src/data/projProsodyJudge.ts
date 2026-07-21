@@ -66,7 +66,7 @@ export const projProsodyJudge: Deck = {
       id: 'pj-failure-story',
       type: 'flash',
       front: '"Tell me about a time your evaluation approach failed.": deliver the polish-bias story arc.',
-      back: 'Built the judge → sanity-checked on a 4-item calibration set (it correctly ranked the deliberately generic AI sample last) → ran 70 blinded human pairwise comparisons → 33% judge–human agreement vs a 50% coin flip → diagnosed polish bias: fluent, tidy lyrics outscored the raw ones humans preferred → conclusion: an LLM judge is a model, and unvalidated judges are worse than no judge, because they invert your rankings with confidence. Sixty seconds, no notes.',
+      back: '1. Built the judge.\n2. Sanity-checked it on a 4-item calibration set; it correctly ranked the deliberately generic AI sample last.\n3. Ran 70 blinded human pairwise comparisons.\n4. Result: 33% judge–human agreement vs a 50% coin flip.\n5. Diagnosed polish bias: fluent, tidy lyrics outscored the raw ones humans preferred.\nConclusion: an LLM judge is a model, and unvalidated judges are worse than no judge, because they invert your rankings with confidence.',
     },
     {
       id: 'pj-process-vs-artifact',

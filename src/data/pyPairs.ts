@@ -143,7 +143,7 @@ export const pyPairs: Deck = {
       id: 'pp-toolkit',
       type: 'flash',
       front: 'A "transform this list of pairs" question appears. Run the mental checklist.',
-      back: 'Ask in order: 1) Does ORDER matter? → sort with a key first. 2) Am I GROUPING or looking up? → defaultdict/dict. 3) AGGREGATING? → Counter, sum, max(key=). 4) Restructuring? → zip(*pairs), comprehension. Then restate the problem + one worked example, and only then code. Screening exercises are almost always some combination of these four moves.',
+      back: 'Ask in order:\n1. Does ORDER matter? Sort with a key first.\n2. Am I GROUPING or looking up? defaultdict/dict.\n3. AGGREGATING? Counter, sum, max(key=).\n4. Restructuring? zip(*pairs), comprehension.\nThen restate the problem plus one worked example, and only then code. Screening exercises are almost always some combination of these four moves.',
     },
   ],
 };

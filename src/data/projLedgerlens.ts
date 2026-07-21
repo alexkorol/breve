@@ -32,7 +32,7 @@ export const projLedgerlens: Deck = {
       id: 'll-pipeline',
       type: 'flash',
       front: 'Whiteboard the LedgerLens pipeline, stage by stage.',
-      back: 'Ingest (id + SHA-256 checksum) → normalize to page text → extraction adapter (heuristic / OpenAI / Anthropic: swappable) → Pydantic schema validation → deterministic business rules incl. the versioned retention table → evidence verification against page text → optional second extractor with field-level disagreement → any uncertainty signal? → accepted record OR review queue → human accepts/edits/rejects → audit log (original + corrected + reviewer + when) → export + eval report. Every stage persists to SQLite; a run is fully reconstructable.',
+      back: '1. Ingest: id + SHA-256 checksum.\n2. Normalize to page text.\n3. Extraction adapter: heuristic / OpenAI / Anthropic, swappable.\n4. Pydantic schema validation.\n5. Deterministic business rules, incl. the versioned retention table.\n6. Evidence verification against page text.\n7. Optional second extractor with field-level disagreement.\n8. Any uncertainty signal? Accepted record OR review queue.\n9. Human accepts/edits/rejects.\n10. Audit log: original + corrected + reviewer + when.\n11. Export + eval report.\nEvery stage persists to SQLite; a run is fully reconstructable.',
     },
     {
       id: 'll-provenance',
@@ -134,7 +134,7 @@ export const projLedgerlens: Deck = {
       id: 'll-whiteboard',
       type: 'flash',
       front: 'WHITEBOARD DRILL: "How would you build reliable extraction when the model is sometimes wrong?" Answer with LedgerLens.',
-      back: 'Layered defense: typed schemas reject malformed output → deterministic rules catch semantic errors (totals that don’t add up) → mandatory evidence with re-verification catches fabrication → a second extractor catches silent disagreement → everything uncertain routes to humans with structured reasons → corrections feed an audit trail and before/after metrics. The model is one fallible component inside a system engineered to converge on correct.',
+      back: 'Layered defense:\n1. Typed schemas reject malformed output.\n2. Deterministic rules catch semantic errors (totals that don’t add up).\n3. Mandatory evidence with re-verification catches fabrication.\n4. A second extractor catches silent disagreement.\n5. Everything uncertain routes to humans with structured reasons.\n6. Corrections feed an audit trail and before/after metrics.\nThe model is one fallible component inside a system engineered to converge on correct.',
     },
   ],
 };

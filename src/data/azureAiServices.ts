@@ -12,7 +12,7 @@ export const azureAiServices: Deck = {
       id: 'az-service-picker',
       type: 'flash',
       front: 'The Azure AI service map: recite what each major service is FOR.',
-      back: 'Foundry (was AI Studio): build/deploy genAI apps and agents; the hub. Azure OpenAI in Foundry Models: hosted GPT-family models. AI Search: retrieval; vector + keyword + semantic ranking, the RAG backbone. Document Intelligence: forms/PDF extraction. AI Language: NER, sentiment, custom text classification. AI Vision: image analysis and OCR. Content Understanding: multimodal document/media pipelines. Content Safety: moderation filters. Exam questions are mostly "which service?": this map answers them.',
+      back: 'Foundry (was AI Studio): build/deploy genAI apps and agents; the hub.\nAzure OpenAI in Foundry Models: hosted GPT-family models.\nAI Search: retrieval (vector + keyword + semantic ranking), the RAG backbone.\nDocument Intelligence: forms/PDF extraction.\nAI Language: NER, sentiment, custom text classification.\nAI Vision: image analysis and OCR.\nContent Understanding: multimodal document/media pipelines.\nContent Safety: moderation filters.\nExam questions are mostly "which service?": this map answers them.',
     },
     {
       id: 'az-search-rag',

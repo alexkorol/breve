@@ -96,7 +96,7 @@ export const aiEngineering: Deck = {
       id: 'aie-agent',
       type: 'flash',
       front: 'What is an "agent", and when should you NOT build one?',
-      back: 'An LLM in a loop: observe state → decide → call a tool → read the result → repeat until the goal or a stop condition. Don’t build one when a fixed pipeline works: single-step tasks, deterministic workflows, anything where reliability beats flexibility. Errors compound per step: 95% per-step success over 10 steps is ~60% end-to-end. Start with a workflow, graduate to an agent only when the task genuinely requires open-ended decisions.',
+      back: 'An LLM in a loop: observe state → decide → call a tool → read the result → repeat until the goal or a stop condition.\nDon’t build one when a fixed pipeline works: single-step tasks, deterministic workflows, anything where reliability beats flexibility.\nErrors compound per step: 95% per-step success over 10 steps is ~60% end-to-end.\nStart with a workflow; graduate to an agent only when the task genuinely requires open-ended decisions.',
     },
     {
       id: 'aie-evals-why',
@@ -116,7 +116,7 @@ export const aiEngineering: Deck = {
       id: 'aie-eval-types',
       type: 'flash',
       front: 'Name the main ways to grade LLM outputs, cheapest first.',
-      back: 'Exact/regex match for closed answers → programmatic checks (does the JSON parse? does the code run? do tests pass?) → LLM-as-judge with a rubric for open-ended quality (validate the judge against human labels; watch its biases: verbosity, position, self-preference) → human review as the gold standard you can’t afford often. Task success rate for agents.',
+      back: 'Cheapest first:\n1. Exact/regex match, for closed answers.\n2. Programmatic checks: does the JSON parse, does the code run, do tests pass?\n3. LLM-as-judge with a rubric, for open-ended quality. Validate the judge against human labels and watch its biases (verbosity, position, self-preference).\n4. Human review: the gold standard you can’t afford often.\nFor agents, add task success rate.',
     },
     {
       id: 'aie-injection',
@@ -146,7 +146,7 @@ export const aiEngineering: Deck = {
       id: 'aie-langgraph',
       type: 'flash',
       front: 'LangGraph in one breath: the concepts to name if asked.',
-      back: 'A framework that models an agent workflow as an explicit graph: nodes are functions or LLM calls that read and update a shared typed state; edges define control flow, with conditional edges doing the routing ("if the model called a tool, go to the tool node, else finish"); a checkpointer persists state so runs can pause, resume, and support human-in-the-loop approval. Versus a plain while-loop: same idea, but the graph gives you branching, retries, and resumability declaratively.',
+      back: 'A framework that models an agent workflow as an explicit graph.\nNodes: functions or LLM calls that read and update a shared typed state.\nEdges: control flow, with conditional edges doing the routing ("if the model called a tool, go to the tool node, else finish").\nCheckpointer: persists state so runs can pause, resume, and support human-in-the-loop approval.\nVersus a plain while-loop: same idea, but the graph gives you branching, retries, and resumability declaratively.',
     },
     {
       id: 'aie-langgraph-when',

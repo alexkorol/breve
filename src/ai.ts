@@ -147,7 +147,9 @@ const CARD_SCHEMA_DOC = `Card formats (every card needs a unique "id" string):
 - {"id","type":"tf","prompt":<a statement to judge>,"answer":<true|false>,"explanation"} — optional "code". Make false statements plausibly wrong, not silly.
 - {"id","type":"order","prompt","items":[3-6 steps in CORRECT order],"explanation"} — steps/pipeline stages/code lines the learner arranges; they see them shuffled.
 Inline code in any text field uses backticks. Explanations are 1-2 sentences stating WHY.
-Style rule: NEVER use em dashes (—) anywhere in card text. Use a colon, comma, parentheses, or a separate sentence instead.`;
+Style rules:
+- NEVER use em dashes (—) anywhere in card text. Use a colon, comma, parentheses, or a separate sentence instead.
+- No walls of text: when a flash back covers a pipeline, checklist, or more than ~3 steps, format it as numbered or labeled lines separated by \\n (rendered as real line breaks). Never write a paragraph-length arrow chain.`;
 
 export interface GenerateOptions {
   count: number;

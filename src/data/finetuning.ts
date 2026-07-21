@@ -160,7 +160,7 @@ export const finetuning: Deck = {
       id: 'ft-story',
       type: 'flash',
       front: 'Rehearse: "Tell me about your fine-tuning experience" using your strongest project, in 60 seconds.',
-      back: 'Shape the answer in five beats: the goal (what behavior the model had to learn and why prompting wasn’t enough), the method (e.g. QLoRA on a small open model and why that fit the budget), the data (where it came from, how it was curated: quality over volume), the evaluation (what you measured against the un-tuned baseline, ideally with an automated judge), and the lesson (what you would do differently). Concrete numbers: dataset size, eval scores, cost; make the story credible.',
+      back: 'Shape the answer in five beats:\n1. Goal: what behavior the model had to learn, and why prompting wasn’t enough.\n2. Method: e.g. QLoRA on a small open model, and why that fit the budget.\n3. Data: where it came from and how it was curated; quality over volume.\n4. Evaluation: what you measured against the un-tuned baseline, ideally with an automated judge.\n5. Lesson: what you would do differently.\nConcrete numbers (dataset size, eval scores, cost) make the story credible.',
     },
     {
       id: 'ft-order-workflow',

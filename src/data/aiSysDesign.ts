@@ -18,7 +18,7 @@ export const aiSysDesign: Deck = {
       id: 'sd-support-bot',
       type: 'flash',
       front: 'Whiteboard drill: "Design a customer-support bot over our help docs.": 90 seconds.',
-      back: 'Ingestion: docs → chunk (structure-aware, heading context) → embed → vector store; nightly sync. Query path: rewrite conversational query → hybrid retrieve → rerank → generate with citations, strict "answer only from context". Guardrails: confidence threshold → human handoff; injection defenses; PII filtering. Eval: golden Q&A set, retrieval recall@k, groundedness judge, thumbs-down review queue. Ops: streaming, model routing, prompt caching, dashboards. That skeleton adapts to any RAG product question.',
+      back: 'Ingestion: docs → chunk (structure-aware, heading context) → embed → vector store; nightly sync.\nQuery path: rewrite conversational query → hybrid retrieve → rerank → generate with citations, strict "answer only from context".\nGuardrails: confidence threshold with human handoff, injection defenses, PII filtering.\nEval: golden Q&A set, retrieval recall@k, groundedness judge, thumbs-down review queue.\nOps: streaming, model routing, prompt caching, dashboards.\nThat skeleton adapts to any RAG product question.',
     },
     {
       id: 'sd-clarify',
@@ -94,7 +94,7 @@ export const aiSysDesign: Deck = {
       id: 'sd-feedback-loop',
       type: 'flash',
       front: 'Design the feedback loop: how does a shipped AI product get better?',
-      back: 'Capture: thumbs up/down with the full trace (prompt version, retrieved chunks, model, output). Triage: negative-feedback review queue; humans label the failure mode (retrieval miss? hallucination? formatting?). Feed back: failures become eval cases (regression suite grows), then prompt/retrieval fixes, eventually fine-tuning data. The flywheel: traces → labels → evals → fixes → better traces. Without capture at step 1, nothing downstream exists.',
+      back: 'Capture: thumbs up/down with the full trace (prompt version, retrieved chunks, model, output).\nTriage: a negative-feedback review queue where humans label the failure mode (retrieval miss? hallucination? formatting?).\nFeed back: failures become eval cases so the regression suite grows, then prompt/retrieval fixes, eventually fine-tuning data.\nThe flywheel: traces → labels → evals → fixes → better traces. Without capture at step 1, nothing downstream exists.',
     },
     {
       id: 'sd-cost-estimate',

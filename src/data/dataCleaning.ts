@@ -13,7 +13,7 @@ export const dataCleaning: Deck = {
       type: 'flash',
       front:
         'Interview: "You get a messy CSV. Walk me through cleaning it." Give the structured answer.',
-      back: 'A pipeline you can recite: 1) Profile first; shape, dtypes, head(), describe(), null counts. 2) Fix types (dates, numeric strings, categories). 3) Remove duplicates. 4) Handle missing values: ask WHY they’re missing before choosing drop/impute/flag. 5) Investigate outliers: typo or truth? 6) Standardize strings and category labels. 7) Validate ranges and cross-field consistency. 8) Do it in code, not by hand, so it’s reproducible and documented. Naming the steps in order is 80% of the answer.',
+      back: 'A pipeline you can recite:\n1. Profile first: shape, dtypes, head(), describe(), null counts.\n2. Fix types: dates, numeric strings, categories.\n3. Remove duplicates.\n4. Handle missing values: ask WHY they’re missing before choosing drop/impute/flag.\n5. Investigate outliers: typo or truth?\n6. Standardize strings and category labels.\n7. Validate ranges and cross-field consistency.\n8. Do it in code, not by hand, so it’s reproducible and documented.\nNaming the steps in order is 80% of the answer.',
     },
     {
       id: 'dc-first-move',

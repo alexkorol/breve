@@ -1,11 +1,22 @@
-/** Renders text with `backtick` spans as inline code. */
+/**
+ * Renders card text: `backtick` spans become inline code, and newlines become
+ * real line breaks so long answers can be written as scannable steps instead
+ * of a wall of text.
+ */
 export function Rich({ text }: { text: string }) {
-  const parts = text.split('`');
+  const lines = text.split('\n');
   return (
     <>
-      {parts.map((part, i) =>
-        i % 2 === 1 ? <code key={i}>{part}</code> : <span key={i}>{part}</span>,
-      )}
+      {lines.map((line, li) => {
+        const parts = line.split('`');
+        return (
+          <span key={li} className={li > 0 ? 'rich-line' : undefined}>
+            {parts.map((part, i) =>
+              i % 2 === 1 ? <code key={i}>{part}</code> : <span key={i}>{part}</span>,
+            )}
+          </span>
+        );
+      })}
     </>
   );
 }
