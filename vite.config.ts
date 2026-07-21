@@ -8,6 +8,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Registration happens manually in main.tsx so the native (Capacitor)
+      // build can skip the service worker entirely.
+      injectRegister: false,
       includeAssets: ['icons/apple-touch-icon.png', 'logo.png'],
       manifest: {
         name: 'Jimothy: Interview Trainer',
