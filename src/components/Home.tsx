@@ -98,11 +98,7 @@ function DeckCard({
   const pct = Math.round((seen / deck.cards.length) * 100);
   const ready = due + fresh > 0;
   return (
-    <button
-      className="deck-card"
-      style={{ ['--deck-color' as string]: deck.color }}
-      onClick={() => onOpen(deck.id)}
-    >
+    <button className="deck-card" onClick={() => onOpen(deck.id)}>
       <div className="deck-icon">{deck.icon}</div>
       <div className="deck-info">
         <h3>{deck.title}</h3>

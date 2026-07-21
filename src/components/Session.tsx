@@ -138,7 +138,7 @@ export function Session({ deck, progress, forceAll, sourceDecks, options, review
       </header>
 
       {topic && (
-        <div className="card-topic" style={{ ['--deck-color' as string]: topic.color }}>
+        <div className="card-topic">
           <span className="card-topic-icon">{topic.icon}</span> {topic.title}
         </div>
       )}

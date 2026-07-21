@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { AppState } from '../types';
-import { getApiKey, setApiKey, getModel, setModel, DEFAULT_MODEL } from '../ai';
+import { getApiKey, setApiKey, getModel, setModel, defaultModel } from '../ai';
 import {
   exportState,
   importStateFile,
@@ -168,7 +168,7 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
 
   const saveAi = () => {
     setApiKey(key);
-    setModel(model === DEFAULT_MODEL ? '' : model);
+    setModel(model === defaultModel() ? '' : model);
     setSaved(true);
     setTimeout(() => setSaved(false), 1500);
   };
@@ -183,12 +183,12 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
       <MembershipSection />
 
       <section className="stats-section">
-        <h3>Claude API (powers generation, grading, postmortems)</h3>
+        <h3>AI features (deck generation, grading, postmortems)</h3>
         <label className="setting-field">
           API key
           <input
             type="password"
-            placeholder="sk-ant-…"
+            placeholder="sk-or-…"
             value={key}
             autoComplete="off"
             onChange={(e) => setKey(e.target.value)}
@@ -202,8 +202,10 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
           {saved ? 'Saved ✓' : 'Save'}
         </button>
         <p className="chart-note">
-          Stored only in this browser. Requests go directly from this device to Anthropic —
-          no server in between. Get a key at console.anthropic.com.
+          OpenRouter keys (sk-or-…) are recommended: one key, any model, priced per use — get
+          one at openrouter.ai/keys. Anthropic keys (sk-ant-…) also work and go straight to
+          Anthropic. Either way the key is stored only in this browser and requests go
+          directly from this device to the provider, no server in between.
         </p>
       </section>
 
@@ -212,7 +214,7 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
         <Toggle
           name="recallMode"
           label="Recall mode for flashcards"
-          hint="Answer from memory first; Claude grades you against the model answer. Needs an API key. Falls back to classic flip when offline."
+          hint="Answer from memory first; the model grades you against the card's answer. Needs an API key. Falls back to classic flip when offline."
         />
         <Toggle
           name="recallTimer"

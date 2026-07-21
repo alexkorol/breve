@@ -14,8 +14,8 @@ export default defineConfig({
         short_name: 'Jimothy',
         description:
           'Spaced repetition for code challenges, technical interviews, Python and ML knowledge.',
-        theme_color: '#0d1117',
-        background_color: '#0d1117',
+        theme_color: '#161310',
+        background_color: '#161310',
         display: 'standalone',
         start_url: './',
         icons: [

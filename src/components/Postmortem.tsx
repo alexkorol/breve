@@ -35,7 +35,10 @@ export function Postmortem({ onSave, onOpenSettings, onBack }: Props) {
           <span className="detail-track">📝 Postmortem</span>
         </header>
         <div className="empty-note">
-          <p>Postmortem drills use the Claude API with your own key. Add one in Settings.</p>
+          <p>
+            Postmortem drills use your own API key (OpenRouter recommended, Anthropic works
+            too). Add one in Settings.
+          </p>
           <button className="btn primary" onClick={onOpenSettings}>Open Settings</button>
         </div>
       </div>

@@ -9,6 +9,10 @@ Local-first React PWA for spaced-repetition interview prep (formerly "Breve"; th
 - No cheerleading or meta commentary in answers ("say it out loud", "this is interview gold", pep-talk closers). Answers end when the technical answer ends.
 - Substantive interview guidance (what interviewers probe, how to structure an answer) is welcome; keep it factual.
 
+## AI layer
+
+- Provider-agnostic by key prefix in `src/ai.ts`: OpenRouter is primary (OpenAI chat-completions format via fetch/SSE, any model slug); `sk-ant-` keys go directly to Anthropic via the lazily imported SDK. Keep new AI features going through `callText()` so both providers keep working.
+
 ## Session mechanics (do not regress)
 
 - Sessions are 10-card packs (`PACK_SIZE` in `src/session.ts`); no in-session requeue of missed cards (they come back ~10 min later via `srs.ts`).

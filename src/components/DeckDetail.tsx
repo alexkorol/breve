@@ -47,7 +47,7 @@ export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBa
         <span className="detail-track">{deck.track}</span>
       </header>
 
-      <div className="detail-hero" style={{ ['--deck-color' as string]: deck.color }}>
+      <div className="detail-hero">
         <div className="detail-icon">{deck.icon}</div>
         <h2>{deck.title}</h2>
         <p>{deck.description}</p>

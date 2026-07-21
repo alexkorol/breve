@@ -47,8 +47,8 @@ export function Generate({ decks, onSave, onOpenSettings, onBack }: Props) {
         </header>
         <div className="empty-note">
           <p>
-            Deck generation uses the Claude API with your own key, stored only on this
-            device. Add a key to unlock it.
+            Deck generation uses your own API key (OpenRouter recommended, Anthropic works
+            too), stored only on this device. Add a key to unlock it.
           </p>
           <button className="btn primary" onClick={onOpenSettings}>
             Open Settings

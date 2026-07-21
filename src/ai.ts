@@ -3,7 +3,13 @@ import type { Card, Deck } from './types';
 import type { Grade } from './srs';
 import { getSetting, setSetting, parseDeckFile, isValidCard } from './storage';
 
-export const DEFAULT_MODEL = 'claude-opus-4-8';
+/**
+ * Provider-agnostic AI layer. OpenRouter is the primary provider (one key,
+ * any model, OpenAI chat-completions format); Anthropic keys (sk-ant-…) are
+ * detected and sent straight to Anthropic instead. Requests always go
+ * directly from the browser to the provider; the key never leaves the device.
+ */
+export type Provider = 'openrouter' | 'anthropic';
 
 export function getApiKey(): string {
   return getSetting('apikey');
@@ -13,8 +19,17 @@ export function setApiKey(key: string): void {
   setSetting('apikey', key.trim());
 }
 
+export function provider(): Provider {
+  return getApiKey().startsWith('sk-ant-') ? 'anthropic' : 'openrouter';
+}
+
+/** Same model either way; OpenRouter routes by vendor-prefixed slug. */
+export function defaultModel(): string {
+  return provider() === 'anthropic' ? 'claude-opus-4-8' : 'anthropic/claude-opus-4.8';
+}
+
 export function getModel(): string {
-  return getSetting('model') || DEFAULT_MODEL;
+  return getSetting('model') || defaultModel();
 }
 
 export function setModel(model: string): void {
@@ -25,13 +40,94 @@ export function aiAvailable(): boolean {
   return !!getApiKey() && navigator.onLine;
 }
 
-async function makeClient(): Promise<Anthropic> {
-  const apiKey = getApiKey();
-  if (!apiKey) throw new Error('No API key set — add one in Settings.');
-  // Lazy import keeps the SDK out of the initial bundle; BYO key stored
-  // locally; requests go directly from this browser to Anthropic.
+async function makeAnthropicClient(): Promise<Anthropic> {
+  // Lazy import keeps the SDK out of the initial bundle; only loaded for sk-ant keys.
   const { default: AnthropicCtor } = await import('@anthropic-ai/sdk');
-  return new AnthropicCtor({ apiKey, dangerouslyAllowBrowser: true });
+  return new AnthropicCtor({ apiKey: getApiKey(), dangerouslyAllowBrowser: true });
+}
+
+async function callAnthropic(system: string, user: string, maxTokens: number): Promise<string> {
+  const client = await makeAnthropicClient();
+  const stream = client.messages.stream({
+    model: getModel(),
+    max_tokens: maxTokens,
+    system,
+    messages: [{ role: 'user', content: user }],
+  });
+  const final = await stream.finalMessage();
+  const text = final.content
+    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
+    .map((b) => b.text)
+    .join('');
+  if (final.stop_reason === 'refusal' || !text) {
+    throw new Error('The model declined to generate this content.');
+  }
+  return text;
+}
+
+async function callOpenRouter(system: string, user: string, maxTokens: number): Promise<string> {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${getApiKey()}`,
+      'Content-Type': 'application/json',
+      'X-Title': 'Jimothy',
+    },
+    body: JSON.stringify({
+      model: getModel(),
+      max_tokens: maxTokens,
+      stream: true,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user },
+      ],
+    }),
+  });
+  if (!res.ok || !res.body) {
+    let detail = `HTTP ${res.status}`;
+    try {
+      const err = (await res.json()) as { error?: { message?: string } };
+      if (err.error?.message) detail = err.error.message;
+    } catch {
+      // keep the status text
+    }
+    throw new Error(`OpenRouter request failed: ${detail}`);
+  }
+  // Accumulate the SSE stream; streaming keeps long generations alive through proxies.
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let text = '';
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() ?? '';
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue; // skips SSE comments/keepalives
+      const payload = line.slice(6).trim();
+      if (payload === '[DONE]') continue;
+      let chunk: { choices?: { delta?: { content?: string } }[]; error?: { message?: string } };
+      try {
+        chunk = JSON.parse(payload);
+      } catch {
+        continue;
+      }
+      if (chunk.error?.message) throw new Error(`OpenRouter: ${chunk.error.message}`);
+      text += chunk.choices?.[0]?.delta?.content ?? '';
+    }
+  }
+  if (!text) throw new Error('The model returned no text.');
+  return text;
+}
+
+/** One entry point for every AI feature, dispatched by key type. */
+async function callText(system: string, user: string, maxTokens: number): Promise<string> {
+  if (!getApiKey()) throw new Error('No API key set — add one in Settings.');
+  return provider() === 'anthropic'
+    ? callAnthropic(system, user, maxTokens)
+    : callOpenRouter(system, user, maxTokens);
 }
 
 /** Pull the first JSON object out of a model response (tolerates ``` fences). */
@@ -52,25 +148,6 @@ const CARD_SCHEMA_DOC = `Card formats (every card needs a unique "id" string):
 - {"id","type":"order","prompt","items":[3-6 steps in CORRECT order],"explanation"} — steps/pipeline stages/code lines the learner arranges; they see them shuffled.
 Inline code in any text field uses backticks. Explanations are 1-2 sentences stating WHY.
 Style rule: NEVER use em dashes (—) anywhere in card text. Use a colon, comma, parentheses, or a separate sentence instead.`;
-
-async function callForDeck(system: string, user: string): Promise<string> {
-  const client = await makeClient();
-  const stream = client.messages.stream({
-    model: getModel(),
-    max_tokens: 32000,
-    system,
-    messages: [{ role: 'user', content: user }],
-  });
-  const final = await stream.finalMessage();
-  const text = final.content
-    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-    .map((b) => b.text)
-    .join('');
-  if (final.stop_reason === 'refusal' || !text) {
-    throw new Error('The model declined to generate this content.');
-  }
-  return text;
-}
 
 export interface GenerateOptions {
   count: number;
@@ -95,15 +172,16 @@ Mix card types (~35% mcq, ~30% flash, ~15% fill when code is relevant, ~10% tf, 
   const user = `Create a ${opts.count}-card deck from this material:\n\n<material>\n${source.slice(0, 60000)}\n</material>`;
 
   onStatus?.('Generating cards…');
-  const raw = await callForDeck(system, user);
+  const raw = await callText(system, user, 32000);
   try {
     return parseDeckFile(extractJson(raw), existing);
   } catch (firstError) {
     onStatus?.('Repairing output…');
     const message = firstError instanceof Error ? firstError.message : 'invalid';
-    const repaired = await callForDeck(
+    const repaired = await callText(
       system,
       `Your previous deck JSON failed validation with: "${message}".\nHere is what you produced:\n${raw.slice(0, 30000)}\n\nReturn the corrected, complete JSON object only.`,
+      32000,
     );
     return parseDeckFile(extractJson(repaired), existing);
   }
@@ -117,23 +195,11 @@ export interface RecallResult {
 
 /** Grade a spoken/typed answer against the card's back as rubric. */
 export async function gradeRecall(front: string, rubric: string, answer: string): Promise<RecallResult> {
-  const client = await makeClient();
-  const response = await client.messages.create({
-    model: getModel(),
-    max_tokens: 1024,
-    system: `You grade interview-prep recall attempts. Compare the learner's answer to the rubric (the model answer). Score SUBSTANCE, not phrasing — synonyms and different orderings are fine; missing core concepts are not. Respond with ONLY JSON: {"score":<0-100>,"feedback":"<1-2 sentences: what was right, what was missing — address the learner as 'you'>"}`,
-    messages: [
-      {
-        role: 'user',
-        content: `Question: ${front}\n\nModel answer (rubric):\n${rubric}\n\nLearner's answer:\n${answer}`,
-      },
-    ],
-  });
-  if (response.stop_reason === 'refusal') throw new Error('Grading declined.');
-  const text = response.content
-    .filter((b): b is Anthropic.TextBlock => b.type === 'text')
-    .map((b) => b.text)
-    .join('');
+  const text = await callText(
+    `You grade interview-prep recall attempts. Compare the learner's answer to the rubric (the model answer). Score SUBSTANCE, not phrasing — synonyms and different orderings are fine; missing core concepts are not. Respond with ONLY JSON: {"score":<0-100>,"feedback":"<1-2 sentences: what was right, what was missing — address the learner as 'you'>"}`,
+    `Question: ${front}\n\nModel answer (rubric):\n${rubric}\n\nLearner's answer:\n${answer}`,
+    1024,
+  );
   const parsed = JSON.parse(extractJson(text)) as { score?: number; feedback?: string };
   const score = Math.max(0, Math.min(100, Math.round(Number(parsed.score) || 0)));
   const grade: Grade = score >= 85 ? 3 : score >= 65 ? 2 : score >= 40 ? 1 : 0;
@@ -142,11 +208,12 @@ export async function gradeRecall(front: string, rubric: string, answer: string)
 
 /** Turn postmortem bullets into targeted cards for the Misses deck. */
 export async function generateMissCards(notes: string): Promise<Card[]> {
-  const raw = await callForDeck(
+  const raw = await callText(
     `You convert interview-postmortem notes into targeted drill cards for Jimothy. For each stumble the learner describes, create 2-4 cards that would have prevented it: one flash card rehearsing the spoken answer they couldn't give, plus mcq/fill cards drilling the underlying concept. Respond with ONLY JSON: {"cards":[...]}
 ${CARD_SCHEMA_DOC}
 Card ids use prefix "miss-".`,
     `Postmortem notes:\n\n${notes.slice(0, 20000)}`,
+    32000,
   );
   const parsed = JSON.parse(extractJson(raw)) as { cards?: unknown[] };
   if (!Array.isArray(parsed.cards) || parsed.cards.length === 0) {

@@ -8,8 +8,8 @@ Spaced repetition for code challenges, technical interviews, and Python/ML knowl
 
 - **Five exercise types** — multiple choice, true/false, arrange-in-order, fill-in-the-blank code, and flip-style flashcards (Missed it / Got it).
 - **SM-2 spaced repetition** — cards you miss return about ten minutes later and again the next day; cards you know drift out to weeks. Mastery at a 21-day interval.
-- **AI deck generation (bring your own key)** — paste a job description, article, notes, or upload a .md/.txt file; Claude generates a validated deck you review card-by-card before saving. Your Anthropic API key lives only in your browser; requests go straight to the API.
-- **Recall mode** — answer flashcards from memory (typed, or dictated where supported) before seeing the back; Claude grades you against the model answer with feedback, and the score drives the SRS grade. Optional 60-second interview-pressure timer. Falls back to classic flip when offline.
+- **AI deck generation (bring your own key)** — paste a job description, article, notes, or upload a .md/.txt file; an LLM generates a validated deck you review card-by-card before saving. OpenRouter keys are the primary path (one key, any model); Anthropic keys work too. The key lives only in your browser; requests go straight to the provider.
+- **Recall mode** — answer flashcards from memory (typed, or dictated where supported) before seeing the back; the model grades you against the card's answer with feedback, and the score drives the SRS grade. Optional 60-second interview-pressure timer. Falls back to classic flip when offline.
 - **Interview postmortems** — jot what tripped you up after an interview or mock; each stumble becomes targeted drill cards in a persistent "Interview Misses" deck.
 - **Readiness scores** — per-track readiness blending retention with recall-mode grades, a 13-week volume trend, and an exportable markdown readiness report.
 - **Deck sharing without a server** — every deck exports as a file or a copyable link (the deck travels gzip-compressed inside the URL fragment); recipients get an add-deck banner. A "hide My Projects" toggle keeps personal decks out of sight.
