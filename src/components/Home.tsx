@@ -216,7 +216,7 @@ export function Home({
       <header className="home-header">
         <div className="brand">
           <img className="brand-logo" src="./logo.png" alt="" />
-          <h1>Breve</h1>
+          <h1>Jimothy</h1>
         </div>
         <div className="header-actions">
           <button className="streak stats-btn" onClick={onOpenSettings} title="Settings">

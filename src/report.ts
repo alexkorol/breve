@@ -47,9 +47,9 @@ export function buildReport(decks: Deck[], state: AppState): string {
   const dueWeek = seenEntries.filter(([, p]) => p.due <= now + 7 * 86400000).length;
 
   const lines = [
-    `# Breve weekly readiness report — ${dayKey()}`,
+    `# Jimothy weekly readiness report — ${dayKey()}`,
     '',
-    '> Source: Breve spaced-repetition PWA (alexkorol.github.io/breve), exported weekly.',
+    '> Source: Jimothy spaced-repetition PWA (alexkorol.github.io/jimothy), exported weekly.',
     '> Purpose: steering signal for STUDY_PLAN.md and deck priorities — readiness by track,',
     '> consistency, production-recall evidence, and the cards Alex keeps missing.',
     '> Compare with the previous week’s report for deltas.',
@@ -120,7 +120,7 @@ export function buildReport(decks: Deck[], state: AppState): string {
 
 /** Build, download, and remember the export day (drives the weekly nudge). */
 export function exportReport(decks: Deck[], state: AppState): void {
-  downloadText(`breve-report-${dayKey()}.md`, buildReport(decks, state), 'text/markdown');
+  downloadText(`jimothy-report-${dayKey()}.md`, buildReport(decks, state), 'text/markdown');
   setSetting('lastReport', dayKey());
 }
 

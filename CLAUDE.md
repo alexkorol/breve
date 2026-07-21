@@ -1,6 +1,6 @@
-# Breve
+# Jimothy
 
-Local-first React PWA for spaced-repetition interview prep. Deck content lives in `src/data/*.ts`.
+Local-first React PWA for spaced-repetition interview prep (formerly "Breve"; the `breve:` localStorage prefixes are legacy and must not be renamed). Deck content lives in `src/data/*.ts`.
 
 ## Card content style (all decks and generated material)
 

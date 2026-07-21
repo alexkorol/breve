@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/apple-touch-icon.png', 'logo.png'],
       manifest: {
-        name: 'Breve — Interview Trainer',
-        short_name: 'Breve',
+        name: 'Jimothy: Interview Trainer',
+        short_name: 'Jimothy',
         description:
           'Spaced repetition for code challenges, technical interviews, Python and ML knowledge.',
         theme_color: '#0d1117',

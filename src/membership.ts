@@ -60,6 +60,6 @@ export function createGiftGrants(plan: Plan, recipients: string[]): GiftGrant[] 
   return names.map((recipient) => ({
     recipient,
     days: share,
-    code: `BREVE-GIFT-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
+    code: `JIMOTHY-GIFT-${Math.random().toString(36).slice(2, 8).toUpperCase()}`,
   }));
 }

@@ -87,7 +87,7 @@ export async function generateDeck(
   existing: Deck[],
   onStatus?: (s: string) => void,
 ): Promise<Deck> {
-  const system = `You create spaced-repetition decks for Breve, an interview-prep app. Respond with ONLY a JSON object, no prose:
+  const system = `You create spaced-repetition decks for Jimothy, an interview-prep app. Respond with ONLY a JSON object, no prose:
 {"id":"<kebab-case, prefixed gen->","title":"<max 28 chars>","description":"<one line>","icon":"<one emoji>","color":"<hex>","cards":[...]}
 ${CARD_SCHEMA_DOC}
 Mix card types (~35% mcq, ~30% flash, ~15% fill when code is relevant, ~10% tf, ~10% order; skip fill for non-code material). Card ids share the deck's prefix. Target difficulty: ${opts.difficulty}. Write questions that test understanding and interview-readiness, not trivia. Ground every card in the provided material; if the material names specific technologies, drill those.`;
@@ -143,7 +143,7 @@ export async function gradeRecall(front: string, rubric: string, answer: string)
 /** Turn postmortem bullets into targeted cards for the Misses deck. */
 export async function generateMissCards(notes: string): Promise<Card[]> {
   const raw = await callForDeck(
-    `You convert interview-postmortem notes into targeted drill cards for Breve. For each stumble the learner describes, create 2-4 cards that would have prevented it: one flash card rehearsing the spoken answer they couldn't give, plus mcq/fill cards drilling the underlying concept. Respond with ONLY JSON: {"cards":[...]}
+    `You convert interview-postmortem notes into targeted drill cards for Jimothy. For each stumble the learner describes, create 2-4 cards that would have prevented it: one flash card rehearsing the spoken answer they couldn't give, plus mcq/fill cards drilling the underlying concept. Respond with ONLY JSON: {"cards":[...]}
 ${CARD_SCHEMA_DOC}
 Card ids use prefix "miss-".`,
     `Postmortem notes:\n\n${notes.slice(0, 20000)}`,

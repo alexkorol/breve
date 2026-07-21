@@ -43,7 +43,7 @@ function MembershipSection() {
   };
 
   const shareGrant = async (g: GiftGrant) => {
-    const text = `I met my goal with Breve — passing my membership on to you: ${g.days} days, code ${g.code}`;
+    const text = `I met my goal with Jimothy — passing my membership on to you: ${g.days} days, code ${g.code}`;
     if (navigator.share) await navigator.share({ text }).catch(() => undefined);
     else await navigator.clipboard?.writeText(text);
   };
@@ -279,7 +279,7 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
                 onImport(await importStateFile(f));
                 setImportError('');
               } catch {
-                setImportError('That file doesn’t look like a Breve progress export.');
+                setImportError('That file doesn’t look like a Jimothy progress export.');
               }
               e.target.value = '';
             }}
@@ -291,7 +291,7 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
             <strong>Notifications</strong>
             <p>
               {notifState === 'granted'
-                ? '✓ Allowed. Note: without a server, Breve can’t wake your device on a schedule — on iPhone, a daily alarm or Shortcuts automation opening Breve is the reliable reminder.'
+                ? '✓ Allowed. Note: without a server, Jimothy can’t wake your device on a schedule — on iPhone, a daily alarm or Shortcuts automation opening Jimothy is the reliable reminder.'
                 : notifState === 'unsupported'
                   ? 'Not supported in this browser.'
                   : 'Allow notifications so future reminder features can reach you.'}

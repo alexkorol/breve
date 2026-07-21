@@ -1,13 +1,13 @@
-# Brĕve
+# Jimothy
 
-**▶ Open the app: [alexkorol.github.io/breve](https://alexkorol.github.io/breve/)** — then Share → Add to Home Screen on iPhone.
+**▶ Open the app: [alexkorol.github.io/jimothy](https://alexkorol.github.io/jimothy/)** — then Share → Add to Home Screen on iPhone.
 
 Spaced repetition for code challenges, technical interviews, and Python/ML knowledge — a mobile-first PWA in the spirit of Sololearn / Codecademy Go.
 
 ## Features
 
-- **Three exercise types** — multiple choice, flip-style flashcards (Again/Hard/Good/Easy), and fill-in-the-blank code.
-- **SM-2 spaced repetition** — cards you miss come back within the session and again the next day; cards you know drift out to weeks. Mastery at a 21-day interval.
+- **Five exercise types** — multiple choice, true/false, arrange-in-order, fill-in-the-blank code, and flip-style flashcards (Missed it / Got it).
+- **SM-2 spaced repetition** — cards you miss return about ten minutes later and again the next day; cards you know drift out to weeks. Mastery at a 21-day interval.
 - **AI deck generation (bring your own key)** — paste a job description, article, notes, or upload a .md/.txt file; Claude generates a validated deck you review card-by-card before saving. Your Anthropic API key lives only in your browser; requests go straight to the API.
 - **Recall mode** — answer flashcards from memory (typed, or dictated where supported) before seeing the back; Claude grades you against the model answer with feedback, and the score drives the SRS grade. Optional 60-second interview-pressure timer. Falls back to classic flip when offline.
 - **Interview postmortems** — jot what tripped you up after an interview or mock; each stumble becomes targeted drill cards in a persistent "Interview Misses" deck.

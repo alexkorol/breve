@@ -1,5 +1,8 @@
 import type { AppState, Card, Deck } from './types';
 
+// Storage keys keep the legacy "breve:" prefix from before the Jimothy rename.
+// Renaming them would orphan existing progress on users' devices; the prefix is
+// invisible to users, so it stays.
 const KEY = 'breve:v1';
 const DECKS_KEY = 'breve:decks';
 
@@ -165,7 +168,7 @@ export function exportState(state: AppState): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `breve-progress-${dayKey()}.json`;
+  a.download = `jimothy-progress-${dayKey()}.json`;
   a.click();
   URL.revokeObjectURL(url);
   setSetting('lastBackup', dayKey());
@@ -194,7 +197,7 @@ export function daysSinceBackup(): number {
 export async function importStateFile(file: File): Promise<AppState> {
   const parsed = JSON.parse(await file.text()) as Partial<AppState>;
   if (!parsed || typeof parsed !== 'object' || typeof parsed.progress !== 'object') {
-    throw new Error('Not a Breve progress file');
+    throw new Error('Not a Jimothy progress file');
   }
   const base = { progress: {}, stats: { streak: 0, lastStudyDay: '', totalReviews: 0, reviewsByDay: {}, readsByDay: {} } };
   return {
