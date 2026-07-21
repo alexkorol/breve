@@ -127,6 +127,14 @@ export const mlFundamentals: Deck = {
         'No labels involved: it alternates assigning points to the nearest centroid and recomputing centroids until stable.',
     },
     {
+      id: 'ml-tf-testset',
+      type: 'tf',
+      prompt: 'It’s fine to tune hyperparameters against the test set as long as you report the final number honestly.',
+      answer: false,
+      explanation:
+        'The moment you tune on it, the test set stops estimating real-world performance — that’s what the validation set is for.',
+    },
+    {
       id: 'ml-confusion',
       type: 'flash',
       front: 'What is a confusion matrix?',

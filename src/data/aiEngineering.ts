@@ -12,7 +12,7 @@ export const aiEngineering: Deck = {
       id: 'aie-rag-pipeline',
       type: 'flash',
       front: 'Walk through a RAG pipeline end to end (the #1 AI engineering interview question).',
-      back: 'Ingest: chunk documents, embed each chunk, store vectors in an index. Query: embed the question, retrieve top-k similar chunks (optionally rerank with a cross-encoder), stuff the best ones into the prompt with instructions to answer from them and cite. Generate. The retrieval half is where quality is won or lost — say that.',
+      back: 'Ingest: chunk documents, embed each chunk, store vectors in an index. Query: embed the question, retrieve top-k similar chunks (optionally rerank with a cross-encoder), stuff the best ones into the prompt with instructions to answer from them and cite. Generate. The retrieval half is where quality is won or lost.',
     },
     {
       id: 'aie-rag-vs-ft',
@@ -110,7 +110,7 @@ export const aiEngineering: Deck = {
       ],
       answer: 0,
       explanation:
-        'Fixing one prompt case breaks three others invisibly. A golden set + automated grading in CI is what separates AI engineering from AI tinkering — say "evals" early and often in interviews.',
+        'Fixing one prompt case breaks three others invisibly. A golden set + automated grading in CI is what separates AI engineering from AI tinkering.',
     },
     {
       id: 'aie-eval-types',

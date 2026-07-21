@@ -36,7 +36,7 @@ export const patternsGraphsDp: Deck = {
       answers: ['right'],
       distractors: ['left', 'next', 'parent'],
       explanation:
-        'Most tree problems are this shape: base case on None, recurse both sides, combine. Practice saying "recurse left, recurse right, combine" as your opener.',
+        'Most tree problems are this shape: base case on None, recurse both sides, combine.',
     },
     {
       id: 'gd-cycle',
@@ -81,7 +81,7 @@ export const patternsGraphsDp: Deck = {
       answers: ['2'],
       distractors: ['1', 'i', 'n'],
       explanation:
-        'Each state depends on the two before it — and since only two are needed, you can drop the array for O(1) space. Mention that optimization unprompted.',
+        'Each state depends on the two before it — and since only two are needed, you can drop the array for O(1) space.',
     },
     {
       id: 'gd-stairs',

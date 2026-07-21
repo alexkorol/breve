@@ -11,10 +11,14 @@ export function newProgress(now = Date.now()): CardProgress {
   return { ease: 2.5, interval: 0, due: now, reps: 0, lapses: 0 };
 }
 
+/** A missed card comes back after this delay — the end of today's queue, not the current session. */
+const RELEARN_DELAY_MS = 10 * 60 * 1000;
+
 /**
- * Simplified SM-2. "Again" resets the interval and leaves the card due
- * immediately so the session can requeue it; graduating intervals are
- * 1d (good) / 2.5d (easy), then multiply by ease.
+ * Simplified SM-2. "Again" resets the interval and schedules the card a few
+ * minutes out, so it rejoins the END of the due queue instead of stretching
+ * the session it was missed in; graduating intervals are 1d (good) /
+ * 2.5d (easy), then multiply by ease.
  */
 export function applyGrade(p: CardProgress, grade: Grade, now = Date.now()): CardProgress {
   let { ease, interval } = p;
@@ -25,7 +29,7 @@ export function applyGrade(p: CardProgress, grade: Grade, now = Date.now()): Car
     return {
       ease: Math.max(MIN_EASE, ease - 0.2),
       interval: 0,
-      due: now,
+      due: now + RELEARN_DELAY_MS,
       reps,
       lapses: lapses + 1,
     };

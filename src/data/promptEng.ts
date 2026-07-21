@@ -84,7 +84,7 @@ export const promptEng: Deck = {
       id: 'pe-decomposition',
       type: 'flash',
       front: 'One mega-prompt does classification + extraction + summary + judgment, badly. The fix?',
-      back: 'Decompose into a chain of focused calls: classify → route → extract → verify. Each step gets a tight prompt, its own few-shots, and measurable accuracy; failures localize to a step instead of hiding in soup. Costs more calls, buys debuggability — the same argument as your prosody-judge one-rubric-per-call design. Prompt chaining IS software decomposition.',
+      back: 'Decompose into a chain of focused calls: classify → route → extract → verify. Each step gets a tight prompt, its own few-shots, and measurable accuracy; failures localize to a step instead of hiding in soup. Costs more calls, buys debuggability. Prompt chaining IS software decomposition.',
     },
     {
       id: 'pe-self-critique',
@@ -126,7 +126,7 @@ export const promptEng: Deck = {
       ],
       answer: 0,
       explanation:
-        'A prompt is code: it has behavior, regressions, and rollbacks. "Which prompt version produced this output?" must be answerable — same versioning logic as your judge rubrics.',
+        'A prompt is code: it has behavior, regressions, and rollbacks. "Which prompt version produced this output?" must always be answerable.',
     },
     {
       id: 'pe-temperature-task',
@@ -160,7 +160,7 @@ export const promptEng: Deck = {
       id: 'pe-eval-loop',
       type: 'flash',
       front: 'The prompt-engineering workflow that separates engineering from tinkering.',
-      back: 'Build a small eval set FIRST (20–50 real cases with expected outputs). Then: change one thing → run the eval → keep or revert on the numbers. Without it you’re overfitting to the last example you eyeballed, and every "fix" silently breaks two other cases. Prompt engineering is engineering exactly when changes are measured — this is your interview thesis on the topic.',
+      back: 'Build a small eval set FIRST (20–50 real cases with expected outputs). Then: change one thing → run the eval → keep or revert on the numbers. Without it you’re overfitting to the last example you eyeballed, and every "fix" silently breaks two other cases. Prompt engineering is engineering exactly when changes are measured.',
     },
     {
       id: 'pe-injection-recap',
@@ -174,7 +174,7 @@ export const promptEng: Deck = {
       ],
       answer: 0,
       explanation:
-        'Defense in depth, because clever phrasing beats any single guard. The honest "mitigate, not solve" framing is the correct expert position — same as your RAG injection card.',
+        'Defense in depth, because clever phrasing beats any single guard. The honest "mitigate, not solve" framing is the correct expert position.',
     },
   ],
 };

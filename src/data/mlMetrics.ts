@@ -13,7 +13,7 @@ export const mlMetrics: Deck = {
       type: 'flash',
       front:
         'Interview: "Explain precision vs recall." Give the 20-second answer, with an example.',
-      back: 'Precision: of everything I flagged positive, how much was actually positive — it measures how much you can trust the alarms. Recall: of everything actually positive, how much did I catch — it measures what you miss. Spam filter: precision drops when real mail lands in spam (false alarms); recall drops when spam reaches the inbox (misses). One sentence each, then the example — done.',
+      back: 'Precision: of everything I flagged positive, how much was actually positive — it measures how much you can trust the alarms. Recall: of everything actually positive, how much did I catch — it measures what you miss. Spam filter: precision drops when real mail lands in spam (false alarms); recall drops when spam reaches the inbox (misses).',
     },
     {
       id: 'met-mnemonic',
@@ -52,7 +52,7 @@ export const mlMetrics: Deck = {
       ],
       answer: 0,
       explanation:
-        'Precision = 40/50 flagged = 0.80. Recall = 40/60 actual = 0.67. Being able to do this arithmetic on the spot is what convinces interviewers.',
+        'Precision = 40/50 flagged = 0.80. Recall = 40/60 actual = 0.67.',
     },
     {
       id: 'met-which-error',
@@ -61,7 +61,7 @@ export const mlMetrics: Deck = {
       choices: ['False positives', 'False negatives', 'True negatives', 'Class imbalance'],
       answer: 0,
       explanation:
-        'Precision punishes false alarms. Recall punishes misses (false negatives). Name the costly error first, then pick the metric — that ordering makes your answer sound senior.',
+        'Precision punishes false alarms. Recall punishes misses (false negatives). Name the costly error first, then pick the metric.',
     },
     {
       id: 'met-scenarios',
@@ -103,7 +103,7 @@ export const mlMetrics: Deck = {
       ],
       answer: 0,
       explanation:
-        'The accuracy paradox: with 1% fraud, "never fraud" is 99% accurate and 0% useful. This is exactly why precision/recall exist — say that link out loud in interviews.',
+        'The accuracy paradox: with 1% fraud, "never fraud" is 99% accurate and 0% useful. This is exactly why precision and recall exist.',
     },
     {
       id: 'met-confusion',

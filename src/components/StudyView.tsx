@@ -61,6 +61,44 @@ export function StudyItem({ card, index }: { card: Card; index: number }) {
           )}
         </>
       )}
+      {card.type === 'tf' && (
+        <>
+          <p className="study-q">
+            <Rich text={card.prompt} />
+          </p>
+          {card.code && <CodeBlock code={card.code} />}
+          <div className="study-a">
+            <span className="study-answer-chip">{card.answer ? '✓ True' : '✗ False'}</span>
+            {card.explanation && (
+              <p>
+                <Rich text={card.explanation} />
+              </p>
+            )}
+          </div>
+        </>
+      )}
+      {card.type === 'order' && (
+        <>
+          <p className="study-q">
+            <Rich text={card.prompt} />
+          </p>
+          {card.code && <CodeBlock code={card.code} />}
+          <div className="study-a">
+            <ol className="order-answer">
+              {card.items.map((item) => (
+                <li key={item}>
+                  <Rich text={item} />
+                </li>
+              ))}
+            </ol>
+            {card.explanation && (
+              <p>
+                <Rich text={card.explanation} />
+              </p>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

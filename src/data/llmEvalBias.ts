@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const llmEvalBias: Deck = {
   id: 'llm-eval-bias',
   title: 'LLM Judges & Bias',
-  description: 'The bias questions you could not answer — never again.',
+  description: 'LLM-as-judge biases, fairness metrics, and how to validate a judge.',
   icon: '⚖️',
   color: '#f43f5e',
   track: 'AI Engineering',
@@ -12,7 +12,7 @@ export const llmEvalBias: Deck = {
       id: 'eb-judge-biases',
       type: 'flash',
       front: 'Interview: "What biases show up when you use an LLM as a judge?" Name five.',
-      back: 'Position bias — favors the first (sometimes last) option shown. Verbosity bias — longer answers score higher regardless of substance. Self-preference — rates its own model family’s outputs higher. Style/polish bias — fluent, well-formatted answers beat messy-but-correct ones. Sycophancy — agrees with a preference hinted in the prompt. Rattling these off, then following with mitigations, is a complete senior answer.',
+      back: 'Position bias — favors the first (sometimes last) option shown. Verbosity bias — longer answers score higher regardless of substance. Self-preference — rates its own model family’s outputs higher. Style/polish bias — fluent, well-formatted answers beat messy-but-correct ones. Sycophancy — agrees with a preference hinted in the prompt. Follow the list with mitigations and the answer is complete.',
     },
     {
       id: 'eb-mitigations',
@@ -32,7 +32,7 @@ export const llmEvalBias: Deck = {
       ],
       answer: 0,
       explanation:
-        'Order-swap disagreement rates run 10–30% in practice. Any pairwise eval that presents a single fixed order is structurally broken — say this in the interview.',
+        'Order-swap disagreement rates run 10–30% in practice. Any pairwise eval that presents a single fixed order is structurally broken.',
     },
     {
       id: 'eb-polish',
@@ -71,7 +71,7 @@ export const llmEvalBias: Deck = {
     {
       id: 'eb-validate-judge',
       type: 'flash',
-      front: '"How do you know your LLM judge is any good?" — the answer that separates engineers from vibers.',
+      front: '"How do you know your LLM judge is any good?"',
       back: 'Build a golden set: real examples labeled by humans. Measure judge–human agreement on it (accuracy or kappa) before deployment, and per-slice — a judge can be fine on average and broken on one category. Re-validate whenever the judge prompt or model changes. If judge–human agreement is no better than human–human agreement, the judge is fine; if you never measured either, you don’t have an eval, you have an oracle you chose to believe.',
     },
     {

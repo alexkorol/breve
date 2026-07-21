@@ -136,7 +136,7 @@ export const patternsBinsearch: Deck = {
       ],
       answer: 0,
       explanation:
-        'Binary search needs monotonic STRUCTURE, not sorted data — the rising direction guarantees a peak exists that way. A mind-expanding variant worth rehearsing aloud.',
+        'Binary search needs monotonic STRUCTURE, not sorted data — the rising direction guarantees a peak exists that way.',
     },
     {
       id: 'bs-sorting-recap',

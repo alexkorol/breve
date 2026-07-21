@@ -180,7 +180,7 @@ export const pyOopTesting: Deck = {
       ],
       answer: 0,
       explanation:
-        'Unit tests isolate YOUR logic from the network: fast, free, deterministic. Keep one thin integration test hitting the real API, run sparingly. Directly relevant to testing your judge and RAG code.',
+        'Unit tests isolate YOUR logic from the network: fast, free, deterministic. Keep one thin integration test hitting the real API, run sparingly.',
     },
   ],
 };

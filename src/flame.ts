@@ -74,3 +74,21 @@ export function crossedCheckpoint(before: number, after: number): number | undef
 export function dayIntensity(stats: Stats, key: string = dayKey()): number {
   return (stats.reviewsByDay[key] ?? 0) + (stats.readsByDay[key]?.length ?? 0);
 }
+
+/**
+ * The streak as it stood on a given day — consecutive active days ending
+ * there. History views use this so each day's flame keeps the color it
+ * actually burned at, instead of being repainted by the current streak.
+ */
+export function streakOnDay(stats: Stats, key: string): number {
+  let streak = 0;
+  const d = new Date(`${key}T00:00:00`);
+  let k = key;
+  while (dayIntensity(stats, k) > 0) {
+    streak++;
+    d.setDate(d.getDate() - 1);
+    k = dayKey(d);
+    if (streak > 3660) break; // sanity cap: ten years of unbroken streak
+  }
+  return streak;
+}

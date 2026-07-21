@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const finetuning: Deck = {
   id: 'finetuning',
   title: 'Fine-tuning & Training',
-  description: 'Own the LoRA story end to end — your Week 10 rebuild, pre-drilled.',
+  description: 'LoRA, QLoRA, data quality, and preference tuning, end to end.',
   icon: '🔧',
   color: '#818cf8',
   track: 'AI Engineering',
@@ -36,7 +36,7 @@ export const finetuning: Deck = {
       ],
       answer: 0,
       explanation:
-        'Adapters train in higher precision atop the 4-bit base; dequantize-on-the-fly during forward passes. This is exactly the lyric_gen_project setup — say "my QLoRA run" not "the QLoRA paper".',
+        'Adapters train in higher precision atop the 4-bit base; weights dequantize on the fly during forward passes. This is what makes single-GPU fine-tuning of 7B models practical.',
     },
     {
       id: 'ft-data-quality',
@@ -50,7 +50,7 @@ export const finetuning: Deck = {
       ],
       answer: 0,
       explanation:
-        'LIMA-style result: a small pristine set teaches behavior; noisy data teaches noise. Budget your effort on data curation over hyperparameters — the least glamorous, highest-ROI truth in fine-tuning.',
+        'LIMA-style result: a small pristine set teaches behavior; noisy data teaches noise. Data curation has higher ROI than hyperparameter tuning.',
     },
     {
       id: 'ft-format',
@@ -98,7 +98,7 @@ export const finetuning: Deck = {
       id: 'ft-eval-before',
       type: 'flash',
       front: 'The fine-tune workflow that survives scrutiny — where do evals sit?',
-      back: 'Before: baseline the un-tuned model on your task eval (maybe prompting already suffices — cheapest win). During: val loss curves for overfitting. After: task eval vs baseline, general-capability spot-check, side-by-side samples. Your own $0.25-eval-cancels-$144-run story is literally this principle — deploy it in every fine-tuning conversation.',
+      back: 'Before training: baseline the un-tuned model on your task eval — maybe prompting already suffices, which is the cheapest win. During: watch validation loss curves for overfitting. After: task eval versus the baseline, a general-capability spot-check, and side-by-side samples. A cheap eval run before an expensive training run regularly pays for itself by cancelling runs that were never going to work.',
     },
     {
       id: 'ft-merge-serve',
@@ -126,7 +126,7 @@ export const finetuning: Deck = {
       ],
       answer: 0,
       explanation:
-        'RLHF: train a reward model, then PPO against it — powerful, finicky. DPO collapses both stages into a classification-style loss. Your prosody best-of-N preference exhaust is exactly DPO-shaped data — that connection is a strong interview moment.',
+        'RLHF: train a reward model, then PPO against it — powerful but finicky. DPO collapses both stages into a classification-style loss. Any best-of-N selection data you already collect is DPO-shaped preference data.',
     },
     {
       id: 'ft-distill',
@@ -159,8 +159,30 @@ export const finetuning: Deck = {
     {
       id: 'ft-story',
       type: 'flash',
-      front: 'Rehearse: "Tell me about your fine-tuning experience" — the lyric_gen arc in 60 seconds.',
-      back: 'Shape it: goal (lyric generation in a controlled style) → method (QLoRA on a small open model — single-GPU economics) → data (curated pairs; quality over volume) → evaluation (the DeBERTa AI-ness classifier at 0.992 test accuracy as an automated judge, plus the spending-gate discipline) → lesson (eval-first: a $0.25 eval killed a $144 run before it wasted the money). End on the Week-10 plan: re-run it by hand to own the training loop line by line.',
+      front: 'Rehearse: "Tell me about your fine-tuning experience" — your strongest project, in 60 seconds.',
+      back: 'Shape the answer in five beats: the goal (what behavior the model had to learn and why prompting wasn’t enough), the method (e.g. QLoRA on a small open model and why that fit the budget), the data (where it came from, how it was curated — quality over volume), the evaluation (what you measured against the un-tuned baseline, ideally with an automated judge), and the lesson (what you would do differently). Concrete numbers — dataset size, eval scores, cost — make the story credible.',
+    },
+    {
+      id: 'ft-order-workflow',
+      type: 'order',
+      prompt: 'Order the steps of a defensible fine-tuning project.',
+      items: [
+        'Baseline the un-tuned model on a task eval',
+        'Curate and format the training data',
+        'Train, watching validation loss',
+        'Evaluate against the baseline + general spot-check',
+        'Merge or hot-swap the adapter for serving',
+      ],
+      explanation:
+        'The baseline comes first — without it you can’t prove the fine-tune helped, and sometimes it shows you don’t need one.',
+    },
+    {
+      id: 'ft-tf-facts',
+      type: 'tf',
+      prompt: 'Fine-tuning is the right tool for keeping a model’s knowledge of your product docs up to date.',
+      answer: false,
+      explanation:
+        'Facts belong in retrieval — they go stale in weights and can’t cite sources. Fine-tune for behavior, format, and style.',
     },
   ],
 };

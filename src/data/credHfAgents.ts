@@ -60,7 +60,7 @@ export const credHfAgents: Deck = {
       ],
       answer: 0,
       explanation:
-        'Same ReAct loop, different action format. JSON is safer and more portable; code is more expressive per step. Knowing when each fits is the interview-grade version of this card.',
+        'Same ReAct loop, different action format. JSON is safer and more portable; code is more expressive per step — pick per task.',
     },
     {
       id: 'hfa-tool-decorator',
@@ -98,7 +98,7 @@ export const credHfAgents: Deck = {
       ],
       answer: 0,
       explanation:
-        'Determinism where you want it, model freedom where you need it. This ties directly to your TCS LangGraph gap — you now have the when-and-why, not just the name.',
+        'Determinism where you want it, model freedom where you need it — that’s the argument for graphs over free-running loops.',
     },
     {
       id: 'hfa-agentic-rag',
@@ -118,7 +118,7 @@ export const credHfAgents: Deck = {
       id: 'hfa-observability',
       type: 'flash',
       front: 'The observability & evaluation bonus unit — what do you instrument on an agent?',
-      back: 'Trace every step: each thought, tool call, tool result, and token cost, linked by a run ID (OpenTelemetry-style tooling — Langfuse and friends). Evaluate at two levels: step level (did it pick sensible tools?) and task level (final success rate, cost per solved task, steps per task). Your prosody-judge cost tracking is the same discipline pointed at a different pipeline — say that in interviews.',
+      back: 'Trace every step: each thought, tool call, tool result, and token cost, linked by a run ID (OpenTelemetry-style tooling — Langfuse and friends). Evaluate at two levels: step level (did it pick sensible tools?) and task level (final success rate, cost per solved task, steps per task).',
     },
     {
       id: 'hfa-final-agent',
@@ -130,7 +130,7 @@ export const credHfAgents: Deck = {
       id: 'hfa-fc-finetune',
       type: 'flash',
       front: 'Bonus unit: fine-tuning for function calling — what actually happens?',
-      back: 'SFT (often LoRA) on conversations whose assistant turns contain structured tool calls — teaching the model the emit-a-call format natively instead of relying on prompt engineering. Worth doing for smaller local models that ignore tool instructions; pointless for frontier APIs that already do it. This connects your QLoRA experience (lyric_gen_project) to the agents story in one sentence.',
+      back: 'SFT (often LoRA) on conversations whose assistant turns contain structured tool calls — teaching the model the emit-a-call format natively instead of relying on prompt engineering. Worth doing for smaller local models that ignore tool instructions; pointless for frontier APIs that already do it.',
     },
   ],
 };

@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const fastapiServing: Deck = {
   id: 'fastapi-serving',
   title: 'FastAPI & Serving',
-  description: 'Own the API layer of your projects — the questions you got partial credit on.',
+  description: 'The API layer of an AI backend: validation, async, streaming, serving.',
   icon: '🚀',
   color: '#059669',
   track: 'AI Engineering',
@@ -11,7 +11,7 @@ export const fastapiServing: Deck = {
     {
       id: 'fa-one-breath',
       type: 'flash',
-      front: 'Describe FastAPI in one breath (and why your project used it).',
+      front: 'Describe FastAPI in one breath — and why AI backends pick it.',
       back: 'A modern async Python web framework built on ASGI. You declare types on endpoint parameters and Pydantic validates requests automatically; the same declarations generate interactive OpenAPI docs for free. Async-first, so one worker overlaps many slow LLM/database calls — which is exactly the workload of an AI backend.',
     },
     {
@@ -107,7 +107,7 @@ export const fastapiServing: Deck = {
       ],
       answer: 0,
       explanation:
-        'Add background_tasks: BackgroundTasks to the signature and .add_task(fn, args). For heavy or reliable-delivery work, graduate to a real queue (Celery/Redis) — say that boundary.',
+        'Add background_tasks: BackgroundTasks to the signature and .add_task(fn, args). For heavy or reliable-delivery work, graduate to a real queue (Celery/Redis).',
     },
     {
       id: 'fa-docs',
@@ -127,7 +127,7 @@ export const fastapiServing: Deck = {
       id: 'fa-rag-layer',
       type: 'flash',
       front: 'Interview: "Walk me through the API layer of your RAG app."',
-      back: 'POST /query takes a Pydantic model (question, top_k, filters). An auth dependency validates the caller. Handler: embed the question → retrieve top-k chunks → build the prompt → call the LLM with a timeout and one retry → stream the answer with citations via SSE. Plus GET /health for the load balancer, structured logs with a request ID per query, and 503 with a friendly message when the LLM provider is down. Practice saying this in under 60 seconds.',
+      back: 'POST /query takes a Pydantic model (question, top_k, filters). An auth dependency validates the caller. Handler: embed the question → retrieve top-k chunks → build the prompt → call the LLM with a timeout and one retry → stream the answer with citations via SSE. Plus GET /health for the load balancer, structured logs with a request ID per query, and 503 with a friendly message when the LLM provider is down.',
     },
   ],
 };

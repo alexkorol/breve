@@ -46,7 +46,7 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'LedgerLens is your worked example: countable uncertainty signals route ~1/3 of records, precision/recall of the ROUTING itself is measured. Cite it by name in design rounds.',
+        'The strong version: route on countable uncertainty signals (confidence scores, missing fields, conflicts) and measure the precision/recall of the routing itself.',
     },
     {
       id: 'sd-cache-layers',
@@ -74,7 +74,7 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'Model-agnostic plumbing (your OpenRouter pattern) makes the first rung nearly free. "What happens when the model is down?" is a favorite follow-up — have the ladder ready.',
+        'Model-agnostic plumbing (an OpenRouter-style gateway) makes the first rung nearly free. "What happens when the model is down?" is a favorite follow-up — have the ladder ready.',
     },
     {
       id: 'sd-latency-budget',
@@ -88,7 +88,7 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'Streaming converts "total latency" into "TTFT + reading speed". Budgeting per component, out loud, is what systems interviews want to hear.',
+        'Streaming converts "total latency" into "TTFT + reading speed". Budget the latency per component, not for the system as a whole.',
     },
     {
       id: 'sd-feedback-loop',
@@ -108,7 +108,7 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        '100k × 2k = 200M input ($600); 100k × 500 = 50M output ($750). Doing this arithmetic fluently — then immediately naming routing/caching as the levers — is a hiring signal.',
+        '100k × 2k = 200M input ($600); 100k × 500 = 50M output ($750). After the estimate, name routing and caching as the levers that bring it down.',
     },
     {
       id: 'sd-abuse',

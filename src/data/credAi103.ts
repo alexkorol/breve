@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const credAi103: Deck = {
   id: 'cred-ai103',
   title: 'AI-103: Azure AI Apps',
-  description: 'Azure AI Apps & Agents Developer Associate — your next credential.',
+  description: 'Azure AI Apps & Agents Developer Associate, scenario by scenario.',
   icon: '☁️',
   color: '#0078d4',
   track: 'Credentials',
@@ -11,13 +11,13 @@ export const credAi103: Deck = {
     {
       id: 'a103-what',
       type: 'flash',
-      front: 'What does AI-103 certify, and how does it fit your credential story?',
-      back: 'Microsoft Certified: Azure AI Apps and Agents Developer Associate — designing, developing, and deploying Azure AI solutions using Python and Microsoft Foundry. It’s the successor path now that AI-102 (which you renewed before its June 30, 2026 retirement) is sunset. The story to tell: "kept the old Azure AI credential current, moved into the new apps-and-agents credential."',
+      front: 'What does AI-103 certify, and how does it relate to AI-102?',
+      back: 'Microsoft Certified: Azure AI Apps and Agents Developer Associate — designing, developing, and deploying Azure AI solutions using Python and Microsoft Foundry. It’s the successor path to AI-102, which retired on June 30, 2026: the older cert covered the classic Azure AI services, while AI-103 centers on building apps and agents on top of Foundry.',
     },
     {
       id: 'a103-foundry-map',
       type: 'flash',
-      front: 'Recite your Foundry deployment map — the seven concepts in order.',
+      front: 'Recite the Foundry deployment map — the seven concepts in order.',
       back: 'Project (your workspace) → hub/resource (the Azure backing: quota, networking, keys) → model deployment (a catalog model instantiated under a deployment name) → endpoint (the URL your app calls) → auth (API key or Entra ID / managed identity) → evaluation (built-in eval runs over datasets) → monitoring (traces, token usage, content-filter hits). Every AI-103 scenario question lives somewhere on this map.',
     },
     {
@@ -67,7 +67,7 @@ export const credAi103: Deck = {
     {
       id: 'a103-tool-safety',
       type: 'mcq',
-      prompt: 'What makes a tool safe enough for an agent to call? (Your own agent-design lab.)',
+      prompt: 'What makes a tool safe enough for an agent to call?',
       choices: [
         'Constrained input/output schemas, least privilege, blocked-action list, audit logging, human approval for consequential actions',
         'A large model that rarely makes mistakes',
@@ -76,7 +76,7 @@ export const credAi103: Deck = {
       ],
       answer: 0,
       explanation:
-        'Your study-pack lab is the perfect concrete answer: an agent that can read signals and draft notes but cannot send messages, apply to jobs, or mark work complete — capability boundaries as design, not hope.',
+        'A concrete pattern: an agent that can read data and draft output but cannot send, purchase, or delete — capability boundaries as design, not hope.',
     },
     {
       id: 'a103-retrieve-vs-memory',
@@ -90,7 +90,7 @@ export const credAi103: Deck = {
       ],
       answer: 0,
       explanation:
-        'Model weights hold general knowledge with a cutoff; retrieval grounds answers in current, private, checkable sources. Same logic as your RAG-vs-fine-tuning card — Azure just calls it "knowledge connections."',
+        'Model weights hold general knowledge with a cutoff; retrieval grounds answers in current, private, checkable sources. Azure calls this "knowledge connections."',
     },
     {
       id: 'a103-eval-metrics',
@@ -130,7 +130,7 @@ export const credAi103: Deck = {
       ],
       answer: 0,
       explanation:
-        'You have the strongest possible personal answer here: LedgerLens routes on countable uncertainty signals with a 1.0/1.0 routing score. Cite it.',
+        'Routing on measurable uncertainty signals (low OCR confidence, missing fields, value conflicts) is the standard human-in-the-loop pattern for document pipelines.',
     },
     {
       id: 'a103-deploy-checklist',

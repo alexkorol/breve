@@ -48,6 +48,8 @@ const CARD_SCHEMA_DOC = `Card formats (every card needs a unique "id" string):
 - {"id","type":"mcq","prompt","choices":[4 strings],"answer":<index of correct choice>,"explanation"} — optional "code" string shown as a code block. Choices are shuffled at display time, so never write "all of the above".
 - {"id","type":"flash","front","back"} — back must be written as a model spoken answer the learner rehearses aloud (60 seconds, complete sentences, the way a strong candidate would say it).
 - {"id","type":"fill","prompt","code":<snippet containing ____ exactly once>,"answers":[accepted strings],"distractors":[3 wrong tokens],"explanation"}
+- {"id","type":"tf","prompt":<a statement to judge>,"answer":<true|false>,"explanation"} — optional "code". Make false statements plausibly wrong, not silly.
+- {"id","type":"order","prompt","items":[3-6 steps in CORRECT order],"explanation"} — steps/pipeline stages/code lines the learner arranges; they see them shuffled.
 Inline code in any text field uses backticks. Explanations are 1-2 sentences stating WHY.`;
 
 async function callForDeck(system: string, user: string): Promise<string> {
@@ -87,7 +89,7 @@ export async function generateDeck(
   const system = `You create spaced-repetition decks for Breve, an interview-prep app. Respond with ONLY a JSON object, no prose:
 {"id":"<kebab-case, prefixed gen->","title":"<max 28 chars>","description":"<one line>","icon":"<one emoji>","color":"<hex>","cards":[...]}
 ${CARD_SCHEMA_DOC}
-Mix card types (~40% mcq, ~35% flash, ~25% fill when code is relevant; skip fill for non-code material). Card ids share the deck's prefix. Target difficulty: ${opts.difficulty}. Write questions that test understanding and interview-readiness, not trivia. Ground every card in the provided material; if the material names specific technologies, drill those.`;
+Mix card types (~35% mcq, ~30% flash, ~15% fill when code is relevant, ~10% tf, ~10% order; skip fill for non-code material). Card ids share the deck's prefix. Target difficulty: ${opts.difficulty}. Write questions that test understanding and interview-readiness, not trivia. Ground every card in the provided material; if the material names specific technologies, drill those.`;
 
   const user = `Create a ${opts.count}-card deck from this material:\n\n<material>\n${source.slice(0, 60000)}\n</material>`;
 

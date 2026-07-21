@@ -53,6 +53,14 @@ export const sqlInterview: Deck = {
       back: 'FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. This explains the classics: why WHERE can’t see aggregates (runs before GROUP BY) and why column aliases from SELECT can’t be used in WHERE (SELECT runs later).',
     },
     {
+      id: 'sql-order-exec',
+      type: 'order',
+      prompt: 'Arrange the logical execution order of a SQL query.',
+      items: ['FROM / JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'SELECT', 'ORDER BY / LIMIT'],
+      explanation:
+        'Written order ≠ execution order — this is why WHERE can’t see aggregates and SELECT aliases don’t exist yet in WHERE.',
+    },
+    {
       id: 'sql-second-highest',
       type: 'fill',
       prompt: 'The classic: second-highest salary.',

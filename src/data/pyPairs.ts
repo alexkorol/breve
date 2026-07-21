@@ -12,7 +12,7 @@ export const pyPairs: Deck = {
       id: 'pp-restate-habit',
       type: 'flash',
       front: 'THE habit for coding questions under pressure — what do you do before typing any code?',
-      back: 'Restate the problem in your own words, then walk one concrete example by hand ("so [1,5] and [3,7] overlap because 3 ≤ 5, giving [1,7]…"). It confirms understanding with the interviewer, surfaces edge cases, buys composure, and hands you the test case you’ll verify against. Every practice session starts with this — no exceptions.',
+      back: 'Restate the problem in your own words, then walk one concrete example by hand ("so [1,5] and [3,7] overlap because 3 ≤ 5, giving [1,7]…"). It confirms understanding with the interviewer, surfaces edge cases, buys composure, and hands you the test case you’ll verify against.',
     },
     {
       id: 'pp-dict-pairs',
@@ -55,7 +55,7 @@ export const pyPairs: Deck = {
       answers: ['*'],
       distractors: ['**', 'iter, ', 'unpack '],
       explanation:
-        'The * unpacks the list so zip receives each pair as a separate argument: zip((1,5), (3,7)) → (1,3), (5,7). "zip-star" — say it, know it.',
+        'The * unpacks the list so zip receives each pair as a separate argument: zip((1,5), (3,7)) → (1,3), (5,7).',
     },
     {
       id: 'pp-group',
@@ -143,7 +143,7 @@ export const pyPairs: Deck = {
       id: 'pp-toolkit',
       type: 'flash',
       front: 'A "transform this list of pairs" question appears. Run the mental checklist.',
-      back: 'Ask in order: 1) Does ORDER matter? → sort with a key first. 2) Am I GROUPING or looking up? → defaultdict/dict. 3) AGGREGATING? → Counter, sum, max(key=). 4) Restructuring? → zip(*pairs), comprehension. Then restate the problem + one worked example, and only then code. The TCS-style exercise is always some combination of these four moves.',
+      back: 'Ask in order: 1) Does ORDER matter? → sort with a key first. 2) Am I GROUPING or looking up? → defaultdict/dict. 3) AGGREGATING? → Counter, sum, max(key=). 4) Restructuring? → zip(*pairs), comprehension. Then restate the problem + one worked example, and only then code. Screening exercises are almost always some combination of these four moves.',
     },
   ],
 };

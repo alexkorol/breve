@@ -8,12 +8,120 @@ import {
   setSetting,
   daysSinceBackup,
 } from '../storage';
+import type { GiftGrant } from '../membership';
+import { loadPlan, remainingDays, createGiftGrants, savePlan } from '../membership';
 
 interface Props {
   state: AppState;
   onImport: (state: AppState) => void;
   onHidePersonalChange: (hidden: boolean) => void;
   onBack: () => void;
+}
+
+/**
+ * "I met my goal" — a paid user who no longer needs the app (got the job)
+ * gifts the remainder of their membership to one or more friends.
+ * Hidden entirely on the free tier, so it stays invisible until payments ship.
+ */
+function MembershipSection() {
+  const [plan, setPlan] = useState(loadPlan);
+  const [gifting, setGifting] = useState(false);
+  const [recipients, setRecipients] = useState<string[]>(['']);
+  const [grants, setGrants] = useState<GiftGrant[]>([]);
+  if (plan.tier !== 'paid') return null;
+
+  const days = remainingDays(plan);
+  const done = grants.length > 0;
+
+  const sendGifts = () => {
+    const created = createGiftGrants(plan, recipients);
+    if (created.length === 0) return;
+    setGrants(created);
+    // The sender's remaining term is transferred away.
+    savePlan({ tier: 'free' });
+    setPlan({ tier: 'free' });
+  };
+
+  const shareGrant = async (g: GiftGrant) => {
+    const text = `I met my goal with Breve — passing my membership on to you: ${g.days} days, code ${g.code}`;
+    if (navigator.share) await navigator.share({ text }).catch(() => undefined);
+    else await navigator.clipboard?.writeText(text);
+  };
+
+  return (
+    <section className="stats-section">
+      <h3>Membership</h3>
+      {!gifting ? (
+        <div className="setting-row">
+          <div className="setting-text">
+            <strong>I met my goal 🎁</strong>
+            <p>
+              Got the job? Gift the {days} days left on your membership to one or more friends —
+              split evenly between them.
+            </p>
+          </div>
+          <button className="btn ghost" onClick={() => setGifting(true)}>
+            Gift it
+          </button>
+        </div>
+      ) : !done ? (
+        <>
+          <p className="chart-note">
+            {days} days left to give. Add one or more recipients — each gets an equal share, and
+            your own membership ends when you send.
+          </p>
+          <div className="gift-recipients">
+            {recipients.map((r, i) => (
+              <div key={i} className="gift-recipient-row">
+                <input
+                  placeholder="Friend’s name or email"
+                  value={r}
+                  onChange={(e) =>
+                    setRecipients((prev) => prev.map((p, j) => (j === i ? e.target.value : p)))
+                  }
+                />
+                {recipients.length > 1 && (
+                  <button
+                    className="icon-btn"
+                    aria-label="Remove recipient"
+                    onClick={() => setRecipients((prev) => prev.filter((_, j) => j !== i))}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <button className="link-btn" onClick={() => setRecipients((prev) => [...prev, ''])}>
+            + Add another recipient
+          </button>
+          <button
+            className="btn primary block"
+            disabled={recipients.every((r) => !r.trim())}
+            onClick={sendGifts}
+          >
+            Send my membership as a gift
+          </button>
+          <button className="btn ghost block" onClick={() => setGifting(false)}>
+            Cancel
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="chart-note">
+            Done — your membership has been passed on. Share each code with its recipient:
+          </p>
+          <div className="gift-codes">
+            {grants.map((g) => (
+              <button key={g.code} className="btn ghost" onClick={() => void shareGrant(g)}>
+                {g.recipient}: {g.code} · {g.days} days — tap to share
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  );
 }
 
 function Toggle({ name, label, hint, onChange }: { name: string; label: string; hint: string; onChange?: (on: boolean) => void }) {
@@ -71,6 +179,8 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
         <button className="icon-btn" onClick={onBack} aria-label="Back">←</button>
         <span className="detail-track">⚙️ Settings</span>
       </header>
+
+      <MembershipSection />
 
       <section className="stats-section">
         <h3>Claude API (powers generation, grading, postmortems)</h3>

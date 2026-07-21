@@ -20,7 +20,7 @@ export const statsProb: Deck = {
       ],
       answer: 0,
       explanation:
-        'Mean ≫ median is itself a skew diagnostic. Same reasoning as median imputation in your data-cleaning deck — one idea, two applications.',
+        'Mean ≫ median is itself a skew diagnostic. Same reasoning as median imputation — one idea, two applications.',
     },
     {
       id: 'sp-std',
@@ -148,13 +148,13 @@ export const statsProb: Deck = {
       ],
       answer: 0,
       explanation:
-        'Survivorship and self-selection distort any inference. Fix: sample from the actual user population, weight by usage. Ties to the sampling-bias card in your bias deck.',
+        'Survivorship and self-selection distort any inference. Fix: sample from the actual user population, weight by usage.',
     },
     {
       id: 'sp-bootstrap',
       type: 'flash',
       front: 'The bootstrap — how do you get a confidence interval with no formula?',
-      back: 'Resample your dataset WITH replacement thousands of times, compute the statistic on each resample, and read the interval off the percentiles (2.5th–97.5th for 95%). Works for medians, ratios, model metrics — anything. This is the practical answer to "how confident are you in that eval score?" for your judge experiments.',
+      back: 'Resample your dataset WITH replacement thousands of times, compute the statistic on each resample, and read the interval off the percentiles (2.5th–97.5th for 95%). Works for medians, ratios, model metrics — anything. It’s the practical answer to "how confident are you in that eval score?"',
     },
     {
       id: 'sp-distributions',

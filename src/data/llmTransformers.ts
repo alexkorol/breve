@@ -22,7 +22,7 @@ export const llmTransformers: Deck = {
       answers: ['d_k'],
       distractors: ['n', 'd_model', 'h'],
       explanation:
-        'd_k is the key dimension. Write this on a whiteboard without hesitation — it is the "reverse a linked list" of ML interviews.',
+        'd_k is the key dimension. This formula is the "reverse a linked list" of ML interviews — expect to produce it on demand.',
     },
     {
       id: 'llm-sqrt-dk',
@@ -111,6 +111,27 @@ export const llmTransformers: Deck = {
       answer: 0,
       explanation:
         'Temperature rescales logits before softmax. Low T for extraction and code, higher T for brainstorming. (top_p trims the tail — tune one, not both.)',
+    },
+    {
+      id: 'llm-tf-temp0',
+      type: 'tf',
+      prompt: 'Temperature 0 guarantees bit-identical outputs for the same prompt, every time.',
+      answer: false,
+      explanation:
+        'T=0 is greedy decoding, but floating-point non-determinism and infra differences still cause occasional variation — don’t promise exact reproducibility.',
+    },
+    {
+      id: 'llm-order-pipeline',
+      type: 'order',
+      prompt: 'Order the LLM training pipeline stages.',
+      items: [
+        'Pretraining: next-token prediction at web scale',
+        'SFT on instruction–response pairs',
+        'Preference tuning (RLHF or DPO)',
+        'Deployment with system prompts and guardrails',
+      ],
+      explanation:
+        'Capability first, then instruction-following behavior, then preference alignment — deployment-time prompting sits on top of all three.',
     },
     {
       id: 'llm-kv-cache',

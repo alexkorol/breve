@@ -98,7 +98,7 @@ export const sklearnWorkflow: Deck = {
       ],
       answer: 0,
       explanation:
-        'Cost-sensitive decisions (fraud, medical) tune the threshold on validation probabilities. Default 0.5 is a convention, not a law — saying so connects straight to your precision/recall cards.',
+        'Cost-sensitive decisions (fraud, medical) tune the threshold on validation probabilities. Default 0.5 is a convention, not a law.',
     },
     {
       id: 'sk-classification-report',
@@ -150,7 +150,7 @@ export const sklearnWorkflow: Deck = {
       ],
       answer: 0,
       explanation:
-        'Serializing the full pipeline guarantees serving applies byte-identical preprocessing. Re-implementing transforms in the API layer is where train/serve skew is born — connect this to your FastAPI deck.',
+        'Serializing the full pipeline guarantees serving applies byte-identical preprocessing. Re-implementing transforms in the API layer is where train/serve skew is born.',
     },
   ],
 };

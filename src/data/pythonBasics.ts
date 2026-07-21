@@ -92,6 +92,22 @@ export const pythonBasics: Deck = {
       explanation: 'range(start, stop, step) excludes stop: 1, 3, 5, 7, 9.',
     },
     {
+      id: 'pyb-tf-tuple',
+      type: 'tf',
+      prompt: 'A tuple can be used as a dictionary key.',
+      answer: true,
+      explanation:
+        'Tuples are immutable and hashable (as long as their contents are), so they work as keys — lists don’t.',
+    },
+    {
+      id: 'pyb-tf-strconcat',
+      type: 'tf',
+      prompt: '`sorted(my_list)` modifies my_list in place.',
+      answer: false,
+      explanation:
+        'sorted() returns a NEW list and works on any iterable; my_list.sort() is the in-place version (and returns None).',
+    },
+    {
       id: 'pyb-copy',
       type: 'flash',
       front: 'Shallow copy vs deep copy — what is the difference?',

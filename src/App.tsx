@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { AppState, Card, Deck } from './types';
+import type { AppState, Card, CardKind, Deck } from './types';
 import type { Grade } from './srs';
 import { applyGrade, newProgress } from './srs';
 import {
@@ -36,7 +36,7 @@ type View =
   | { name: 'postmortem' }
   | { name: 'deck'; deckId: string }
   | { name: 'browse'; deckId: string }
-  | { name: 'study'; deckId: string };
+  | { name: 'study'; deckId: string; kind?: CardKind };
 
 export default function App() {
   const [state, setState] = useState<AppState>(loadState);
@@ -212,6 +212,11 @@ export default function App() {
           deck={deck}
           progress={state.progress}
           forceAll={view.deckId === WEAK_ID}
+          options={{
+            kind: view.kind,
+            // Daily Review never introduces new cards — it can only shrink.
+            includeNew: view.deckId !== DAILY_REVIEW_ID,
+          }}
           reviewsToday={reviewsToday}
           onReview={recordReview}
           onExit={() => setView(back)}
@@ -314,8 +319,10 @@ export default function App() {
       onOpenSettings={() => setView({ name: 'settings' })}
       onOpenGenerate={() => setView({ name: 'generate' })}
       onOpenPostmortem={() => setView({ name: 'postmortem' })}
-      onOpenDeck={(deckId) =>
-        setView(deckId === DAILY_REVIEW_ID ? { name: 'study', deckId } : { name: 'deck', deckId })
+      onOpenDeck={(deckId, kind) =>
+        setView(
+          deckId === DAILY_REVIEW_ID ? { name: 'study', deckId, kind } : { name: 'deck', deckId },
+        )
       }
     />
   );

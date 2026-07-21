@@ -63,7 +63,7 @@ export const pyGotchas: Deck = {
       answers: ['None'],
       distractors: ['[]', 'Empty', 'False'],
       explanation:
-        'Sentinel None + create inside — the standard fix for the shared-default-list gotcha you already drill in Fundamentals.',
+        'Sentinel None + create inside — the standard fix for the shared-default-list gotcha.',
     },
     {
       id: 'gt-copy-slice',

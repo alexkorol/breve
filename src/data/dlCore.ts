@@ -115,7 +115,7 @@ export const dlCore: Deck = {
       ],
       answer: 0,
       explanation:
-        'Ramp the LR from ~0 over the first few thousand steps, then decay (cosine is common). "Warmup + cosine decay with AdamW" is the stock recipe worth saying verbatim.',
+        'Ramp the LR from ~0 over the first few thousand steps, then decay (cosine is common). "Warmup + cosine decay with AdamW" is the stock recipe.',
     },
     {
       id: 'dl-overfit-toolkit',

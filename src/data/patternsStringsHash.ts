@@ -56,7 +56,7 @@ export const patternsStringsHash: Deck = {
       id: 'sh-longest-substr',
       type: 'flash',
       front: 'Longest substring without repeating characters — the sliding window + set dance.',
-      back: 'Window [left, right] with a set of chars inside. Advance right each step; while s[right] is already in the set, remove s[left] and advance left. Track max window size. Each char enters and leaves the window at most once — O(n). This is THE canonical sliding-window-with-state problem; whiteboard it monthly.',
+      back: 'Window [left, right] with a set of chars inside. Advance right each step; while s[right] is already in the set, remove s[left] and advance left. Track max window size. Each char enters and leaves the window at most once — O(n). This is THE canonical sliding-window-with-state problem.',
     },
     {
       id: 'sh-window-counts',

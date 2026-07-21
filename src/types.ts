@@ -1,4 +1,4 @@
-export type CardType = 'mcq' | 'flash' | 'fill';
+export type CardType = 'mcq' | 'flash' | 'fill' | 'tf' | 'order';
 
 interface BaseCard {
   id: string;
@@ -38,7 +38,36 @@ export interface FillCard extends BaseCard {
   explanation?: string;
 }
 
-export type Card = McqCard | FlashCard | FillCard;
+/** True/false statement — the fastest quick-check format. */
+export interface TfCard extends BaseCard {
+  type: 'tf';
+  prompt: string;
+  answer: boolean;
+  explanation?: string;
+}
+
+/**
+ * Arrange-in-order (Parsons-style): tap shuffled steps/lines into sequence.
+ * `items` is stored in the correct order.
+ */
+export interface OrderCard extends BaseCard {
+  type: 'order';
+  prompt: string;
+  items: string[];
+  explanation?: string;
+}
+
+export type Card = McqCard | FlashCard | FillCard | TfCard | OrderCard;
+
+/**
+ * Quick cards (tap-to-answer: mcq/fill/tf/order) and longform cards
+ * (open-ended flash drills) are practiced in separate groups.
+ */
+export type CardKind = 'quick' | 'longform';
+
+export function cardKind(card: Card): CardKind {
+  return card.type === 'flash' ? 'longform' : 'quick';
+}
 
 export interface Deck {
   id: string;

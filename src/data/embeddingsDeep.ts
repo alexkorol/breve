@@ -93,7 +93,7 @@ export const embeddingsDeep: Deck = {
     {
       id: 'ed-eval-retrieval',
       type: 'flash',
-      front: 'Build a retrieval eval set for SongCraft with no labeling budget — how?',
+      front: 'Build a retrieval eval set for your RAG app with no labeling budget — how?',
       back: 'Synthetic Q&A generation: for a sample of chunks, have an LLM write a question each chunk answers — (question, gold-chunk) pairs for free. Measure recall@k and MRR over them; spot-check quality by hand. Now chunking changes, embedding-model swaps, and hybrid weights are MEASURED. Also the honest caveat: synthetic questions are easier than real user questions — keep a small human-written set as the anchor.',
     },
     {
@@ -108,7 +108,7 @@ export const embeddingsDeep: Deck = {
       ],
       answer: 0,
       explanation:
-        'Prepending the section path ("Ch 3 > Rhyme Schemes > …") to each chunk is the highest-ROI chunking upgrade — context travels with the chunk.',
+        'Prepending the section path ("Ch 3 > Error Handling > …") to each chunk is the highest-ROI chunking upgrade — context travels with the chunk.',
     },
     {
       id: 'ed-query-transform',
@@ -136,7 +136,15 @@ export const embeddingsDeep: Deck = {
       ],
       answer: 0,
       explanation:
-        'Matryoshka embeddings let you truncate one model to multiple sizes. Your bge-small-at-384 choice is a defensible cost/quality point — defend it with this card.',
+        'Matryoshka embeddings let you truncate one model to multiple sizes. A small model at 384 dims is often a defensible cost/quality point for a narrow domain — know why yours is.',
+    },
+    {
+      id: 'ed-tf-bm25',
+      type: 'tf',
+      prompt: 'A good embedding model makes BM25 keyword search obsolete.',
+      answer: false,
+      explanation:
+        'BM25 still wins on exact identifiers — error codes, SKUs, rare jargon. That’s why hybrid search exists.',
     },
     {
       id: 'ed-drift',

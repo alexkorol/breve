@@ -12,7 +12,7 @@ export const patternsLinked: Deck = {
       id: 'lk-reverse',
       type: 'flash',
       front: 'Reverse a linked list — recite the loop, name the pointers.',
-      back: 'prev = None; curr = head; while curr: nxt = curr.next; curr.next = prev; prev = curr; curr = nxt; return prev. Three pointers, four assignments per step, save nxt BEFORE rewiring. This is the push-up of interview coding — do it until boring.',
+      back: 'prev = None; curr = head; while curr: nxt = curr.next; curr.next = prev; prev = curr; curr = nxt; return prev. Three pointers, four assignments per step, save nxt BEFORE rewiring.',
     },
     {
       id: 'lk-reverse-order',
@@ -26,7 +26,7 @@ export const patternsLinked: Deck = {
       ],
       answer: 0,
       explanation:
-        'The rest of the list is reachable only through curr.next — save the lifeline before cutting it. Say this reasoning aloud while coding.',
+        'The rest of the list is reachable only through curr.next — save the lifeline before cutting it.',
     },
     {
       id: 'lk-fast-slow',

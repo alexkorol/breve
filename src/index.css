@@ -1506,3 +1506,167 @@ button {
   margin: 0 0 16px;
   color: var(--text-dim);
 }
+
+/* ---------- Daily review quick/drill split ---------- */
+
+.review-split {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- True/false cards ---------- */
+
+.choices.tf-row {
+  flex-direction: row;
+  gap: 10px;
+}
+
+.tf-choice {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 18px 12px;
+}
+
+/* ---------- Arrange-in-order cards ---------- */
+
+.order-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 52px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.order-hint {
+  margin: 0;
+  align-self: center;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.order-bank {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: var(--bg-raised);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  transition: border-color 0.12s ease, transform 0.08s ease;
+}
+
+.order-step:not(:disabled):active {
+  transform: scale(0.98);
+  border-color: var(--accent);
+}
+
+.order-step.correct {
+  border-color: var(--green);
+  background: rgba(63, 185, 80, 0.1);
+}
+
+.order-step.wrong {
+  border-color: var(--red);
+  background: rgba(248, 81, 73, 0.1);
+}
+
+.order-num {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.order-answer {
+  margin: 12px 0 0;
+  padding-left: 24px;
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---------- Month flame calendar ---------- */
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px 2px;
+  justify-items: center;
+  align-items: end;
+}
+
+.month-head {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.month-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.month-cell.future {
+  opacity: 0.35;
+}
+
+.month-day {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+/* ---------- Membership / gift flow ---------- */
+
+.gift-recipients {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.gift-recipient-row {
+  display: flex;
+  gap: 8px;
+}
+
+.gift-recipient-row input {
+  flex: 1;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.gift-codes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 13px;
+}

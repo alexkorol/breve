@@ -120,7 +120,7 @@ export const inferenceOpt: Deck = {
       ],
       answer: 0,
       explanation:
-        'A classifier (or heuristics, or cascade-with-fallback) decides difficulty. Your OpenRouter model-agnostic design is the enabling architecture — connect the two in interviews.',
+        'A classifier (or heuristics, or cascade-with-fallback) decides difficulty. A model-agnostic gateway layer is what makes routing cheap to add later.',
     },
     {
       id: 'io-streaming-sse',
@@ -134,7 +134,7 @@ export const inferenceOpt: Deck = {
       ],
       answer: 0,
       explanation:
-        'The full answer might take 15s; the first sentence takes 1s. SSE via FastAPI’s StreamingResponse — the serving detail that ties this deck to your FastAPI one.',
+        'The full answer might take 15s; the first sentence takes 1s. In FastAPI this is SSE via StreamingResponse.',
     },
     {
       id: 'io-local-vs-api',
@@ -154,7 +154,7 @@ export const inferenceOpt: Deck = {
       ],
       answer: 0,
       explanation:
-        'Bounded concurrency + backoff is exactly your prosody-judge batch design — the same semaphore logic, productionized. Fallback answers ("try again shortly") beat hanging spinners.',
+        'Bounded concurrency (a semaphore) plus backoff is the standard batch-client design. Fallback answers ("try again shortly") beat hanging spinners.',
     },
   ],
 };

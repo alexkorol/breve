@@ -10,6 +10,7 @@ import {
   flameTier,
   intensityLevel,
   nextFlameTier,
+  streakOnDay,
 } from '../flame';
 import { Flame } from './Flame';
 
@@ -28,6 +29,19 @@ function lastNDays(n: number): { key: string; label: string }[] {
     days.push({ key: dayKey(d), label: 'SMTWTFS'[d.getDay()] });
   }
   return days;
+}
+
+/** Calendar cells for the current month, Monday-start; null = leading blank. */
+function monthCells(): (string | null)[] {
+  const now = new Date();
+  const first = new Date(now.getFullYear(), now.getMonth(), 1);
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const lead = (first.getDay() + 6) % 7;
+  const cells: (string | null)[] = Array.from({ length: lead }, () => null);
+  for (let day = 1; day <= daysInMonth; day++) {
+    cells.push(dayKey(new Date(now.getFullYear(), now.getMonth(), day)));
+  }
+  return cells;
 }
 
 function cardTitle(card: Card): string {
@@ -165,8 +179,9 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
             return (
               <div key={d.key} className={`bar-col ${n >= DAILY_GOAL ? 'goal-day' : ''}`}>
                 <span className="flame-graph-slot" title={`${d.key}: ${n}`}>
+                  {/* Color snapshots to the streak as of that day, not today's. */}
                   <Flame
-                    streak={n > 0 ? state.stats.streak || 1 : 0}
+                    streak={streakOnDay(state.stats, d.key)}
                     intensity={n}
                     size={12 + Math.round(22 * intensityLevel(n))}
                   />
@@ -179,6 +194,38 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
         <p className="chart-note">
           Bigger, brighter flames = more intense days. Underlined days hit the {DAILY_GOAL}-review
           goal.
+        </p>
+      </section>
+
+      <section className="stats-section">
+        <h3>
+          {new Date().toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+        </h3>
+        <div className="month-grid" role="img" aria-label="Study flames for each day this month">
+          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((label, i) => (
+            <span key={`h${i}`} className="month-head">
+              {label}
+            </span>
+          ))}
+          {monthCells().map((key, i) => {
+            if (!key) return <span key={`b${i}`} />;
+            const n = dayIntensity(state.stats, key);
+            const future = key > dayKey();
+            return (
+              <span key={key} className={`month-cell ${future ? 'future' : ''}`} title={`${key}: ${n}`}>
+                <Flame
+                  streak={streakOnDay(state.stats, key)}
+                  intensity={n}
+                  size={12 + Math.round(12 * intensityLevel(n))}
+                />
+                <span className="month-day">{Number(key.slice(-2))}</span>
+              </span>
+            );
+          })}
+        </div>
+        <p className="chart-note">
+          Each day keeps the flame color it actually burned at — watch the month heat up as the
+          streak climbs.
         </p>
       </section>
 

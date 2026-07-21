@@ -85,6 +85,17 @@ function validCard(c: unknown): c is Card {
       Array.isArray(card.distractors)
     );
   }
+  if (card.type === 'tf') {
+    return typeof card.prompt === 'string' && typeof card.answer === 'boolean';
+  }
+  if (card.type === 'order') {
+    return (
+      typeof card.prompt === 'string' &&
+      Array.isArray(card.items) &&
+      card.items.length >= 2 &&
+      (card.items as unknown[]).every((i) => typeof i === 'string')
+    );
+  }
   return false;
 }
 

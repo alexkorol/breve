@@ -40,7 +40,7 @@ export const azureAiServices: Deck = {
       ],
       answer: 0,
       explanation:
-        'Prebuilt models (invoice, receipt, ID) ship trained; custom models fine-tune on ~5 labeled samples. Your LedgerLens experience maps directly — Azure just hosts the extractor role.',
+        'Prebuilt models (invoice, receipt, ID) ship trained; custom models fine-tune on as few as ~5 labeled samples when your layout defies the prebuilts.',
     },
     {
       id: 'az-content-safety',
@@ -92,7 +92,7 @@ export const azureAiServices: Deck = {
       ],
       answer: 0,
       explanation:
-        'The managed counterpart to your LangGraph knowledge: same concepts (state, tools, routing), platform-hosted. Exam scenarios test "when managed service vs custom code" — answer: compliance/speed vs control.',
+        'The managed counterpart to a hand-rolled LangGraph loop: same concepts (state, tools, routing), platform-hosted. Exam scenarios test "when managed service vs custom code" — answer: compliance/speed vs control.',
     },
     {
       id: 'az-eval-foundry',
@@ -106,7 +106,7 @@ export const azureAiServices: Deck = {
       ],
       answer: 0,
       explanation:
-        'AI-assisted metrics (an LLM judge under the hood — your specialty) plus traditional ones. Wiring evals into CI/CD before promotion is the pattern the exam rewards.',
+        'AI-assisted metrics (an LLM judge under the hood) plus traditional ones. Wiring evals into CI/CD before promotion is the pattern the exam rewards.',
     },
     {
       id: 'az-language-custom',
@@ -134,7 +134,7 @@ export const azureAiServices: Deck = {
       ],
       answer: 0,
       explanation:
-        'OpenTelemetry-based tracing shows each step of the agent loop — the Azure flavor of the observability you drill in the HF Agents deck.',
+        'OpenTelemetry-based tracing shows each step of the agent loop — thoughts, tool calls, and cost, linked per run.',
     },
     {
       id: 'az-regions-data',
@@ -153,8 +153,8 @@ export const azureAiServices: Deck = {
     {
       id: 'az-applied-skills',
       type: 'flash',
-      front: 'Your credential ladder and the quick wins along the way — recite the plan.',
-      back: 'AI-102 renewed (expires June 2027) → AI-103 Azure AI Apps & Agents Developer as the main target → Microsoft Applied Skills badges (Foundry generative chat app; Foundry agents) as fast public proof DURING AI-103 prep — each produces a portfolio artifact. MLOps Engineer Associate and AZ-104 stay on the radar, triggered only by matching job signals. Every badge maps to a portfolio project story.',
+      front: 'Azure credential ladder for an AI engineer — what stacks, in what order?',
+      back: 'AI-103 (Azure AI Apps & Agents Developer) is the core credential. Microsoft Applied Skills badges — the Foundry generative chat app and Foundry agents labs — are fast public proof you can earn during exam prep, and each produces a portfolio artifact. Broader certs like the MLOps Engineer Associate or AZ-104 are worth adding only when job postings you care about ask for them. A badge is most valuable when it maps to a project you can talk about.',
     },
   ],
 };

@@ -134,7 +134,7 @@ export const bigO: Deck = {
       ],
       answer: 0,
       explanation:
-        'Immutable strings copy on every concat: 1+2+…+n ≈ n²/2. The list-and-join idiom is the fix — and a great unprompted remark.',
+        'Immutable strings copy on every concat: 1+2+…+n ≈ n²/2. The list-and-join idiom is the fix.',
     },
     {
       id: 'bo-graph',
@@ -173,6 +173,14 @@ export const bigO: Deck = {
       answer: 0,
       explanation:
         'Early exit improves the best case but the fail might be last or absent, so the stated complexity stays O(n). Constants like n/2 get dropped anyway.',
+    },
+    {
+      id: 'bo-order-growth',
+      type: 'order',
+      prompt: 'Arrange from slowest-growing (fastest algorithm) to fastest-growing.',
+      items: ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)', 'O(n²)', 'O(2ⁿ)'],
+      explanation:
+        'The canonical growth ladder. Everything between n and n² is where most real interview answers live.',
     },
     {
       id: 'bo-justify',

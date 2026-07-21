@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
-import type { AppState, CardProgress, Deck, Stats } from '../types';
+import type { AppState, CardKind, CardProgress, Deck, Stats } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts, DAILY_GOAL } from '../session';
 import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
 import { exportReport, daysSinceReport } from '../report';
 import { DAILY_REVIEW_ID } from '../data';
 import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
-import { dayIntensity, flameTier, intensityLevel } from '../flame';
+import { dayIntensity, flameTier, intensityLevel, streakOnDay } from '../flame';
 import { Flame } from './Flame';
 
 const TRACKS_KEY = 'breve:ui:tracks';
@@ -18,7 +18,7 @@ interface Props {
   pendingShared: Deck | null;
   onAcceptShared: () => void;
   onDismissShared: () => void;
-  onOpenDeck: (deckId: string) => void;
+  onOpenDeck: (deckId: string, kind?: CardKind) => void;
   onOpenStats: () => void;
   onOpenSettings: () => void;
   onOpenGenerate: () => void;
@@ -73,7 +73,8 @@ function WeekFlames({ stats }: { stats: Stats }) {
         return (
           <div key={i} className={`week-dot ${isToday ? 'today' : ''} ${isFuture ? 'future' : ''}`}>
             <span className="week-flame-slot" title={`${key}: ${n}`}>
-              <Flame streak={n > 0 ? stats.streak || 1 : 0} intensity={n} size={14 + Math.round(10 * intensityLevel(n))} />
+              {/* Color snapshots to the streak as of that day, not today's. */}
+              <Flame streak={streakOnDay(stats, key)} intensity={n} size={14 + Math.round(10 * intensityLevel(n))} />
             </span>
             <span className="week-dot-label">{label}</span>
           </div>
@@ -192,6 +193,9 @@ export function Home({
     },
     { due: 0, fresh: 0 },
   );
+  // Daily Review splits into quick taps (mcq/fill/tf/order) and longform drills.
+  const quickDue = decks.reduce((n, d) => n + deckCounts(d, state.progress, Date.now(), 'quick').due, 0);
+  const drillDue = totals.due - quickDue;
   const freshest = [...decks].sort(
     (a, b) => deckCounts(b, state.progress).fresh - deckCounts(a, state.progress).fresh,
   )[0];
@@ -281,9 +285,21 @@ export function Home({
               <p>
                 {totals.due} card{totals.due === 1 ? '' : 's'} due across your decks
               </p>
-              <button className="btn primary" onClick={() => onOpenDeck(DAILY_REVIEW_ID)}>
-                Review now
-              </button>
+              <div className="review-split">
+                {quickDue > 0 && (
+                  <button className="btn primary" onClick={() => onOpenDeck(DAILY_REVIEW_ID, 'quick')}>
+                    ⚡ Quick quiz · {quickDue}
+                  </button>
+                )}
+                {drillDue > 0 && (
+                  <button
+                    className={`btn ${quickDue > 0 ? 'ghost' : 'primary'}`}
+                    onClick={() => onOpenDeck(DAILY_REVIEW_ID, 'longform')}
+                  >
+                    🎙️ Drills · {drillDue}
+                  </button>
+                )}
+              </div>
             </>
           ) : freshestCount > 0 ? (
             <>

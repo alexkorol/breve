@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const featureEng: Deck = {
   id: 'feature-eng',
   title: 'Features & Model Selection',
-  description: 'Structuring a model project — the exact gap from the TCS debrief.',
+  description: 'Structuring a model project: baselines, features, selection, drift.',
   icon: '🧪',
   color: '#34d399',
   track: 'ML & Data',
@@ -12,7 +12,7 @@ export const featureEng: Deck = {
       id: 'fe-project-structure',
       type: 'flash',
       front: '"How would you structure an ML project from scratch?" — the answer you rehearse.',
-      back: 'A recitable arc: 1) Define the target and the metric FROM BUSINESS COST, plus a dumb baseline. 2) Split data first (leakage-proof), stratified/temporal as appropriate. 3) EDA + cleaning. 4) Feature pipeline (fit on train only). 5) Simple model first — logistic regression / gradient boosting. 6) Iterate against validation; error analysis over hyperparameter worship. 7) One final test-set reading. 8) Ship with monitoring for drift. Simple-first is the credibility move.',
+      back: 'A recitable arc: 1) Define the target and the metric FROM BUSINESS COST, plus a dumb baseline. 2) Split data first (leakage-proof), stratified/temporal as appropriate. 3) EDA + cleaning. 4) Feature pipeline (fit on train only). 5) Simple model first — logistic regression / gradient boosting. 6) Iterate against validation; error analysis over hyperparameter worship. 7) One final test-set reading. 8) Ship with monitoring for drift.',
     },
     {
       id: 'fe-baseline',
@@ -26,7 +26,7 @@ export const featureEng: Deck = {
       ],
       answer: 0,
       explanation:
-        'Also names the accuracy-paradox trap out loud. "What did the baseline score?" is a question that instantly sorts experienced candidates from course graduates.',
+        'It also guards against the accuracy paradox. "What did the baseline score?" is one of the most common interviewer probes on any modeling story.',
     },
     {
       id: 'fe-datetime',
@@ -108,7 +108,7 @@ export const featureEng: Deck = {
       ],
       answer: 0,
       explanation:
-        'Class weights are one line and leak-proof; SMOTE adds synthetic-data risks. Metric-and-threshold before data surgery — that ordering is the senior tell.',
+        'Class weights are one line and leak-proof; SMOTE adds synthetic-data risks. Metric and threshold come before data surgery.',
     },
     {
       id: 'fe-model-selection',
@@ -142,7 +142,7 @@ export const featureEng: Deck = {
       id: 'fe-drift',
       type: 'flash',
       front: 'The model shipped. What breaks silently, and what do you monitor?',
-      back: 'Data drift (input distributions shift — new user segments, upstream schema changes) and concept drift (the input→output relationship itself changes — fraud adapts). Monitor: input stats vs training profile, prediction distribution, delayed ground-truth metrics, and per-segment slices. Alert thresholds + scheduled retraining. "Deployment is where ML engineering starts" — say it.',
+      back: 'Data drift (input distributions shift — new user segments, upstream schema changes) and concept drift (the input→output relationship itself changes — fraud adapts). Monitor: input stats vs training profile, prediction distribution, delayed ground-truth metrics, and per-segment slices. Alert thresholds + scheduled retraining. Deployment is where ML engineering starts, not where it ends.',
     },
     {
       id: 'fe-scaling-recap',
@@ -162,7 +162,7 @@ export const featureEng: Deck = {
       id: 'fe-error-analysis',
       type: 'flash',
       front: 'Your model plateaus at 85%. The highest-leverage next step is NOT more tuning — what is it?',
-      back: 'Error analysis: read 50–100 actual mistakes and categorize them. You will find label errors, a data-quality subgroup, a missing feature, or a class the model never sees — each worth more than any hyperparameter. Andrew Ng’s discipline: fix the pipeline the errors point at, not the knob you happen to know. This answer works verbatim for LLM evals too.',
+      back: 'Error analysis: read 50–100 actual mistakes and categorize them. You will find label errors, a data-quality subgroup, a missing feature, or a class the model never sees — each worth more than any hyperparameter. Andrew Ng’s discipline: fix the pipeline the errors point at, not the knob you happen to know. The same discipline applies to LLM evals.',
     },
   ],
 };
