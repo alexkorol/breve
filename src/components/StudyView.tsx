@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import type { Card, Deck } from '../types';
 import { Rich, CodeBlock } from './Rich';
 
@@ -103,31 +104,89 @@ export function StudyItem({ card, index }: { card: Card; index: number }) {
   );
 }
 
+/** One card at a time, flipped through Codecademy Go-style: swipe, tap, or arrow keys. */
 export function StudyView({ deck, onRead, onBack }: Props) {
+  const [index, setIndex] = useState(0);
+  const [dir, setDir] = useState<'fwd' | 'back'>('fwd');
+  const touchX = useRef<number | null>(null);
+  const total = deck.cards.length;
+  // Clamp everywhere: rapid taps can queue several updates before a re-render.
+  const card = deck.cards[Math.min(index, total - 1)];
+  const last = index >= total - 1;
+
+  const next = () => {
+    if (last) {
+      onRead?.();
+      onBack();
+    } else {
+      setDir('fwd');
+      setIndex((i) => Math.min(i + 1, total - 1));
+    }
+  };
+  const prev = () => {
+    setDir('back');
+    setIndex((i) => Math.max(0, i - 1));
+  };
+
+  // Desktop: arrows page through; space/enter advance.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        next();
+      } else if (e.key === 'ArrowLeft') {
+        prev();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
   return (
     <div className="screen">
-      <header className="detail-header">
+      <header className="session-header">
         <button className="icon-btn" onClick={onBack} aria-label="Back">
           ←
         </button>
-        <span className="detail-track">
-          {deck.icon} {deck.title} · study
+        <div className="progress-track">
+          <div
+            className="progress-fill"
+            style={{ width: `${((index + 1) / total) * 100}%` }}
+          />
+        </div>
+        <span className="session-count">
+          {index + 1}/{total}
         </span>
       </header>
-      <div className="study-list">
-        {deck.cards.map((card, i) => (
-          <StudyItem key={card.id} card={card} index={i} />
-        ))}
-      </div>
-      <button
-        className="btn primary block"
-        onClick={() => {
-          onRead?.();
-          onBack();
+      <p className="study-deck-label">
+        {deck.icon} {deck.title}
+      </p>
+
+      <div
+        key={`${card.id}:${dir}`}
+        className={`study-flip ${dir}`}
+        onTouchStart={(e) => {
+          touchX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={(e) => {
+          if (touchX.current === null) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          touchX.current = null;
+          if (dx < -48) next();
+          else if (dx > 48) prev();
         }}
       >
-        Done reading
-      </button>
+        <StudyItem card={card} index={index} />
+      </div>
+
+      <div className="study-nav">
+        <button className="btn ghost" onClick={prev} disabled={index === 0}>
+          ← Back
+        </button>
+        <button className="btn primary" onClick={next}>
+          {last ? 'Done reading ✓' : 'Next →'}
+        </button>
+      </div>
     </div>
   );
 }

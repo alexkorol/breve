@@ -1703,3 +1703,60 @@ button {
 .card-topic-icon {
   font-size: 13px;
 }
+
+/* ---------- Study mode: one card at a time (Codecademy Go flip-through) ---------- */
+
+.study-deck-label {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.study-flip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.study-flip .study-item {
+  flex: 1;
+}
+
+/* Position lives in the header now; hide the list-mode number bubble. */
+.study-flip .study-num {
+  display: none;
+}
+
+.study-flip.fwd {
+  animation: study-in-fwd 0.18s ease;
+}
+
+.study-flip.back {
+  animation: study-in-back 0.18s ease;
+}
+
+@keyframes study-in-fwd {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes study-in-back {
+  from { opacity: 0; transform: translateX(-28px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.study-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.study-nav .btn {
+  flex: 1;
+}
+
+.study-nav .btn:disabled {
+  opacity: 0.4;
+}
