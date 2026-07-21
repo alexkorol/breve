@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const bigO: Deck = {
   id: 'big-o',
   title: 'Big-O & Complexity',
-  description: 'Read complexity off code at a glance — and say it before being asked.',
+  description: 'Read complexity off code at a glance, and say it before being asked.',
   icon: '📈',
   color: '#facc15',
   track: 'Coding Interview',
@@ -11,8 +11,8 @@ export const bigO: Deck = {
     {
       id: 'bo-definition',
       type: 'flash',
-      front: 'What does Big-O actually describe — the one-sentence version plus the two rules?',
-      back: 'The growth rate of work as input size grows, ignoring constants and lower-order terms. Rules: drop constants (O(2n) → O(n)) and keep only the dominant term (O(n² + n) → O(n²)). It bounds scaling behavior, not wall-clock speed — an O(n) pass over 10 items can lose to O(n²) on 3.',
+      front: 'What does Big-O actually describe: the one-sentence version plus the two rules?',
+      back: 'The growth rate of work as input size grows, ignoring constants and lower-order terms. Rules: drop constants (O(2n) → O(n)) and keep only the dominant term (O(n² + n) → O(n²)). It bounds scaling behavior, not wall-clock speed: an O(n) pass over 10 items can lose to O(n²) on 3.',
     },
     {
       id: 'bo-nested-loops',
@@ -21,13 +21,13 @@ export const bigO: Deck = {
       choices: ['O(n²)', 'O(2n)', 'O(n log n)', 'O(n)'],
       answer: 0,
       explanation:
-        'n iterations × n iterations. But nested loops over DIFFERENT collections are O(n·m) — collapsing them to n² is a common sloppy answer.',
+        'n iterations × n iterations. But nested loops over DIFFERENT collections are O(n·m): collapsing them to n² is a common sloppy answer.',
     },
     {
       id: 'bo-sequential',
       type: 'mcq',
       prompt: 'A loop over n items, THEN another separate loop over n items?',
-      choices: ['O(n) — sequential work adds: O(n + n) = O(2n) = O(n)', 'O(n²)', 'O(n log n)', 'O(2ⁿ)'],
+      choices: ['O(n); sequential work adds: O(n + n) = O(2n) = O(n)', 'O(n²)', 'O(n log n)', 'O(2ⁿ)'],
       answer: 0,
       explanation:
         'Sequential = add, nested = multiply. Mixing these up is the most common Big-O error in live interviews.',
@@ -60,7 +60,7 @@ export const bigO: Deck = {
       type: 'mcq',
       prompt: 'Which Python list operation is O(n), not O(1)?',
       choices: [
-        'list.insert(0, x) — everything shifts right',
+        'list.insert(0, x): everything shifts right',
         'list.append(x)',
         'list[i] indexing',
         'list.pop() from the end',
@@ -73,7 +73,7 @@ export const bigO: Deck = {
       id: 'bo-sort-cost',
       type: 'fill',
       prompt: 'State the sort cost unprompted:',
-      code: '# "First I sort — that is O(n ____ n) —\n#  then a linear merge pass, O(n)."',
+      code: '# "First I sort; that is O(n ____ n); \n#  then a linear merge pass, O(n)."',
       answers: ['log'],
       distractors: ['*', '+', '^'],
       explanation:
@@ -84,8 +84,8 @@ export const bigO: Deck = {
       type: 'mcq',
       prompt: 'Space complexity of `seen = set()` filled while scanning n items?',
       choices: [
-        'O(n) — up to every element stored',
-        'O(1) — sets are constant size',
+        'O(n): up to every element stored',
+        'O(1): sets are constant size',
         'O(log n)',
         'O(n²)',
       ],
@@ -96,7 +96,7 @@ export const bigO: Deck = {
     {
       id: 'bo-recursion-tree',
       type: 'mcq',
-      prompt: 'Naive recursive fib(n) — two recursive calls, no cache?',
+      prompt: 'Naive recursive fib(n): two recursive calls, no cache?',
       choices: ['O(2ⁿ)', 'O(n²)', 'O(n log n)', 'O(n)'],
       answer: 0,
       explanation:
@@ -106,14 +106,14 @@ export const bigO: Deck = {
       id: 'bo-amortized',
       type: 'flash',
       front: 'Why is list.append O(1) "amortized" when resizing copies the array?',
-      back: 'The array over-allocates by a growth factor; occasional O(n) copies happen so rarely that total cost over n appends is O(n) — O(1) per append averaged. Same logic behind dict/set resizing and why hash inserts stay O(1) average. "Amortized" = expensive events diluted across many cheap ones.',
+      back: 'The array over-allocates by a growth factor; occasional O(n) copies happen so rarely that total cost over n appends is O(n). O(1) per append averaged. Same logic behind dict/set resizing and why hash inserts stay O(1) average. "Amortized" = expensive events diluted across many cheap ones.',
     },
     {
       id: 'bo-hash-worst',
       type: 'mcq',
       prompt: 'Hash map lookup: average O(1), but worst case?',
       choices: [
-        'O(n) — pathological collisions chain every key in one bucket',
+        'O(n): pathological collisions chain every key in one bucket',
         'O(log n) always',
         'O(1) unconditionally',
         'O(n log n)',
@@ -127,8 +127,8 @@ export const bigO: Deck = {
       type: 'mcq',
       prompt: 'Building an n-char string via `s += ch` in a loop?',
       choices: [
-        'O(n²) — each += copies the whole prefix; join a list for O(n)',
-        'O(n) — strings append in place',
+        'O(n²): each += copies the whole prefix; join a list for O(n)',
+        'O(n): strings append in place',
         'O(n log n)',
         'O(1) per operation always',
       ],
@@ -151,10 +151,10 @@ export const bigO: Deck = {
       type: 'mcq',
       prompt: 'A scan keeps three counters (current streak, best streak, pass count) over n items. Extra space?',
       choices: [
-        'O(1) — the number of variables is fixed, even though their values grow',
-        'O(n) — the counters can reach n',
-        'O(3) — three variables',
-        'O(n) — one update per item',
+        'O(1): the number of variables is fixed, even though their values grow',
+        'O(n): the counters can reach n',
+        'O(3): three variables',
+        'O(n): one update per item',
       ],
       answer: 0,
       explanation:
@@ -165,8 +165,8 @@ export const bigO: Deck = {
       type: 'mcq',
       prompt: 'A check returns True at the first "fail" it sees. Best and worst case time?',
       choices: [
-        'Best O(1), worst O(n) — and you quote the worst case unless asked otherwise',
-        'O(1) — it can exit immediately',
+        'Best O(1), worst O(n), and you quote the worst case unless asked otherwise',
+        'O(1): it can exit immediately',
         'O(n/2) on average, so O(n/2)',
         'Best O(1), worst O(1)',
       ],
@@ -185,7 +185,7 @@ export const bigO: Deck = {
     {
       id: 'bo-justify',
       type: 'flash',
-      front: 'The one-sentence complexity justification — what is the template, and what two questions do you ask separately?',
+      front: 'The one-sentence complexity justification: what is the template, and what two questions do you ask separately?',
       back: '"O of n time because each item is checked once, and O of one extra space because only two counters are stored." Never the bare label. Ask separately: 1) how many items/combinations get examined? → time. 2) what NEW information is stored? → space. Separating the questions stops the time answer from bleeding into the space answer.',
     },
     {
@@ -193,20 +193,20 @@ export const bigO: Deck = {
       type: 'mcq',
       prompt: 'Sum all primes below 2,000,000. Trial-dividing each candidate up to its square root works but crawls. The scalable fix?',
       choices: [
-        'Sieve of Eratosthenes — mark multiples once, O(n log log n) time, O(n) space',
-        'Check only odd numbers — halves the work but same complexity',
+        'Sieve of Eratosthenes: mark multiples once, O(n log log n) time, O(n) space',
+        'Check only odd numbers: halves the work but same complexity',
         'Cache math.sqrt results',
         'Multithread the trial division',
       ],
       answer: 0,
       explanation:
-        'Trial division costs ~O(n√n) total; the sieve trades O(n) memory for near-linear time. The interview lesson: "correct" and "scales" are different bars — say which one you cleared and what you would reach for next.',
+        'Trial division costs ~O(n√n) total; the sieve trades O(n) memory for near-linear time. The interview lesson: "correct" and "scales" are different bars; say which one you cleared and what you would reach for next.',
     },
     {
       id: 'bo-say-it',
       type: 'flash',
-      front: 'The interview script for complexity — when and how do you bring it up?',
-      back: 'Three moments: 1) Before coding — "brute force is O(n²); I think sorting gets us O(n log n), let me try that." 2) While coding — flag costs as you incur them ("this set makes lookups O(1)"). 3) After — "time O(n log n) from the sort, space O(n) for the merged list." Never wait to be asked; volunteering it is the seniority signal.',
+      front: 'The interview script for complexity, when and how do you bring it up?',
+      back: 'Three moments: 1) Before coding; "brute force is O(n²); I think sorting gets us O(n log n), let me try that." 2) While coding: flag costs as you incur them ("this set makes lookups O(1)"). 3) After: "time O(n log n) from the sort, space O(n) for the merged list." Never wait to be asked; volunteering it is the seniority signal.',
     },
   ],
 };

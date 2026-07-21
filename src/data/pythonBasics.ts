@@ -33,13 +33,13 @@ export const pythonBasics: Deck = {
       choices: ['list', 'tuple', 'str', 'frozenset'],
       answer: 0,
       explanation:
-        'Lists can be modified in place. Tuples, strings, and frozensets are immutable — "changing" them creates new objects.',
+        'Lists can be modified in place. Tuples, strings, and frozensets are immutable: "changing" them creates new objects.',
     },
     {
       id: 'pyb-is-vs-eq',
       type: 'flash',
       front: 'What is the difference between `is` and `==`?',
-      back: '`is` compares identity — whether two names point to the same object in memory. `==` compares values. Rule of thumb: use `is` only for singletons like `None` (`if x is None`).',
+      back: '`is` compares identity: whether two names point to the same object in memory. `==` compares values. Rule of thumb: use `is` only for singletons like `None` (`if x is None`).',
     },
     {
       id: 'pyb-default-arg',
@@ -49,7 +49,7 @@ export const pythonBasics: Deck = {
       choices: ['[1] then [1, 2]', '[1] then [2]', '[1, 2] then [1, 2]', 'TypeError'],
       answer: 0,
       explanation:
-        'Default arguments are evaluated once at function definition. The same list is shared across calls — a classic interview gotcha. Use acc=None and create the list inside.',
+        'Default arguments are evaluated once at function definition. The same list is shared across calls: a classic interview gotcha. Use acc=None and create the list inside.',
     },
     {
       id: 'pyb-dict-get',
@@ -72,7 +72,7 @@ export const pythonBasics: Deck = {
       prompt: 'What does `"python"[::-1]` evaluate to?',
       choices: ["'nohtyp'", "'python'", "'p'", 'IndexError'],
       answer: 0,
-      explanation: 'A slice with step -1 walks the sequence backwards — the idiomatic string reverse.',
+      explanation: 'A slice with step -1 walks the sequence backwards: the idiomatic string reverse.',
     },
     {
       id: 'pyb-with',
@@ -81,7 +81,7 @@ export const pythonBasics: Deck = {
       code: '____ open("data.txt") as f:\n    text = f.read()',
       answers: ['with'],
       distractors: ['try', 'using', 'as'],
-      explanation: 'The with statement drives the context manager protocol — __exit__ closes the file.',
+      explanation: 'The with statement drives the context manager protocol: __exit__ closes the file.',
     },
     {
       id: 'pyb-range-step',
@@ -97,7 +97,7 @@ export const pythonBasics: Deck = {
       prompt: 'A tuple can be used as a dictionary key.',
       answer: true,
       explanation:
-        'Tuples are immutable and hashable (as long as their contents are), so they work as keys — lists don’t.',
+        'Tuples are immutable and hashable (as long as their contents are), so they work as keys: lists don’t.',
     },
     {
       id: 'pyb-tf-strconcat',
@@ -110,7 +110,7 @@ export const pythonBasics: Deck = {
     {
       id: 'pyb-copy',
       type: 'flash',
-      front: 'Shallow copy vs deep copy — what is the difference?',
+      front: 'Shallow copy vs deep copy: what is the difference?',
       back: 'A shallow copy (`list(x)`, `x[:]`, `copy.copy`) duplicates the outer container but shares nested objects. `copy.deepcopy` recursively duplicates everything. Mutating a nested list through a shallow copy affects the original.',
     },
     {
@@ -129,7 +129,7 @@ export const pythonBasics: Deck = {
       code: 'pairs.sort(key=____ p: p[1])',
       answers: ['lambda'],
       distractors: ['def', 'func', 'fn'],
-      explanation: 'lambda creates a small anonymous function — the standard sort key idiom.',
+      explanation: 'lambda creates a small anonymous function: the standard sort key idiom.',
     },
     {
       id: 'pyb-finally',
@@ -138,7 +138,7 @@ export const pythonBasics: Deck = {
       choices: ['finally', 'else', 'except', 'none of them is guaranteed'],
       answer: 0,
       explanation:
-        'finally runs whether or not an exception occurred — even if the try block returns. else runs only when no exception was raised.',
+        'finally runs whether or not an exception occurred, even if the try block returns. else runs only when no exception was raised.',
     },
     {
       id: 'pyb-lcm-fold',
@@ -148,17 +148,17 @@ export const pythonBasics: Deck = {
       answers: ['gcd'],
       distractors: ['lcm', 'sqrt', 'floor'],
       explanation:
-        'lcm(a, b) = a * b // gcd(a, b) — dividing by the gcd removes the factors a and b already share. Initialize result BEFORE the loop or it resets to 1 every iteration. (Euler 5.)',
+        'lcm(a, b) = a * b // gcd(a, b): dividing by the gcd removes the factors a and b already share. Initialize result BEFORE the loop or it resets to 1 every iteration. (Euler 5.)',
     },
     {
       id: 'pyb-sqrt-power',
       type: 'fill',
-      prompt: 'Square root without importing math — the trial-division bound in a primality check:',
+      prompt: 'Square root without importing math: the trial-division bound in a primality check:',
       code: 'for i in range(2, int(n ** ____) + 1):\n    if n % i == 0:\n        return False',
       answers: ['0.5'],
       distractors: ['2', '0.25', '-1'],
       explanation:
-        'n ** 0.5 == math.sqrt(n): any composite has a factor at or below its square root. The + 1 matters because range excludes its stop — without it a perfect-square factor never gets tested.',
+        'n ** 0.5 == math.sqrt(n): any composite has a factor at or below its square root. The + 1 matters because range excludes its stop: without it a perfect-square factor never gets tested.',
     },
   ],
 };

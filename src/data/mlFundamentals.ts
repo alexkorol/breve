@@ -12,15 +12,15 @@ export const mlFundamentals: Deck = {
       id: 'ml-bias-variance',
       type: 'flash',
       front: 'Explain the bias–variance tradeoff.',
-      back: 'Bias is error from a model too simple to capture the pattern (underfitting); variance is error from a model too sensitive to the training data (overfitting). Increasing model capacity lowers bias but raises variance — you tune for the sweet spot via validation error.',
+      back: 'Bias is error from a model too simple to capture the pattern (underfitting); variance is error from a model too sensitive to the training data (overfitting). Increasing model capacity lowers bias but raises variance: you tune for the sweet spot via validation error.',
     },
     {
       id: 'ml-overfit-sign',
       type: 'mcq',
       prompt: 'Training accuracy is 99%, validation accuracy is 71%. What is happening?',
       choices: [
-        'Overfitting — the model memorized the training set',
-        'Underfitting — the model is too simple',
+        'Overfitting: the model memorized the training set',
+        'Underfitting: the model is too simple',
         'Data leakage from validation into training',
         'The learning rate is too low',
       ],
@@ -40,12 +40,12 @@ export const mlFundamentals: Deck = {
       ],
       answer: 0,
       explanation:
-        'It adds λ·Σw² to the loss, discouraging large weights and reducing variance. L1 (Σ|w|) instead drives some weights exactly to zero — feature selection.',
+        'It adds λ·Σw² to the loss, discouraging large weights and reducing variance. L1 (Σ|w|) instead drives some weights exactly to zero: feature selection.',
     },
     {
       id: 'ml-precision-recall',
       type: 'flash',
-      front: 'Precision vs recall — define both.',
+      front: 'Precision vs recall: define both.',
       back: 'Precision = TP / (TP + FP): of everything you flagged positive, how much was right. Recall = TP / (TP + FN): of all actual positives, how many you caught. F1 is their harmonic mean.',
     },
     {
@@ -53,9 +53,9 @@ export const mlFundamentals: Deck = {
       type: 'mcq',
       prompt: 'For a cancer screening model, which metric matters most?',
       choices: [
-        'Recall — a missed cancer (false negative) is the costly error',
-        'Precision — false alarms are the costly error',
-        'Accuracy — overall correctness',
+        'Recall: a missed cancer (false negative) is the costly error',
+        'Precision: false alarms are the costly error',
+        'Accuracy: overall correctness',
         'Training loss',
       ],
       answer: 0,
@@ -75,7 +75,7 @@ export const mlFundamentals: Deck = {
       id: 'ml-gd',
       type: 'flash',
       front: 'How does gradient descent work, in one breath?',
-      back: 'Compute the gradient of the loss with respect to the parameters — the direction of steepest increase — then step the parameters the opposite way, scaled by the learning rate. Repeat until convergence. SGD/mini-batch uses a data subset per step for speed and noise-driven escape from bad minima.',
+      back: 'Compute the gradient of the loss with respect to the parameters: the direction of steepest increase, then step the parameters the opposite way, scaled by the learning rate. Repeat until convergence. SGD/mini-batch uses a data subset per step for speed and noise-driven escape from bad minima.',
     },
     {
       id: 'ml-lr-high',
@@ -95,7 +95,7 @@ export const mlFundamentals: Deck = {
       id: 'ml-splits',
       type: 'flash',
       front: 'What are the train, validation, and test sets each for?',
-      back: 'Train: fit the parameters. Validation: choose hyperparameters and detect overfitting during development. Test: touched once at the end for an unbiased estimate of real-world performance — the moment you tune on it, it stops being a test set.',
+      back: 'Train: fit the parameters. Validation: choose hyperparameters and detect overfitting during development. Test: touched once at the end for an unbiased estimate of real-world performance; the moment you tune on it, it stops being a test set.',
     },
     {
       id: 'ml-xent',
@@ -109,8 +109,8 @@ export const mlFundamentals: Deck = {
     {
       id: 'ml-supervised',
       type: 'flash',
-      front: 'Supervised vs unsupervised learning — difference plus one example of each.',
-      back: 'Supervised learns from labeled pairs (x, y): spam classification, price regression. Unsupervised finds structure in unlabeled data: k-means clustering, PCA, autoencoders. (Self-supervised — predicting masked parts of the input — is how LLMs pretrain.)',
+      front: 'Supervised vs unsupervised learning: difference plus one example of each.',
+      back: 'Supervised learns from labeled pairs (x, y): spam classification, price regression. Unsupervised finds structure in unlabeled data: k-means clustering, PCA, autoencoders. (Self-supervised: predicting masked parts of the input; is how LLMs pretrain.)',
     },
     {
       id: 'ml-kmeans',
@@ -132,13 +132,13 @@ export const mlFundamentals: Deck = {
       prompt: 'It’s fine to tune hyperparameters against the test set as long as you report the final number honestly.',
       answer: false,
       explanation:
-        'The moment you tune on it, the test set stops estimating real-world performance — that’s what the validation set is for.',
+        'The moment you tune on it, the test set stops estimating real-world performance: that’s what the validation set is for.',
     },
     {
       id: 'ml-confusion',
       type: 'flash',
       front: 'What is a confusion matrix?',
-      back: 'A table of predicted vs actual classes. For binary problems: TP, FP, FN, TN in a 2×2 grid. Every threshold metric — precision, recall, specificity, F1 — is computed from its cells.',
+      back: 'A table of predicted vs actual classes. For binary problems: TP, FP, FN, TN in a 2×2 grid. Every threshold metric: precision, recall, specificity, F1; is computed from its cells.',
     },
     {
       id: 'ml-relu',
@@ -148,7 +148,7 @@ export const mlFundamentals: Deck = {
       answers: ['0'],
       distractors: ['1', '-1', '-x'],
       explanation:
-        'max(0, x) — cheap, non-saturating for positive inputs, and the default hidden-layer activation. Watch for "dying ReLU" when units get stuck at 0.',
+        'max(0, x): cheap, non-saturating for positive inputs, and the default hidden-layer activation. Watch for "dying ReLU" when units get stuck at 0.',
     },
   ],
 };

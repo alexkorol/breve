@@ -12,7 +12,7 @@ export const llmTransformers: Deck = {
       id: 'llm-attention',
       type: 'flash',
       front: 'Explain self-attention in one breath.',
-      back: 'Each token emits a query, a key, and a value vector. A token’s query is dotted against every key to score relevance; softmax turns the scores into weights; the output is the weighted sum of the values. Every token gathers information from every other token, in parallel — that’s the whole trick.',
+      back: 'Each token emits a query, a key, and a value vector. A token’s query is dotted against every key to score relevance; softmax turns the scores into weights; the output is the weighted sum of the values. Every token gathers information from every other token, in parallel: that’s the whole trick.',
     },
     {
       id: 'llm-attn-formula',
@@ -22,7 +22,7 @@ export const llmTransformers: Deck = {
       answers: ['d_k'],
       distractors: ['n', 'd_model', 'h'],
       explanation:
-        'd_k is the key dimension. This formula is the "reverse a linked list" of ML interviews — expect to produce it on demand.',
+        'd_k is the key dimension. This formula is the "reverse a linked list" of ML interviews: expect to produce it on demand.',
     },
     {
       id: 'llm-sqrt-dk',
@@ -50,20 +50,20 @@ export const llmTransformers: Deck = {
       ],
       answer: 0,
       explanation:
-        'One head might track syntax, another coreference, another positional patterns. Heads run in parallel subspaces and concatenate — richer than a single averaged view.',
+        'One head might track syntax, another coreference, another positional patterns. Heads run in parallel subspaces and concatenate: richer than a single averaged view.',
     },
     {
       id: 'llm-positional',
       type: 'flash',
       front: 'Why do transformers need positional encodings, and what’s used today?',
-      back: 'Attention is a weighted sum over an unordered set — permute the tokens and nothing changes. Positional information must be injected. Original: fixed sinusoids added to embeddings. Modern LLMs mostly use RoPE — rotating Q and K by position so attention scores depend on relative distance, which also extrapolates better to longer contexts.',
+      back: 'Attention is a weighted sum over an unordered set: permute the tokens and nothing changes. Positional information must be injected. Original: fixed sinusoids added to embeddings. Modern LLMs mostly use RoPE: rotating Q and K by position so attention scores depend on relative distance, which also extrapolates better to longer contexts.',
     },
     {
       id: 'llm-causal-mask',
       type: 'mcq',
       prompt: 'The causal mask in a decoder-only LLM exists so that…',
       choices: [
-        'Each position can only attend to earlier positions — no peeking at the future it must predict',
+        'Each position can only attend to earlier positions, no peeking at the future it must predict',
         'Attention runs faster on GPUs',
         'The model cannot see padding tokens',
         'Beam search stays deterministic',
@@ -76,14 +76,14 @@ export const llmTransformers: Deck = {
       id: 'llm-pretrain-objective',
       type: 'flash',
       front: 'What is the pretraining objective of a GPT-style LLM, and why does it work so well?',
-      back: 'Next-token prediction over huge text corpora — cross-entropy on "guess the next token", trillions of times. It works because predicting text well forces compressed internal models of grammar, facts, code, and reasoning: the label is free, the supervision is the entire internet.',
+      back: 'Next-token prediction over huge text corpora: cross-entropy on "guess the next token", trillions of times. It works because predicting text well forces compressed internal models of grammar, facts, code, and reasoning: the label is free, the supervision is the entire internet.',
     },
     {
       id: 'llm-tokenizer',
       type: 'mcq',
       prompt: 'Why do LLMs stumble on "how many r’s are in strawberry?"',
       choices: [
-        'They see BPE tokens, not letters — "strawberry" may be 2–3 opaque chunks',
+        'They see BPE tokens, not letters: "strawberry" may be 2–3 opaque chunks',
         'They cannot count above three',
         'The training data lacks fruit',
         'Attention ignores short words',
@@ -95,7 +95,7 @@ export const llmTransformers: Deck = {
     {
       id: 'llm-training-pipeline',
       type: 'flash',
-      front: 'The three-stage LLM training pipeline — name each stage and what it contributes.',
+      front: 'The three-stage LLM training pipeline: name each stage and what it contributes.',
       back: '1) Pretraining: next-token prediction on web-scale text → raw capability. 2) SFT (supervised fine-tuning): curated instruction–response pairs → follows instructions, chat format. 3) Preference tuning (RLHF or the simpler DPO): learn from human A-vs-B preferences → helpful, honest, harmless behavior. Capability comes from stage 1; behavior from stages 2–3.',
     },
     {
@@ -110,7 +110,7 @@ export const llmTransformers: Deck = {
       ],
       answer: 0,
       explanation:
-        'Temperature rescales logits before softmax. Low T for extraction and code, higher T for brainstorming. (top_p trims the tail — tune one, not both.)',
+        'Temperature rescales logits before softmax. Low T for extraction and code, higher T for brainstorming. (top_p trims the tail: tune one, not both.)',
     },
     {
       id: 'llm-tf-temp0',
@@ -118,7 +118,7 @@ export const llmTransformers: Deck = {
       prompt: 'Temperature 0 guarantees bit-identical outputs for the same prompt, every time.',
       answer: false,
       explanation:
-        'T=0 is greedy decoding, but floating-point non-determinism and infra differences still cause occasional variation — don’t promise exact reproducibility.',
+        'T=0 is greedy decoding, but floating-point non-determinism and infra differences still cause occasional variation: don’t promise exact reproducibility.',
     },
     {
       id: 'llm-order-pipeline',
@@ -131,13 +131,13 @@ export const llmTransformers: Deck = {
         'Deployment with system prompts and guardrails',
       ],
       explanation:
-        'Capability first, then instruction-following behavior, then preference alignment — deployment-time prompting sits on top of all three.',
+        'Capability first, then instruction-following behavior, then preference alignment: deployment-time prompting sits on top of all three.',
     },
     {
       id: 'llm-kv-cache',
       type: 'flash',
       front: 'What is the KV cache, and why is long context expensive?',
-      back: 'During generation each new token needs attention against all previous keys/values — so you cache them instead of recomputing. Cost of context: KV memory grows linearly with length (it dominates GPU memory at inference), and prefill attention is quadratic. This is why long prompts cost real money and why prompt caching exists.',
+      back: 'During generation each new token needs attention against all previous keys/values, so you cache them instead of recomputing. Cost of context: KV memory grows linearly with length (it dominates GPU memory at inference), and prefill attention is quadratic. This is why long prompts cost real money and why prompt caching exists.',
     },
     {
       id: 'llm-lora',
@@ -151,13 +151,13 @@ export const llmTransformers: Deck = {
       ],
       answer: 0,
       explanation:
-        'ΔW = A·B where A and B are rank-8-ish — under 1% of parameters, so a consumer GPU can fine-tune a 7B model (QLoRA: on a 4-bit-quantized base). The adapters merge into the base at inference.',
+        'ΔW = A·B where A and B are rank-8-ish: under 1% of parameters, so a consumer GPU can fine-tune a 7B model (QLoRA: on a 4-bit-quantized base). The adapters merge into the base at inference.',
     },
     {
       id: 'llm-quantization',
       type: 'flash',
       front: 'Quantization: what it is and what you trade.',
-      back: 'Store weights in fewer bits — fp16 → int8 → int4 — shrinking memory ~2–4× and speeding up memory-bound inference. Cost: small quality loss, usually negligible at int8, noticeable but often acceptable at int4. This is what makes local LLMs on laptops possible (GGUF, bitsandbytes).',
+      back: 'Store weights in fewer bits: fp16 → int8 → int4; shrinking memory ~2–4× and speeding up memory-bound inference. Cost: small quality loss, usually negligible at int8, noticeable but often acceptable at int4. This is what makes local LLMs on laptops possible (GGUF, bitsandbytes).',
     },
     {
       id: 'llm-hallucination',
@@ -171,7 +171,7 @@ export const llmTransformers: Deck = {
       ],
       answer: 0,
       explanation:
-        'A fluent guess and a fact score the same if both are likely text. Mitigations — grounding via RAG, citations, tool use, "say I don’t know" training, verification passes — reduce but don’t eliminate it. Engineering around this is half the job.',
+        'A fluent guess and a fact score the same if both are likely text. Mitigations: grounding via RAG, citations, tool use, "say I don’t know" training, verification passes; reduce but don’t eliminate it. Engineering around this is half the job.',
     },
   ],
 };

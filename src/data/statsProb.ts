@@ -11,22 +11,22 @@ export const statsProb: Deck = {
     {
       id: 'sp-mean-median',
       type: 'mcq',
-      prompt: 'Income data with a few billionaires — which center to report?',
+      prompt: 'Income data with a few billionaires, which center to report?',
       choices: [
-        'Median — robust to the skew; the mean gets dragged upward',
-        'Mean — always the standard',
+        'Median: robust to the skew; the mean gets dragged upward',
+        'Mean: always the standard',
         'Mode',
         'Midrange (max+min)/2',
       ],
       answer: 0,
       explanation:
-        'Mean ≫ median is itself a skew diagnostic. Same reasoning as median imputation — one idea, two applications.',
+        'Mean ≫ median is itself a skew diagnostic. Same reasoning as median imputation: one idea, two applications.',
     },
     {
       id: 'sp-std',
       type: 'flash',
-      front: 'Variance and standard deviation — define, and why divide by n−1?',
-      back: 'Variance = average squared distance from the mean; std = its square root, back in original units. Sample variance divides by n−1 (Bessel’s correction) because the sample mean was estimated from the same data, eating one degree of freedom — dividing by n would systematically underestimate spread.',
+      front: 'Variance and standard deviation: define, and why divide by n−1?',
+      back: 'Variance = average squared distance from the mean; std = its square root, back in original units. Sample variance divides by n−1 (Bessel’s correction) because the sample mean was estimated from the same data, eating one degree of freedom: dividing by n would systematically underestimate spread.',
     },
     {
       id: 'sp-normal-68',
@@ -41,14 +41,14 @@ export const statsProb: Deck = {
     {
       id: 'sp-clt',
       type: 'flash',
-      front: 'The Central Limit Theorem — what it says and why ML people care.',
+      front: 'The Central Limit Theorem: what it says and why ML people care.',
       back: 'Means of large-enough samples are approximately normal regardless of the underlying distribution, with spread shrinking as σ/√n. It’s why confidence intervals and t-tests work on non-normal data, and why averaging noisy estimates (batches, bootstraps, ensemble members) produces stable numbers. Rough threshold people quote: n ≥ 30.',
     },
     {
       id: 'sp-bayes',
       type: 'flash',
-      front: 'A disease affects 1% of people. The test is 99% sensitive, 95% specific. You test positive — actual probability you’re sick?',
-      back: 'Bayes: P(sick|+) = (0.99 × 0.01) / (0.99×0.01 + 0.05×0.99) ≈ 0.0099/0.0594 ≈ 17%. The false positives from the healthy 99% swamp the true positives from the sick 1%. Base-rate neglect is THE probability interview question — and it is precision under a different name.',
+      front: 'A disease affects 1% of people. The test is 99% sensitive, 95% specific. You test positive: actual probability you’re sick?',
+      back: 'Bayes: P(sick|+) = (0.99 × 0.01) / (0.99×0.01 + 0.05×0.99) ≈ 0.0099/0.0594 ≈ 17%. The false positives from the healthy 99% swamp the true positives from the sick 1%. Base-rate neglect is THE probability interview question, and it is precision under a different name.',
     },
     {
       id: 'sp-bayes-formula',
@@ -63,16 +63,16 @@ export const statsProb: Deck = {
     {
       id: 'sp-independence',
       type: 'mcq',
-      prompt: 'Two fair coin flips — P(both heads)? And what assumption did you just use?',
+      prompt: 'Two fair coin flips. P(both heads)? And what assumption did you just use?',
       choices: [
-        '0.25 — multiplied because the flips are independent',
-        '0.5 — probabilities add',
-        '0.25 — probabilities always multiply',
+        '0.25: multiplied because the flips are independent',
+        '0.5: probabilities add',
+        '0.25: probabilities always multiply',
         '0.75',
       ],
       answer: 0,
       explanation:
-        'Multiplication REQUIRES independence — the assumption most real-world probability errors violate (correlated defaults, correlated features, correlated model errors).',
+        'Multiplication REQUIRES independence: the assumption most real-world probability errors violate (correlated defaults, correlated features, correlated model errors).',
     },
     {
       id: 'sp-pvalue',
@@ -86,20 +86,20 @@ export const statsProb: Deck = {
       ],
       answer: 0,
       explanation:
-        'P(data | null), NOT P(null | data) — confusing them is the most common stats error in interviews and in published science alike.',
+        'P(data | null), NOT P(null | data): confusing them is the most common stats error in interviews and in published science alike.',
     },
     {
       id: 'sp-ab-test',
       type: 'flash',
-      front: 'Design an A/B test for a new recommendation model — the checklist.',
-      back: 'Randomize assignment (users, not sessions, to avoid contamination), define the primary metric and minimum detectable effect UP FRONT, power analysis for sample size, run the pre-committed duration (no peeking-and-stopping — that inflates false positives), then a significance test plus a look at the effect size and guardrail metrics. Bonus terms that land: novelty effects, multiple-comparison correction.',
+      front: 'Design an A/B test for a new recommendation model: the checklist.',
+      back: 'Randomize assignment (users, not sessions, to avoid contamination), define the primary metric and minimum detectable effect UP FRONT, power analysis for sample size, run the pre-committed duration (no peeking-and-stopping: that inflates false positives), then a significance test plus a look at the effect size and guardrail metrics. Bonus terms that land: novelty effects, multiple-comparison correction.',
     },
     {
       id: 'sp-corr-cause',
       type: 'mcq',
       prompt: 'Ice cream sales correlate with drownings. The best explanation?',
       choices: [
-        'A confounder — summer drives both; correlation ≠ causation',
+        'A confounder: summer drives both; correlation ≠ causation',
         'Ice cream causes drowning',
         'Coincidence, always',
         'Reverse causality',
@@ -113,8 +113,8 @@ export const statsProb: Deck = {
       type: 'mcq',
       prompt: 'Pearson r = 0 between X and Y. Can they still be strongly related?',
       choices: [
-        'Yes — Pearson only measures LINEAR association; Y = X² gives r ≈ 0',
-        'No — r = 0 means independent',
+        'Yes. Pearson only measures LINEAR association; Y = X² gives r ≈ 0',
+        'No: r = 0 means independent',
         'Only if n is small',
         'Only for categorical data',
       ],
@@ -127,7 +127,7 @@ export const statsProb: Deck = {
       type: 'mcq',
       prompt: 'A lottery ticket costs $2, pays $500 with probability 0.001. Expected value of buying?',
       choices: [
-        '−$1.50 — EV = 0.001 × 500 − 2 = −1.5',
+        '−$1.50. EV = 0.001 × 500 − 2 = −1.5',
         '+$0.50',
         '$498',
         'Cannot be computed',
@@ -139,12 +139,12 @@ export const statsProb: Deck = {
     {
       id: 'sp-sampling-bias',
       type: 'mcq',
-      prompt: 'Surveying app-store reviewers to estimate user satisfaction — the flaw?',
+      prompt: 'Surveying app-store reviewers to estimate user satisfaction: the flaw?',
       choices: [
-        'Selection bias — reviewers are self-selected extremes, not representative users',
+        'Selection bias: reviewers are self-selected extremes, not representative users',
         'The sample is too small by definition',
         'Reviews are text, so unusable',
-        'No flaw — reviews are users',
+        'No flaw: reviews are users',
       ],
       answer: 0,
       explanation:
@@ -153,16 +153,16 @@ export const statsProb: Deck = {
     {
       id: 'sp-bootstrap',
       type: 'flash',
-      front: 'The bootstrap — how do you get a confidence interval with no formula?',
-      back: 'Resample your dataset WITH replacement thousands of times, compute the statistic on each resample, and read the interval off the percentiles (2.5th–97.5th for 95%). Works for medians, ratios, model metrics — anything. It’s the practical answer to "how confident are you in that eval score?"',
+      front: 'The bootstrap: how do you get a confidence interval with no formula?',
+      back: 'Resample your dataset WITH replacement thousands of times, compute the statistic on each resample, and read the interval off the percentiles (2.5th–97.5th for 95%). Works for medians, ratios, model metrics: anything. It’s the practical answer to "how confident are you in that eval score?"',
     },
     {
       id: 'sp-distributions',
       type: 'mcq',
       prompt: 'Number of support tickets arriving per hour is best modeled by…',
       choices: [
-        'Poisson — counts of independent events in a fixed window',
-        'Normal — everything is normal',
+        'Poisson: counts of independent events in a fixed window',
+        'Normal: everything is normal',
         'Uniform',
         'Binomial with n = 60',
       ],
@@ -175,7 +175,7 @@ export const statsProb: Deck = {
       type: 'mcq',
       prompt: 'You average the predictions of 10 diverse models. What happens statistically?',
       choices: [
-        'Variance drops (errors partially cancel) while bias stays — the statistical soul of ensembling',
+        'Variance drops (errors partially cancel) while bias stays: the statistical soul of ensembling',
         'Bias drops, variance rises',
         'Both rise',
         'Nothing changes',

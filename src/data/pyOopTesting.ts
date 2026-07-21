@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const pyOopTesting: Deck = {
   id: 'py-oop-testing',
   title: 'OOP & Testing',
-  description: 'Classes, dunders, and pytest — the "is your code professional?" round.',
+  description: 'Classes, dunders, and pytest: the "is your code professional?" round.',
   icon: '🏗️',
   color: '#c084fc',
   track: 'Python',
@@ -16,7 +16,7 @@ export const pyOopTesting: Deck = {
       answers: ['self'],
       distractors: ['this', 'cls', 'obj'],
       explanation:
-        'self is just the conventional name for the instance passed as the first argument — Python makes the passing explicit rather than implicit.',
+        'self is just the conventional name for the instance passed as the first argument. Python makes the passing explicit rather than implicit.',
     },
     {
       id: 'oop-class-vs-instance',
@@ -24,7 +24,7 @@ export const pyOopTesting: Deck = {
       prompt: 'What is the bug?',
       code: 'class Dog:\n    tricks = []\n    def learn(self, t):\n        self.tricks.append(t)',
       choices: [
-        'tricks is a class attribute — ALL dogs share one list; assign self.tricks = [] in __init__',
+        'tricks is a class attribute. ALL dogs share one list; assign self.tricks = [] in __init__',
         'learn() needs @staticmethod',
         'Lists cannot be class attributes',
         'No bug',
@@ -45,7 +45,7 @@ export const pyOopTesting: Deck = {
       ],
       answer: 0,
       explanation:
-        'print falls back to __repr__ when __str__ is missing — but not vice versa. A good __repr__ looks like the constructor call: Point(x=1, y=2).',
+        'print falls back to __repr__ when __str__ is missing, but not vice versa. A good __repr__ looks like the constructor call: Point(x=1, y=2).',
     },
     {
       id: 'oop-super',
@@ -62,14 +62,14 @@ export const pyOopTesting: Deck = {
       type: 'mcq',
       prompt: '@staticmethod vs @classmethod?',
       choices: [
-        'staticmethod gets no implicit argument; classmethod gets cls — the idiom for alternate constructors like from_json()',
+        'staticmethod gets no implicit argument; classmethod gets cls: the idiom for alternate constructors like from_json()',
         'classmethod is faster',
         'staticmethod can only be private',
         'They are interchangeable',
       ],
       answer: 0,
       explanation:
-        'Dict.from_json(s) returning cls(**data) respects subclassing — the go-to example when asked "when would you use a classmethod?"',
+        'Dict.from_json(s) returning cls(**data) respects subclassing: the go-to example when asked "when would you use a classmethod?"',
     },
     {
       id: 'oop-property',
@@ -77,35 +77,35 @@ export const pyOopTesting: Deck = {
       prompt: 'What does @property buy you?',
       code: 'class Circle:\n    @property\n    def area(self):\n        return 3.14159 * self.r ** 2',
       choices: [
-        'Computed attribute access — c.area without parentheses, no API break if it later becomes stored',
+        'Computed attribute access: c.area without parentheses, no API break if it later becomes stored',
         'It caches the result automatically',
         'It makes the attribute private',
         'It enables multiple inheritance',
       ],
       answer: 0,
       explanation:
-        'Start with a plain attribute, switch to @property when logic appears — callers never change. Add @area.setter for validated assignment. (functools.cached_property does cache.)',
+        'Start with a plain attribute, switch to @property when logic appears: callers never change. Add @area.setter for validated assignment. (functools.cached_property does cache.)',
     },
     {
       id: 'oop-dunder-eq',
       type: 'mcq',
       prompt: 'Two Point(1, 2) instances compare unequal. Why, and the fix?',
       choices: [
-        'Default __eq__ is identity — implement __eq__ (and __hash__), or use @dataclass which generates them',
+        'Default __eq__ is identity: implement __eq__ (and __hash__), or use @dataclass which generates them',
         'Points can never be equal',
         'You must override __cmp__',
         'Use is instead of ==',
       ],
       answer: 0,
       explanation:
-        'Objects defining __eq__ without __hash__ become unhashable — no sets or dict keys. dataclass(frozen=True) gives you both, correctly.',
+        'Objects defining __eq__ without __hash__ become unhashable, no sets or dict keys. dataclass(frozen=True) gives you both, correctly.',
     },
     {
       id: 'oop-abc',
       type: 'mcq',
       prompt: 'How do you force subclasses to implement a method?',
       choices: [
-        'Inherit from ABC and mark it @abstractmethod — instantiation fails until it’s implemented',
+        'Inherit from ABC and mark it @abstractmethod: instantiation fails until it’s implemented',
         'raise NotImplementedError is compile-time enforced',
         'Name it with a leading underscore',
         'Python cannot express this',
@@ -117,8 +117,8 @@ export const pyOopTesting: Deck = {
     {
       id: 'oop-duck',
       type: 'flash',
-      front: 'Duck typing and EAFP — the Pythonic philosophy answer.',
-      back: 'Duck typing: code against behavior, not types — anything with .read() is file-like. EAFP ("easier to ask forgiveness than permission"): try the operation and catch the exception, rather than pre-checking (LBYL). Both trade compile-time guarantees for flexibility; type hints + mypy add the guarantees back where they matter.',
+      front: 'Duck typing and EAFP: the Pythonic philosophy answer.',
+      back: 'Duck typing: code against behavior, not types; anything with .read() is file-like. EAFP ("easier to ask forgiveness than permission"): try the operation and catch the exception, rather than pre-checking (LBYL). Both trade compile-time guarantees for flexibility; type hints + mypy add the guarantees back where they matter.',
     },
     {
       id: 'test-pytest-basic',
@@ -128,7 +128,7 @@ export const pyOopTesting: Deck = {
       answers: ['assert'],
       distractors: ['expect', 'check', 'verify'],
       explanation:
-        'pytest rewrites plain asserts to show both sides on failure — no assertEquals boilerplate. Files test_*.py, functions test_* are auto-discovered.',
+        'pytest rewrites plain asserts to show both sides on failure, no assertEquals boilerplate. Files test_*.py, functions test_* are auto-discovered.',
     },
     {
       id: 'test-raises',
@@ -152,7 +152,7 @@ export const pyOopTesting: Deck = {
       ],
       answer: 0,
       explanation:
-        '@pytest.fixture def db(): yield connect() — yield enables teardown after the test. Scope="session" shares expensive setup across tests.',
+        '@pytest.fixture def db(): yield connect(); yield enables teardown after the test. Scope="session" shares expensive setup across tests.',
     },
     {
       id: 'test-parametrize',
@@ -166,12 +166,12 @@ export const pyOopTesting: Deck = {
       ],
       answer: 0,
       explanation:
-        'Each case reports as its own test — a loop of asserts stops at the first failure and hides the rest. This is the pytest feature interviewers fish for.',
+        'Each case reports as its own test: a loop of asserts stops at the first failure and hides the rest. This is the pytest feature interviewers fish for.',
     },
     {
       id: 'test-mock',
       type: 'mcq',
-      prompt: 'Testing code that calls a paid LLM API — the standard approach?',
+      prompt: 'Testing code that calls a paid LLM API: the standard approach?',
       choices: [
         'monkeypatch/mock the client call to return a canned response; assert your handling logic',
         'Call the real API in every test run',

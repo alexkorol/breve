@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Card, CardProgress, Deck } from '../types';
 import type { Grade } from '../srs';
 import type { SessionOptions } from '../session';
@@ -17,6 +17,11 @@ interface Props {
   progress: Record<string, CardProgress>;
   /** Practice every card in the deck regardless of schedule (weak-card drills). */
   forceAll?: boolean;
+  /**
+   * For cross-deck sessions (Daily Review, Weak Cards): the real decks, so each
+   * card can display which topic it came from.
+   */
+  sourceDecks?: Deck[];
   /** Pack composition: quick/longform filter, due-only mode. */
   options?: SessionOptions;
   /** Live count of reviews done today, for the goal banner. */
@@ -25,7 +30,14 @@ interface Props {
   onExit: () => void;
 }
 
-export function Session({ deck, progress, forceAll, options, reviewsToday, onReview, onExit }: Props) {
+export function Session({ deck, progress, forceAll, sourceDecks, options, reviewsToday, onReview, onExit }: Props) {
+  // card id → owning deck, for the topic chip in mixed sessions.
+  const topicByCard = useMemo(() => {
+    if (!sourceDecks) return undefined;
+    const m = new Map<string, Deck>();
+    for (const d of sourceDecks) for (const c of d.cards) if (!m.has(c.id)) m.set(c.id, d);
+    return m;
+  }, [sourceDecks]);
   // One pack, captured at session start. Missed cards are NOT requeued here —
   // they go back to the end of the due queue for later instead.
   const [queue, setQueue] = useState<Card[]>(() =>
@@ -106,6 +118,7 @@ export function Session({ deck, progress, forceAll, options, reviewsToday, onRev
   }
 
   const key = `${card.id}:${pass}`;
+  const topic = topicByCard?.get(card.id);
 
   return (
     <div className="screen">
@@ -123,6 +136,12 @@ export function Session({ deck, progress, forceAll, options, reviewsToday, onRev
           {Math.min(index + 1, total)}/{total}
         </span>
       </header>
+
+      {topic && (
+        <div className="card-topic" style={{ ['--deck-color' as string]: topic.color }}>
+          <span className="card-topic-icon">{topic.icon}</span> {topic.title}
+        </div>
+      )}
 
       {card.type === 'mcq' && (
         <McqView key={key} card={card} onResult={(ok) => advance(ok ? 2 : 0)} />

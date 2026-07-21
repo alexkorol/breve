@@ -11,8 +11,8 @@ export const fastapiServing: Deck = {
     {
       id: 'fa-one-breath',
       type: 'flash',
-      front: 'Describe FastAPI in one breath — and why AI backends pick it.',
-      back: 'A modern async Python web framework built on ASGI. You declare types on endpoint parameters and Pydantic validates requests automatically; the same declarations generate interactive OpenAPI docs for free. Async-first, so one worker overlaps many slow LLM/database calls — which is exactly the workload of an AI backend.',
+      front: 'Describe FastAPI in one breath, and why AI backends pick it.',
+      back: 'A modern async Python web framework built on ASGI. You declare types on endpoint parameters and Pydantic validates requests automatically; the same declarations generate interactive OpenAPI docs for free. Async-first, so one worker overlaps many slow LLM/database calls, which is exactly the workload of an AI backend.',
     },
     {
       id: 'fa-decorator',
@@ -37,7 +37,7 @@ export const fastapiServing: Deck = {
       ],
       answer: 0,
       explanation:
-        'Appears in the route string → path param. Doesn’t → query param. Both get validated and coerced from their type hints — /items/abc returns a 422 automatically.',
+        'Appears in the route string → path param. Doesn’t → query param. Both get validated and coerced from their type hints: /items/abc returns a 422 automatically.',
     },
     {
       id: 'fa-pydantic-body',
@@ -52,8 +52,8 @@ export const fastapiServing: Deck = {
     {
       id: 'fa-async-vs-sync',
       type: 'flash',
-      front: '`async def` vs `def` endpoints — the answer that shows production experience.',
-      back: 'async def runs on the event loop: great for awaiting LLM APIs and databases, but one blocking call (requests.get, time.sleep, heavy CPU) freezes EVERY request on that worker. Plain def is safer for blocking code — FastAPI runs it in a threadpool. The classic prod bug: async def with a sync HTTP client inside. Fix: httpx.AsyncClient, or drop the async.',
+      front: '`async def` vs `def` endpoints: the answer that shows production experience.',
+      back: 'async def runs on the event loop: great for awaiting LLM APIs and databases, but one blocking call (requests.get, time.sleep, heavy CPU) freezes EVERY request on that worker. Plain def is safer for blocking code. FastAPI runs it in a threadpool. The classic prod bug: async def with a sync HTTP client inside. Fix: httpx.AsyncClient, or drop the async.',
     },
     {
       id: 'fa-depends',
@@ -61,14 +61,14 @@ export const fastapiServing: Deck = {
       prompt: 'What is `Depends()` for?',
       code: 'def get_db():\n    ...\n\n@app.get("/users")\ndef users(db=Depends(get_db)):\n    ...',
       choices: [
-        'Dependency injection — shared per-request logic (DB session, auth) declared once, resolved automatically',
+        'Dependency injection: shared per-request logic (DB session, auth) declared once, resolved automatically',
         'Lazy imports to speed startup',
         'Marking optional parameters',
         'Declaring package requirements',
       ],
       answer: 0,
       explanation:
-        'Dependencies can yield (setup/teardown), nest, and be overridden in tests — the idiomatic answer to "how do you handle auth/DB connections across endpoints?"',
+        'Dependencies can yield (setup/teardown), nest, and be overridden in tests: the idiomatic answer to "how do you handle auth/DB connections across endpoints?"',
     },
     {
       id: 'fa-status-codes',
@@ -87,20 +87,20 @@ export const fastapiServing: Deck = {
       answers: ['app'],
       distractors: ['run', 'server', 'main'],
       explanation:
-        'module:variable — the FastAPI() instance named app inside main.py. In production: multiple workers (uvicorn --workers 4 or gunicorn with uvicorn workers) behind a reverse proxy.',
+        'module:variable; the FastAPI() instance named app inside main.py. In production: multiple workers (uvicorn --workers 4 or gunicorn with uvicorn workers) behind a reverse proxy.',
     },
     {
       id: 'fa-streaming',
       type: 'flash',
       front: 'How do you stream an LLM answer through FastAPI, and why bother?',
-      back: 'Return a StreamingResponse wrapping an async generator that yields chunks as the LLM produces them (SSE — media type text/event-stream — is the standard for chat UIs). Why: time-to-first-token becomes ~1s instead of the full 20s generation — the single biggest perceived-latency win in an LLM product.',
+      back: 'Return a StreamingResponse wrapping an async generator that yields chunks as the LLM produces them (SSE: media type text/event-stream; is the standard for chat UIs). Why: time-to-first-token becomes ~1s instead of the full 20s generation; the single biggest perceived-latency win in an LLM product.',
     },
     {
       id: 'fa-background',
       type: 'mcq',
       prompt: 'Log analytics after responding, without delaying the response?',
       choices: [
-        'BackgroundTasks — schedule the function to run after the response is sent',
+        'BackgroundTasks: schedule the function to run after the response is sent',
         'A second endpoint the client must also call',
         'time.sleep(0) before returning',
         'Threading inside the endpoint with no cleanup',
@@ -121,7 +121,7 @@ export const fastapiServing: Deck = {
       ],
       answer: 0,
       explanation:
-        'Swagger UI at /docs, ReDoc at /redoc, schema at /openapi.json — free because the types are declared. This is a big part of "why FastAPI over Flask" answers.',
+        'Swagger UI at /docs, ReDoc at /redoc, schema at /openapi.json: free because the types are declared. This is a big part of "why FastAPI over Flask" answers.',
     },
     {
       id: 'fa-rag-layer',

@@ -11,8 +11,8 @@ export const patternsStringsHash: Deck = {
     {
       id: 'sh-two-sum',
       type: 'flash',
-      front: 'Two Sum in O(n) — narrate the insight, then the code.',
-      back: 'For each number, the question is "have I already SEEN its complement (target − x)?" — a set/dict answers that in O(1). seen = {}; for i, x in enumerate(nums): if target - x in seen: return [seen[target - x], i]; seen[x] = i. One pass, store value → index. The generalized lesson: hash maps turn "find a matching partner" from O(n²) to O(n).',
+      front: 'Two Sum in O(n): narrate the insight, then the code.',
+      back: 'For each number, the question is "have I already SEEN its complement (target − x)?": a set/dict answers that in O(1). seen = {}; for i, x in enumerate(nums): if target - x in seen: return [seen[target - x], i]; seen[x] = i. One pass, store value → index. The generalized lesson: hash maps turn "find a matching partner" from O(n²) to O(n).',
     },
     {
       id: 'sh-complement',
@@ -22,14 +22,14 @@ export const patternsStringsHash: Deck = {
       answers: ['in'],
       distractors: ['==', 'not in', '>='],
       explanation:
-        'Membership check BEFORE inserting x — inserting first would let x match itself when target = 2x.',
+        'Membership check BEFORE inserting x: inserting first would let x match itself when target = 2x.',
     },
     {
       id: 'sh-group-anagrams',
       type: 'mcq',
-      prompt: 'Group anagrams together — what is the hash key?',
+      prompt: 'Group anagrams together: what is the hash key?',
       choices: [
-        'The sorted word (or a 26-count tuple) — all anagrams share it',
+        'The sorted word (or a 26-count tuple): all anagrams share it',
         'The first letter',
         'The word length',
         'A random hash of the word',
@@ -41,7 +41,7 @@ export const patternsStringsHash: Deck = {
     {
       id: 'sh-first-unique',
       type: 'mcq',
-      prompt: 'First non-repeating character in a string — the two-pass shape?',
+      prompt: 'First non-repeating character in a string: the two-pass shape?',
       choices: [
         'Counter the string, then rescan for the first char with count 1',
         'Nested loops comparing every pair',
@@ -50,18 +50,18 @@ export const patternsStringsHash: Deck = {
       ],
       answer: 0,
       explanation:
-        'Count then rescan — two O(n) passes beat one clever pass. The rescan preserves original order, which the Counter alone loses.',
+        'Count then rescan: two O(n) passes beat one clever pass. The rescan preserves original order, which the Counter alone loses.',
     },
     {
       id: 'sh-longest-substr',
       type: 'flash',
-      front: 'Longest substring without repeating characters — the sliding window + set dance.',
-      back: 'Window [left, right] with a set of chars inside. Advance right each step; while s[right] is already in the set, remove s[left] and advance left. Track max window size. Each char enters and leaves the window at most once — O(n). This is THE canonical sliding-window-with-state problem.',
+      front: 'Longest substring without repeating characters: the sliding window + set dance.',
+      back: 'Window [left, right] with a set of chars inside. Advance right each step; while s[right] is already in the set, remove s[left] and advance left. Track max window size. Each char enters and leaves the window at most once. O(n). This is THE canonical sliding-window-with-state problem.',
     },
     {
       id: 'sh-window-counts',
       type: 'mcq',
-      prompt: 'Find all anagrams of pattern p in string s — the efficient frame?',
+      prompt: 'Find all anagrams of pattern p in string s: the efficient frame?',
       choices: [
         'Fixed-size sliding window with a running char count, updated incrementally per slide',
         'Recount the full window at every position',
@@ -70,7 +70,7 @@ export const patternsStringsHash: Deck = {
       ],
       answer: 0,
       explanation:
-        'Add the entering char, remove the leaving one — O(1) per slide instead of O(len(p)). Permutation generation is the exponential trap answer.',
+        'Add the entering char, remove the leaving one. O(1) per slide instead of O(len(p)). Permutation generation is the exponential trap answer.',
     },
     {
       id: 'sh-defaultdict-int',
@@ -85,8 +85,8 @@ export const patternsStringsHash: Deck = {
     {
       id: 'sh-subarray-sum',
       type: 'flash',
-      front: 'Count subarrays summing to k — the prefix-sum + hash map trick (hard until it isn’t).',
-      back: 'Running prefix sum P; a subarray ending here sums to k exactly when some earlier prefix equals P − k. Keep a Counter of prefix sums seen: ans += seen[P - k]; seen[P] += 1. Seed seen[0] = 1 for subarrays starting at index 0. O(n) for a problem that looks O(n²) — and the same skeleton solves "subarray divisible by k".',
+      front: 'Count subarrays summing to k: the prefix-sum + hash map trick (hard until it isn’t).',
+      back: 'Running prefix sum P; a subarray ending here sums to k exactly when some earlier prefix equals P − k. Keep a Counter of prefix sums seen: ans += seen[P - k]; seen[P] += 1. Seed seen[0] = 1 for subarrays starting at index 0. O(n) for a problem that looks O(n²), and the same skeleton solves "subarray divisible by k".',
     },
     {
       id: 'sh-set-ops',
@@ -94,34 +94,34 @@ export const patternsStringsHash: Deck = {
       prompt: 'Elements common to two lists, each listed once?',
       choices: [
         'set(a) & set(b)',
-        '[x for x in a if x in b] — already optimal',
+        '[x for x in a if x in b]: already optimal',
         'sorted(a) == sorted(b)',
         'zip(a, b)',
       ],
       answer: 0,
       explanation:
-        'Set operators: & intersection, | union, - difference, ^ symmetric difference. The list-comp version hides an O(n·m) membership scan — make b a set at minimum.',
+        'Set operators: & intersection, | union, - difference, ^ symmetric difference. The list-comp version hides an O(n·m) membership scan: make b a set at minimum.',
     },
     {
       id: 'sh-longest-consecutive',
       type: 'mcq',
-      prompt: 'Longest consecutive run (e.g. [100,4,200,1,3,2] → 4) in O(n) — the key move?',
+      prompt: 'Longest consecutive run (e.g. [100,4,200,1,3,2] → 4) in O(n): the key move?',
       choices: [
         'Put all in a set; only start counting from numbers where n-1 is absent (run starts)',
-        'Sort first — O(n log n) is provably optimal',
+        'Sort first. O(n log n) is provably optimal',
         'Count from every number',
         'Use a sliding window',
       ],
       answer: 0,
       explanation:
-        'The start-detection check means each number is visited O(1) times total. Counting from EVERY number silently degrades to O(n²) on long runs — the trap inside the trick.',
+        'The start-detection check means each number is visited O(1) times total. Counting from EVERY number silently degrades to O(n²) on long runs: the trap inside the trick.',
     },
     {
       id: 'sh-hashable',
       type: 'mcq',
       prompt: 'Why does `{[1, 2]: "x"}` raise TypeError?',
       choices: [
-        'Lists are mutable, hence unhashable — use a tuple key instead',
+        'Lists are mutable, hence unhashable: use a tuple key instead',
         'Dict keys must be strings',
         'Two-element keys are not allowed',
         'It works fine',
@@ -133,8 +133,8 @@ export const patternsStringsHash: Deck = {
     {
       id: 'sh-str-hash-design',
       type: 'flash',
-      front: '"How does a hash map actually work?" — the 60-second whiteboard answer.',
-      back: 'hash(key) → integer → modulo bucket count → bucket index. Collisions handled by chaining (list per bucket) or open addressing (probe next slots — CPython dicts do this). Load factor grows → resize: new array, rehash everything (the amortized cost). Good hash = uniform spread. Bonus point: Python randomizes string hashes per process to block collision-DoS attacks.',
+      front: '"How does a hash map actually work?": the 60-second whiteboard answer.',
+      back: 'hash(key) → integer → modulo bucket count → bucket index. Collisions handled by chaining (list per bucket) or open addressing (probe next slots. CPython dicts do this). Load factor grows → resize: new array, rehash everything (the amortized cost). Good hash = uniform spread. Bonus point: Python randomizes string hashes per process to block collision-DoS attacks.',
     },
   ],
 };

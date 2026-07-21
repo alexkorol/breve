@@ -212,6 +212,7 @@ export default function App() {
           deck={deck}
           progress={state.progress}
           forceAll={view.deckId === WEAK_ID}
+          sourceDecks={isVirtual ? allDecks : undefined}
           options={{
             kind: view.kind,
             // Daily Review never introduces new cards — it can only shrink.

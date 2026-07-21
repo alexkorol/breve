@@ -11,8 +11,8 @@ export const patternsBinsearch: Deck = {
     {
       id: 'bs-template',
       type: 'flash',
-      front: 'Write the classic binary search template from memory — every character matters.',
-      back: 'lo, hi = 0, len(a) - 1; while lo <= hi: mid = (lo + hi) // 2; if a[mid] == target: return mid; elif a[mid] < target: lo = mid + 1; else: hi = mid - 1; return -1. The three bug farms: <= vs < in the loop condition, mid ± 1 (never mid alone — infinite loop), and hi = len-1 vs len must match the condition style.',
+      front: 'Write the classic binary search template from memory: every character matters.',
+      back: 'lo, hi = 0, len(a) - 1; while lo <= hi: mid = (lo + hi) // 2; if a[mid] == target: return mid; elif a[mid] < target: lo = mid + 1; else: hi = mid - 1; return -1. The three bug farms: <= vs < in the loop condition, mid ± 1 (never mid alone; infinite loop), and hi = len-1 vs len must match the condition style.',
     },
     {
       id: 'bs-mid-update',
@@ -36,7 +36,7 @@ export const patternsBinsearch: Deck = {
       ],
       answer: 0,
       explanation:
-        'Lower-bound search: treat equality as "could be further left". In Python: bisect_left does exactly this — mention it, then code it manually anyway.',
+        'Lower-bound search: treat equality as "could be further left". In Python: bisect_left does exactly this; mention it, then code it manually anyway.',
     },
     {
       id: 'bs-bisect',
@@ -46,14 +46,14 @@ export const patternsBinsearch: Deck = {
       answers: ['target'],
       distractors: ['0', 'mid', 'key'],
       explanation:
-        'Returns the leftmost index where target could insert keeping order — equals "count of elements < target". bisect_right counts <=; their difference counts occurrences.',
+        'Returns the leftmost index where target could insert keeping order: equals "count of elements < target". bisect_right counts <=; their difference counts occurrences.',
     },
     {
       id: 'bs-rotated',
       type: 'mcq',
-      prompt: 'Search in a rotated sorted array ([4,5,6,7,0,1,2]) — the key insight?',
+      prompt: 'Search in a rotated sorted array ([4,5,6,7,0,1,2]): the key insight?',
       choices: [
-        'One half is always properly sorted — check which, and whether target lies in its range',
+        'One half is always properly sorted: check which, and whether target lies in its range',
         'Un-rotate first in O(n), then search',
         'Rotated arrays need linear scan',
         'Use two independent binary searches always',
@@ -65,13 +65,13 @@ export const patternsBinsearch: Deck = {
     {
       id: 'bs-first-true',
       type: 'flash',
-      front: 'The "first true" abstraction — the mental model that unifies every binary search variant.',
+      front: 'The "first true" abstraction: the mental model that unifies every binary search variant.',
       back: 'Picture a boolean array FFFF…TTTT (monotonic condition). Binary search finds the first T. Leftmost target = first "a[i] >= target". Koko’s eating speed = first "can finish at speed k". Rotated minimum = first "a[i] <= a[-1]". Reframe any problem as a monotonic predicate and the same template solves all of them.',
     },
     {
       id: 'bs-answer-space',
       type: 'mcq',
-      prompt: '"Minimum ship capacity to deliver packages in D days" — where does binary search run?',
+      prompt: '"Minimum ship capacity to deliver packages in D days", where does binary search run?',
       choices: [
         'Over the ANSWER range (max package … total weight), with a feasibility check per guess',
         'Over the package array indices',
@@ -87,7 +87,7 @@ export const patternsBinsearch: Deck = {
       type: 'mcq',
       prompt: 'Why do other languages write `mid = lo + (hi - lo) // 2`, and does Python care?',
       choices: [
-        '(lo + hi) can overflow fixed-width ints; Python ints are arbitrary precision so it’s safe — but say why',
+        '(lo + hi) can overflow fixed-width ints; Python ints are arbitrary precision so it’s safe, but say why',
         'It rounds differently',
         'It is faster in Python',
         'Python requires that form',
@@ -99,7 +99,7 @@ export const patternsBinsearch: Deck = {
     {
       id: 'bs-sqrt',
       type: 'mcq',
-      prompt: 'Integer square root of n without math.sqrt — approach?',
+      prompt: 'Integer square root of n without math.sqrt: approach?',
       choices: [
         'Binary search the answer in [0, n]: first k where k² > n, minus one',
         'Try every integer up to n',
@@ -108,7 +108,7 @@ export const patternsBinsearch: Deck = {
       ],
       answer: 0,
       explanation:
-        'k² is monotonic — the "first true" frame again. A gentle warmup interviewers use to see if you reach for binary search unprompted.',
+        'k² is monotonic: the "first true" frame again. A gentle warmup interviewers use to see if you reach for binary search unprompted.',
     },
     {
       id: 'bs-matrix',
@@ -127,16 +127,16 @@ export const patternsBinsearch: Deck = {
     {
       id: 'bs-peak',
       type: 'mcq',
-      prompt: 'Find a peak element (bigger than both neighbors) in O(log n) — how can that work on unsorted data?',
+      prompt: 'Find a peak element (bigger than both neighbors) in O(log n): how can that work on unsorted data?',
       choices: [
         'Walk toward the rising side: if a[mid] < a[mid+1], a peak must exist right of mid',
-        'It cannot — unsorted needs O(n)',
+        'It cannot: unsorted needs O(n)',
         'Sort first',
         'Random probing',
       ],
       answer: 0,
       explanation:
-        'Binary search needs monotonic STRUCTURE, not sorted data — the rising direction guarantees a peak exists that way.',
+        'Binary search needs monotonic STRUCTURE, not sorted data: the rising direction guarantees a peak exists that way.',
     },
     {
       id: 'bs-sorting-recap',
@@ -149,7 +149,7 @@ export const patternsBinsearch: Deck = {
       type: 'mcq',
       prompt: 'When can you beat O(n log n) sorting?',
       choices: [
-        'Small known value range — counting sort O(n + k), e.g. sorting letters or 0-100 scores',
+        'Small known value range: counting sort O(n + k), e.g. sorting letters or 0-100 scores',
         'Never; n log n is a hard limit for all sorting',
         'With a better pivot in quicksort',
         'By sorting in parallel threads',

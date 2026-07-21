@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const pyPairs: Deck = {
   id: 'py-pairs',
   title: 'Lists, Dicts & Pairs',
-  description: 'The "transform this list of pairs" problem class — drilled to reflex.',
+  description: 'The "transform this list of pairs" problem class: drilled to reflex.',
   icon: '🔗',
   color: '#0284c7',
   track: 'Python',
@@ -11,7 +11,7 @@ export const pyPairs: Deck = {
     {
       id: 'pp-restate-habit',
       type: 'flash',
-      front: 'THE habit for coding questions under pressure — what do you do before typing any code?',
+      front: 'THE habit for coding questions under pressure: what do you do before typing any code?',
       back: 'Restate the problem in your own words, then walk one concrete example by hand ("so [1,5] and [3,7] overlap because 3 ≤ 5, giving [1,7]…"). It confirms understanding with the interviewer, surfaces edge cases, buys composure, and hands you the test case you’ll verify against.',
     },
     {
@@ -31,7 +31,7 @@ export const pyPairs: Deck = {
       answers: ['1'],
       distractors: ['0', '2', '-1'],
       explanation:
-        'Index 1 is the second element. Sorting with a key is the opening move of half of all pairs problems — including merge intervals (there it’s p[0]).',
+        'Index 1 is the second element. Sorting with a key is the opening move of half of all pairs problems: including merge intervals (there it’s p[0]).',
     },
     {
       id: 'pp-zip',
@@ -50,7 +50,7 @@ export const pyPairs: Deck = {
     {
       id: 'pp-unzip',
       type: 'fill',
-      prompt: 'The unzip idiom — split pairs back into two sequences:',
+      prompt: 'The unzip idiom: split pairs back into two sequences:',
       code: 'starts, ends = zip(____pairs)',
       answers: ['*'],
       distractors: ['**', 'iter, ', 'unpack '],
@@ -69,7 +69,7 @@ export const pyPairs: Deck = {
       ],
       answer: 0,
       explanation:
-        'defaultdict(list) removes the "if key not in d" dance. dict(pairs) would silently keep only the LAST value per key — a classic trap worth saying out loud.',
+        'defaultdict(list) removes the "if key not in d" dance. dict(pairs) would silently keep only the LAST value per key: a classic trap worth saying out loud.',
     },
     {
       id: 'pp-counter',
@@ -79,7 +79,7 @@ export const pyPairs: Deck = {
       answers: ['Counter'],
       distractors: ['Counts', 'defaultdict', 'Tally'],
       explanation:
-        'Counter is a dict subclass with .most_common(k) — the instant answer to "top k frequent elements".',
+        'Counter is a dict subclass with .most_common(k): the instant answer to "top k frequent elements".',
     },
     {
       id: 'pp-tuple-unpack-loop',
@@ -93,14 +93,14 @@ export const pyPairs: Deck = {
       ],
       answer: 0,
       explanation:
-        'Tuple unpacking in the for statement — readable and names the elements. Index juggling under pressure is where off-by-one bugs breed.',
+        'Tuple unpacking in the for statement: readable and names the elements. Index juggling under pressure is where off-by-one bugs breed.',
     },
     {
       id: 'pp-sorted-vs-sort',
       type: 'mcq',
       prompt: 'What does this print?',
       code: 'pairs = [(3, 7), (1, 5)]\nresult = pairs.sort()\nprint(result)',
-      choices: ['None — .sort() sorts in place and returns None', '[(1, 5), (3, 7)]', '[(3, 7), (1, 5)]', 'TypeError'],
+      choices: ['None; .sort() sorts in place and returns None', '[(1, 5), (3, 7)]', '[(3, 7), (1, 5)]', 'TypeError'],
       answer: 0,
       explanation:
         'list.sort() mutates and returns None; sorted(pairs) returns a new sorted list. Assigning .sort()’s result is a bug that has sunk many live coding rounds.',
@@ -127,7 +127,7 @@ export const pyPairs: Deck = {
       ],
       answer: 0,
       explanation:
-        'Dict comprehension with unpacking and a condition — one line, no intermediate steps. Square brackets there would be a syntax error (that’s a list).',
+        'Dict comprehension with unpacking and a condition: one line, no intermediate steps. Square brackets there would be a syntax error (that’s a list).',
     },
     {
       id: 'pp-max-key',

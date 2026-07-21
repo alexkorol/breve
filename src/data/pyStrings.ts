@@ -16,21 +16,21 @@ export const pyStrings: Deck = {
       answers: ['join'],
       distractors: ['concat', 'merge', 'append'],
       explanation:
-        'join is a method on the SEPARATOR string, not the list — the inversion everyone forgets. "a b c".split() goes the other way.',
+        'join is a method on the SEPARATOR string, not the list: the inversion everyone forgets. "a b c".split() goes the other way.',
     },
     {
       id: 'st-immutable',
       type: 'mcq',
       prompt: 'What does `s[0] = "X"` do to a string?',
-      choices: ['Raises TypeError — strings are immutable', 'Replaces the first character', 'Prepends X', 'Returns a new string'],
+      choices: ['Raises TypeError; strings are immutable', 'Replaces the first character', 'Prepends X', 'Returns a new string'],
       answer: 0,
       explanation:
-        'Build a new string instead: "X" + s[1:]. Immutability is also why repeated += in a loop is O(n²) — collect parts in a list and join once.',
+        'Build a new string instead: "X" + s[1:]. Immutability is also why repeated += in a loop is O(n²): collect parts in a list and join once.',
     },
     {
       id: 'st-concat-loop',
       type: 'mcq',
-      prompt: 'Building a long string from 10,000 pieces — the right way?',
+      prompt: 'Building a long string from 10,000 pieces: the right way?',
       choices: [
         'Append pieces to a list, then "".join(parts) once',
         's += piece in a loop is equally fast',
@@ -58,7 +58,7 @@ export const pyStrings: Deck = {
       choices: ['"hi there"', '"hithere"', '"hi there  "', '"  hi there"'],
       answer: 0,
       explanation:
-        'strip trims both ends only — interior whitespace stays. lstrip/rstrip do one side; strip("xy") trims those characters, not the substring "xy".',
+        'strip trims both ends only: interior whitespace stays. lstrip/rstrip do one side; strip("xy") trims those characters, not the substring "xy".',
     },
     {
       id: 'st-startswith',
@@ -72,7 +72,7 @@ export const pyStrings: Deck = {
       ],
       answer: 0,
       explanation:
-        'startswith/endswith accept a tuple of options — little-known and instantly cleaner than slicing arithmetic.',
+        'startswith/endswith accept a tuple of options: little-known and instantly cleaner than slicing arithmetic.',
     },
     {
       id: 'st-isdigit',
@@ -81,7 +81,7 @@ export const pyStrings: Deck = {
       choices: ['"42".isdigit()', 'isinstance("42", int)', '"42".isnumeric() but not "4.2".isdigit()… both are the same here', 'len("42") == 2'],
       answer: 0,
       explanation:
-        'isdigit is True only for pure digit characters — the decimal point fails it. For "is this parseable as a float", use try/except float().',
+        'isdigit is True only for pure digit characters: the decimal point fails it. For "is this parseable as a float", use try/except float().',
     },
     {
       id: 'st-ord-chr',
@@ -91,7 +91,7 @@ export const pyStrings: Deck = {
       answers: ['ord'],
       distractors: ['chr', 'ascii', 'int'],
       explanation:
-        'ord: char → code point; chr: code point → char. ord(c) - ord("a") maps letters to 0–25 — the backbone of counting-sort string tricks.',
+        'ord: char → code point; chr: code point → char. ord(c) - ord("a") maps letters to 0–25: the backbone of counting-sort string tricks.',
     },
     {
       id: 'st-anagram',
@@ -145,14 +145,14 @@ export const pyStrings: Deck = {
       type: 'mcq',
       prompt: 'Why does `r"<.*>"` match all of `"<a><b>"` instead of just `"<a>"`?',
       choices: [
-        '* is greedy — it takes the longest match; use .*? for non-greedy',
+        '* is greedy: it takes the longest match; use .*? for non-greedy',
         'The regex engine reads right to left',
         'Angle brackets are special characters',
         'It is a Python bug',
       ],
       answer: 0,
       explanation:
-        'Greedy quantifiers grab maximally, then backtrack. Appending ? makes them lazy — the single most useful regex fix in practice.',
+        'Greedy quantifiers grab maximally, then backtrack. Appending ? makes them lazy: the single most useful regex fix in practice.',
     },
     {
       id: 'st-re-sub',
@@ -162,7 +162,7 @@ export const pyStrings: Deck = {
       answers: ['sub'],
       distractors: ['replace', 'swap', 'fill'],
       explanation:
-        're.sub(pattern, replacement, text) — the regex str.replace. The replacement can be a function for computed substitutions.',
+        're.sub(pattern, replacement, text): the regex str.replace. The replacement can be a function for computed substitutions.',
     },
     {
       id: 'st-palindrome',
@@ -183,14 +183,14 @@ export const pyStrings: Deck = {
       type: 'mcq',
       prompt: 'What is `"a,b".split(",")` vs `"a,,b".split(",")`?',
       choices: [
-        "['a', 'b'] vs ['a', '', 'b'] — empty fields are preserved",
+        "['a', 'b'] vs ['a', '', 'b']: empty fields are preserved",
         'Both give [\'a\', \'b\']',
         'The second raises ValueError',
         "['a,b'] vs ['a', 'b']",
       ],
       answer: 0,
       explanation:
-        'split(sep) keeps empty strings between adjacent separators — matters when parsing CSV-ish input by hand. Bare split() (no arg) collapses whitespace runs instead.',
+        'split(sep) keeps empty strings between adjacent separators: matters when parsing CSV-ish input by hand. Bare split() (no arg) collapses whitespace runs instead.',
     },
   ],
 };

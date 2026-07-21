@@ -12,12 +12,12 @@ export const credAi103: Deck = {
       id: 'a103-what',
       type: 'flash',
       front: 'What does AI-103 certify, and how does it relate to AI-102?',
-      back: 'Microsoft Certified: Azure AI Apps and Agents Developer Associate — designing, developing, and deploying Azure AI solutions using Python and Microsoft Foundry. It’s the successor path to AI-102, which retired on June 30, 2026: the older cert covered the classic Azure AI services, while AI-103 centers on building apps and agents on top of Foundry.',
+      back: 'Microsoft Certified: Azure AI Apps and Agents Developer Associate; designing, developing, and deploying Azure AI solutions using Python and Microsoft Foundry. It’s the successor path to AI-102, which retired on June 30, 2026: the older cert covered the classic Azure AI services, while AI-103 centers on building apps and agents on top of Foundry.',
     },
     {
       id: 'a103-foundry-map',
       type: 'flash',
-      front: 'Recite the Foundry deployment map — the seven concepts in order.',
+      front: 'Recite the Foundry deployment map: the seven concepts in order.',
       back: 'Project (your workspace) → hub/resource (the Azure backing: quota, networking, keys) → model deployment (a catalog model instantiated under a deployment name) → endpoint (the URL your app calls) → auth (API key or Entra ID / managed identity) → evaluation (built-in eval runs over datasets) → monitoring (traces, token usage, content-filter hits). Every AI-103 scenario question lives somewhere on this map.',
     },
     {
@@ -27,7 +27,7 @@ export const credAi103: Deck = {
       choices: [
         'A Foundry project with a model deployed from the catalog to an endpoint, plus credentials for it',
         'Just an Azure subscription ID',
-        'A fine-tuned model — base models can’t be called',
+        'A fine-tuned model: base models can’t be called',
         'A Kubernetes cluster running the model',
       ],
       answer: 0,
@@ -51,7 +51,7 @@ export const credAi103: Deck = {
     {
       id: 'a103-managed-identity',
       type: 'fill',
-      prompt: 'Production auth on Azure — avoid keys in config:',
+      prompt: 'Production auth on Azure: avoid keys in config:',
       code: 'from azure.identity import DefaultAzureCredential\ncred = DefaultAzureCredential()  # uses managed ____ in production',
       answers: ['identity'],
       distractors: ['secret', 'token', 'principal'],
@@ -62,7 +62,7 @@ export const credAi103: Deck = {
       id: 'a103-logging',
       type: 'flash',
       front: '"What would you log for a production AI app besides the final answer?"',
-      back: 'Prompt/template version, model + deployment name, retrieved context (what the model saw), tool calls and results, token counts and cost per request, latency, a request/trace ID linking it all, content-filter triggers, and user feedback signals. Without these you cannot debug, cannot control spend, and cannot prove what happened — the difference between a prototype and a deployable app.',
+      back: 'Prompt/template version, model + deployment name, retrieved context (what the model saw), tool calls and results, token counts and cost per request, latency, a request/trace ID linking it all, content-filter triggers, and user feedback signals. Without these you cannot debug, cannot control spend, and cannot prove what happened: the difference between a prototype and a deployable app.',
     },
     {
       id: 'a103-tool-safety',
@@ -76,7 +76,7 @@ export const credAi103: Deck = {
       ],
       answer: 0,
       explanation:
-        'A concrete pattern: an agent that can read data and draft output but cannot send, purchase, or delete — capability boundaries as design, not hope.',
+        'A concrete pattern: an agent that can read data and draft output but cannot send, purchase, or delete; capability boundaries as design, not hope.',
     },
     {
       id: 'a103-retrieve-vs-memory',
@@ -84,7 +84,7 @@ export const credAi103: Deck = {
       prompt: 'When should an agent retrieve knowledge instead of relying on model memory?',
       choices: [
         'When the data is fresh, private, or must be verifiable/citable',
-        'Always — model memory should never be used',
+        'Always: model memory should never be used',
         'Only when the context window is full',
         'When latency doesn’t matter',
       ],
@@ -95,7 +95,7 @@ export const credAi103: Deck = {
     {
       id: 'a103-eval-metrics',
       type: 'flash',
-      front: 'The four evaluation dimensions Foundry’s genAI evals center on — define each.',
+      front: 'The four evaluation dimensions Foundry’s genAI evals center on: define each.',
       back: 'Groundedness: is the answer supported by the provided context, or invented? Relevance: does it address the question asked? Safety: free of harmful/policy-violating content? Task success/quality: did it accomplish what the user needed? Automate all four over an eval dataset and run them as regression checks whenever the prompt or model changes.',
     },
     {
@@ -115,7 +115,7 @@ export const credAi103: Deck = {
     {
       id: 'a103-responsible',
       type: 'flash',
-      front: 'Responsible AI in Foundry — the concrete mechanisms to name.',
+      front: 'Responsible AI in Foundry: the concrete mechanisms to name.',
       back: 'Content filters on input and output (severity-configurable, per-category), safety evaluations run like quality evals, red-teaming before launch, groundedness checks against retrieval, human oversight for consequential decisions, and monitoring for filter hits in production. Exam answers favor "configure the platform mechanism" over "write a stern system prompt."',
     },
     {

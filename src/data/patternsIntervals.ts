@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const patternsIntervals: Deck = {
   id: 'patterns-intervals',
   title: 'Patterns: Intervals & Arrays',
-  description: 'Merge intervals, meeting rooms, sweep line — cold, until they click.',
+  description: 'Merge intervals, meeting rooms, sweep line: cold, until they click.',
   icon: '🧩',
   color: '#f97316',
   track: 'Coding Interview',
@@ -11,8 +11,8 @@ export const patternsIntervals: Deck = {
     {
       id: 'iv-recipe',
       type: 'flash',
-      front: 'The merge-intervals recipe — say the two steps out loud.',
-      back: '1) Sort intervals by start. 2) Walk them keeping a `merged` list: if the current start ≤ the end of the last merged interval, they overlap — extend that end to `max(both ends)`; otherwise append the current interval as-is. Sorting dominates: O(n log n).',
+      front: 'The merge-intervals recipe: say the two steps out loud.',
+      back: '1) Sort intervals by start. 2) Walk them keeping a `merged` list: if the current start ≤ the end of the last merged interval, they overlap; extend that end to `max(both ends)`; otherwise append the current interval as-is. Sorting dominates: O(n log n).',
     },
     {
       id: 'iv-first-step',
@@ -51,17 +51,17 @@ export const patternsIntervals: Deck = {
       ],
       answer: 0,
       explanation:
-        '[3,7] starts at 3 ≤ 5, so it merges with [1,5] into [1,7]. [8,10] starts at 8 > 7 — new group. [9,12] starts at 9 ≤ 10, merging into [8,12].',
+        '[3,7] starts at 3 ≤ 5, so it merges with [1,5] into [1,7]. [8,10] starts at 8 > 7: new group. [9,12] starts at 9 ≤ 10, merging into [8,12].',
     },
     {
       id: 'iv-merge-step',
       type: 'fill',
-      prompt: 'The merge step — never just overwrite the end:',
+      prompt: 'The merge step, never just overwrite the end:',
       code: 'if s <= merged[-1][1]:\n    merged[-1][1] = ____(merged[-1][1], e)',
       answers: ['max'],
       distractors: ['min', 'sum', 'e'],
       explanation:
-        'max() handles containment: merging [1,10] with [2,3] must keep end 10. Overwriting with e would shrink the interval — the classic bug.',
+        'max() handles containment: merging [1,10] with [2,3] must keep end 10. Overwriting with e would shrink the interval: the classic bug.',
     },
     {
       id: 'iv-append-step',
@@ -78,14 +78,14 @@ export const patternsIntervals: Deck = {
       type: 'mcq',
       prompt: 'Do `[1, 5]` and `[5, 8]` merge?',
       choices: [
-        'Yes — s <= le treats touching endpoints as overlap, giving [1, 8]',
-        'No — they only share a single point',
+        'Yes: s <= le treats touching endpoints as overlap, giving [1, 8]',
+        'No: they only share a single point',
         'Only if the intervals are open',
         'It causes an infinite loop',
       ],
       answer: 0,
       explanation:
-        'With the standard s <= le condition, touching intervals merge. (If a problem wants strict overlap, it will say so — then use s < le.)',
+        'With the standard s <= le condition, touching intervals merge. (If a problem wants strict overlap, it will say so, then use s < le.)',
     },
     {
       id: 'iv-complexity',
@@ -94,7 +94,7 @@ export const patternsIntervals: Deck = {
       choices: ['O(n log n)', 'O(n)', 'O(n²)', 'O(log n)'],
       answer: 0,
       explanation:
-        'The sort costs O(n log n); the merge walk is O(n). Say both parts in the interview — it shows you know where the cost comes from.',
+        'The sort costs O(n log n); the merge walk is O(n). Say both parts in the interview: it shows you know where the cost comes from.',
     },
     {
       id: 'iv-why-sort',
@@ -106,7 +106,7 @@ export const patternsIntervals: Deck = {
       id: 'iv-variants',
       type: 'flash',
       front: 'Name the classic interval-problem variants (there are four).',
-      back: 'Merge Intervals (combine overlaps), Insert Interval (splice one into a sorted list — three phases: before/merge/after, O(n) with no sort), Meeting Rooms I (can attend all? check adjacent overlaps), Meeting Rooms II / Non-overlapping Intervals (min rooms / min removals — heap of end times or sweep line).',
+      back: 'Merge Intervals (combine overlaps), Insert Interval (splice one into a sorted list: three phases: before/merge/after, O(n) with no sort), Meeting Rooms I (can attend all? check adjacent overlaps), Meeting Rooms II / Non-overlapping Intervals (min rooms / min removals: heap of end times or sweep line).',
     },
     {
       id: 'iv-meeting-rooms',
@@ -115,12 +115,12 @@ export const patternsIntervals: Deck = {
       choices: ['2', '1', '3', '0'],
       answer: 0,
       explanation:
-        '[0,30] overlaps both others, but [5,10] and [15,20] don’t overlap each other — they can share the second room. Min-heap of end times: pop when the next meeting starts after the earliest end.',
+        '[0,30] overlaps both others, but [5,10] and [15,20] don’t overlap each other: they can share the second room. Min-heap of end times: pop when the next meeting starts after the earliest end.',
     },
     {
       id: 'iv-sweep',
       type: 'flash',
-      front: 'The sweep-line trick for "max simultaneous intervals" — how does it work?',
+      front: 'The sweep-line trick for "max simultaneous intervals": how does it work?',
       back: 'Turn every interval into two events: (start, +1) and (end, −1). Sort events, walk them keeping a running sum; its maximum is the peak overlap (= rooms needed). Sorting ends before starts at the same time handles back-to-back meetings.',
     },
     {
@@ -132,7 +132,7 @@ export const patternsIntervals: Deck = {
       answers: ['1'],
       distractors: ['0', 'len', 'end'],
       explanation:
-        'Finishing earliest leaves the most room for what follows. Sort-by-start is for merging; sort-by-end is for greedy selection — knowing which is which is the pattern.',
+        'Finishing earliest leaves the most room for what follows. Sort-by-start is for merging; sort-by-end is for greedy selection: knowing which is which is the pattern.',
     },
   ],
 };

@@ -1670,3 +1670,26 @@ button {
   font-family: ui-monospace, 'SF Mono', Consolas, monospace;
   font-size: 13px;
 }
+
+/* Topic chip on cross-deck sessions (Daily Review, Weak Cards) */
+
+.card-topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--deck-color, var(--border));
+  border-radius: 999px;
+  padding: 4px 12px 4px 9px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+.card-topic-icon {
+  font-size: 13px;
+}

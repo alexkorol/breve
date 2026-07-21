@@ -50,7 +50,7 @@ export const pythonAdvanced: Deck = {
       type: 'mcq',
       prompt: 'What does the second `list(g)` return?',
       code: 'g = (i for i in range(3))\nprint(list(g))\nprint(list(g))',
-      choices: ['[] — the generator is exhausted', '[0, 1, 2] again', '[3, 4, 5]', 'RuntimeError'],
+      choices: ['[]; the generator is exhausted', '[0, 1, 2] again', '[3, 4, 5]', 'RuntimeError'],
       answer: 0,
       explanation:
         'Generators are single-use iterators. Once consumed, they raise StopIteration immediately.',
@@ -98,7 +98,7 @@ export const pythonAdvanced: Deck = {
       ],
       answer: 0,
       explanation:
-        'Assignment expressions let you bind a name where a value is used — here avoiding a separate read before the loop and inside it.',
+        'Assignment expressions let you bind a name where a value is used: here avoiding a separate read before the loop and inside it.',
     },
     {
       id: 'pya-optional',
@@ -113,7 +113,7 @@ export const pythonAdvanced: Deck = {
     {
       id: 'pya-async',
       type: 'flash',
-      front: 'When does `async`/`await` actually help — and when does it not?',
+      front: 'When does `async`/`await` actually help, and when does it not?',
       back: 'Async shines for I/O-bound concurrency: thousands of network calls multiplexed on one thread by the event loop. It does nothing for CPU-bound work (still one thread), and any blocking call inside a coroutine stalls the entire loop.',
     },
     {
@@ -128,7 +128,7 @@ export const pythonAdvanced: Deck = {
       ],
       answer: 0,
       explanation:
-        'Repeated calls with the same (hashable) arguments return the cached result — the one-line answer to "how would you speed up this recursive Fibonacci?"',
+        'Repeated calls with the same (hashable) arguments return the cached result: the one-line answer to "how would you speed up this recursive Fibonacci?"',
     },
   ],
 };

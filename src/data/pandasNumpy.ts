@@ -20,12 +20,12 @@ export const pandasNumpy: Deck = {
       ],
       answer: 0,
       explanation:
-        'df.loc[5] is the row labeled 5; df.iloc[5] is the sixth row. After filtering or sorting, labels and positions diverge — that’s when mixing them bites.',
+        'df.loc[5] is the row labeled 5; df.iloc[5] is the sixth row. After filtering or sorting, labels and positions diverge: that’s when mixing them bites.',
     },
     {
       id: 'pn-groupby',
       type: 'fill',
-      prompt: 'Average price per city — the split-apply-combine idiom:',
+      prompt: 'Average price per city: the split-apply-combine idiom:',
       code: "df.groupby('city')['price'].____()",
       answers: ['mean'],
       distractors: ['avg', 'average', 'apply'],
@@ -38,7 +38,7 @@ export const pandasNumpy: Deck = {
       prompt: 'What usually triggers `SettingWithCopyWarning`?',
       code: "df[df['age'] > 30]['salary'] = 0",
       choices: [
-        'Chained indexing — the assignment may hit a temporary copy',
+        'Chained indexing: the assignment may hit a temporary copy',
         'Assigning a float into an int column',
         'Using loc instead of iloc',
         'A version mismatch between pandas and NumPy',
@@ -50,18 +50,18 @@ export const pandasNumpy: Deck = {
     {
       id: 'pn-merge-concat',
       type: 'flash',
-      front: '`merge` vs `join` vs `concat` — one sentence each.',
-      back: 'merge: SQL-style joins on columns (how="inner/left/outer") — the workhorse. join: convenience wrapper joining on the index. concat: no matching logic at all, just stacks dataframes vertically (axis=0) or side by side (axis=1).',
+      front: '`merge` vs `join` vs `concat`: one sentence each.',
+      back: 'merge: SQL-style joins on columns (how="inner/left/outer"); the workhorse. join: convenience wrapper joining on the index. concat: no matching logic at all, just stacks dataframes vertically (axis=0) or side by side (axis=1).',
     },
     {
       id: 'pn-mask',
       type: 'fill',
-      prompt: 'Boolean masking — rows where age is strictly greater than 30:',
+      prompt: 'Boolean masking: rows where age is strictly greater than 30:',
       code: "adults = df[df['age'] ____ 30]",
       answers: ['>'],
       distractors: ['>=', '==', 'in'],
       explanation:
-        'The comparison produces a boolean Series; indexing with it keeps the True rows. Combine masks with & and | — wrapped in parentheses, since Python’s `and` fails on Series.',
+        'The comparison produces a boolean Series; indexing with it keeps the True rows. Combine masks with & and |: wrapped in parentheses, since Python’s `and` fails on Series.',
     },
     {
       id: 'pn-broadcast',
@@ -76,7 +76,7 @@ export const pandasNumpy: Deck = {
       id: 'pn-vectorize',
       type: 'flash',
       front: 'Why is vectorized NumPy/pandas code so much faster than a Python for-loop?',
-      back: 'The loop runs in compiled C over contiguous typed memory instead of the Python interpreter boxing every element — typically 10–100×. Interview phrasing: "I’d express it as array operations rather than iterating rows; .apply() with a lambda is still a Python-level loop in disguise."',
+      back: 'The loop runs in compiled C over contiguous typed memory instead of the Python interpreter boxing every element, typically 10–100×. Interview phrasing: "I’d express it as array operations rather than iterating rows; .apply() with a lambda is still a Python-level loop in disguise."',
     },
     {
       id: 'pn-colmean',
@@ -100,7 +100,7 @@ export const pandasNumpy: Deck = {
       ],
       answer: 0,
       explanation:
-        'Counts per category, sorted, in one call — add normalize=True for proportions. unique() lists values but not how often; groupby alone does nothing until aggregated.',
+        'Counts per category, sorted, in one call: add normalize=True for proportions. unique() lists values but not how often; groupby alone does nothing until aggregated.',
     },
     {
       id: 'pn-pivot',
@@ -113,7 +113,7 @@ export const pandasNumpy: Deck = {
       type: 'mcq',
       prompt: 'An integer column suddenly became float64 after loading. Most likely cause?',
       choices: [
-        'It contains NaN — classic NumPy has no integer NaN, so pandas upcasts',
+        'It contains NaN: classic NumPy has no integer NaN, so pandas upcasts',
         'CSV files store all numbers as floats',
         'A pandas bug',
         'The column exceeded int64 range',
@@ -130,7 +130,7 @@ export const pandasNumpy: Deck = {
       answers: ['shape'],
       distractors: ['size', 'dims', 'len()'],
       explanation:
-        'A (rows, cols) tuple — note it’s an attribute, no parentheses. df.size is rows×cols as one number; len(df) is rows only.',
+        'A (rows, cols) tuple: note it’s an attribute, no parentheses. df.size is rows×cols as one number; len(df) is rows only.',
     },
   ],
 };

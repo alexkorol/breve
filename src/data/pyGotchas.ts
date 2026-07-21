@@ -16,21 +16,21 @@ export const pyGotchas: Deck = {
       choices: ['[2, 2, 2]', '[0, 1, 2]', '[0, 0, 0]', 'NameError'],
       answer: 0,
       explanation:
-        'Closures capture the VARIABLE, not its value — all three lambdas see the final i. Fix: lambda i=i: i (default arg binds at definition time).',
+        'Closures capture the VARIABLE, not its value: all three lambdas see the final i. Fix: lambda i=i: i (default arg binds at definition time).',
     },
     {
       id: 'gt-mutable-mult',
       type: 'mcq',
       prompt: 'Why is `grid = [[0] * 3] * 3` broken?',
       choices: [
-        'All three rows are the SAME list — writing grid[0][0] changes every row',
+        'All three rows are the SAME list: writing grid[0][0] changes every row',
         'It creates a 9-element flat list',
         'Multiplication of lists is not allowed',
         'It works fine',
       ],
       answer: 0,
       explanation:
-        'Outer * copies references, not lists. Correct: [[0] * 3 for _ in range(3)] — the inner lists are fresh per iteration. ([0]*3 alone is fine: ints are immutable.)',
+        'Outer * copies references, not lists. Correct: [[0] * 3 for _ in range(3)]; the inner lists are fresh per iteration. ([0]*3 alone is fine: ints are immutable.)',
     },
     {
       id: 'gt-is-small-ints',
@@ -50,7 +50,7 @@ export const pyGotchas: Deck = {
       id: 'gt-chained-comparison',
       type: 'mcq',
       prompt: 'What does `1 < 3 > 2` evaluate to?',
-      choices: ['True — chained comparisons: (1 < 3) and (3 > 2)', 'False', 'SyntaxError', '2'],
+      choices: ['True; chained comparisons: (1 < 3) and (3 > 2)', 'False', 'SyntaxError', '2'],
       answer: 0,
       explanation:
         'Python chains comparisons: a < b < c means (a < b) and (b < c) with b evaluated once. Elegant when intended, bewildering when accidental.',
@@ -63,14 +63,14 @@ export const pyGotchas: Deck = {
       answers: ['None'],
       distractors: ['[]', 'Empty', 'False'],
       explanation:
-        'Sentinel None + create inside — the standard fix for the shared-default-list gotcha.',
+        'Sentinel None + create inside: the standard fix for the shared-default-list gotcha.',
     },
     {
       id: 'gt-copy-slice',
       type: 'mcq',
       prompt: 'You pass a list to a function that sorts it. The caller’s list is now sorted too. Why?',
       choices: [
-        'Lists pass by reference — the function mutated the caller’s object; sort a copy (sorted(x) or x[:]) instead',
+        'Lists pass by reference: the function mutated the caller’s object; sort a copy (sorted(x) or x[:]) instead',
         'Python copies lists on function calls',
         'sort() returns a new list',
         'It is a scoping bug in Python',
@@ -84,21 +84,21 @@ export const pyGotchas: Deck = {
       type: 'mcq',
       prompt: 'What is wrong with `for x in nums: if x < 0: nums.remove(x)`?',
       choices: [
-        'Mutating a list while iterating skips elements — filter into a new list instead',
+        'Mutating a list while iterating skips elements: filter into a new list instead',
         'remove() is O(1) so nothing',
         'Negative numbers cannot be removed',
         'It raises RuntimeError always',
       ],
       answer: 0,
       explanation:
-        'The iterator’s index marches on while elements shift left — adjacent negatives survive. Idiom: nums = [x for x in nums if x >= 0]. (Dicts DO raise RuntimeError for this; lists fail silently.)',
+        'The iterator’s index marches on while elements shift left: adjacent negatives survive. Idiom: nums = [x for x in nums if x >= 0]. (Dicts DO raise RuntimeError for this; lists fail silently.)',
     },
     {
       id: 'gt-try-except-pass',
       type: 'mcq',
       prompt: 'Why is `except Exception: pass` a code-review red flag?',
       choices: [
-        'It swallows every error silently — bugs vanish instead of surfacing; catch specific exceptions and at least log',
+        'It swallows every error silently: bugs vanish instead of surfacing; catch specific exceptions and at least log',
         'It is a syntax error in Python 3.12',
         'pass is slower than continue',
         'Exceptions cannot be caught broadly',
@@ -112,7 +112,7 @@ export const pyGotchas: Deck = {
       type: 'mcq',
       prompt: 'Why is `0.1 + 0.2 == 0.3` False?',
       choices: [
-        'Binary floats can’t represent 0.1 exactly — compare with math.isclose() or a tolerance',
+        'Binary floats can’t represent 0.1 exactly: compare with math.isclose() or a tolerance',
         'Python rounds incorrectly',
         'The == operator is broken for floats',
         'It is True',
@@ -126,8 +126,8 @@ export const pyGotchas: Deck = {
       type: 'mcq',
       prompt: 'After `for i in range(3): pass`, what is `i`?',
       choices: [
-        '2 — loop variables leak into the enclosing scope',
-        'NameError — loops have their own scope',
+        '2: loop variables leak into the enclosing scope',
+        'NameError: loops have their own scope',
         '3',
         'None',
       ],
@@ -150,14 +150,14 @@ export const pyGotchas: Deck = {
       type: 'mcq',
       prompt: 'After `list = [1, 2, 3]`, calling `list("abc")` fails. Why?',
       choices: [
-        'You shadowed the built-in list with your variable — rename the variable',
+        'You shadowed the built-in list with your variable: rename the variable',
         'Strings can no longer be converted',
         'list() only accepts numbers',
         'A restart always fixes it permanently',
       ],
       answer: 0,
       explanation:
-        'list, dict, str, sum, id, type — shadowing builtins works until the moment you need the builtin. Linters flag it; interviews plant it.',
+        'list, dict, str, sum, id, type: shadowing builtins works until the moment you need the builtin. Linters flag it; interviews plant it.',
     },
     {
       id: 'gt-pdb',
@@ -175,7 +175,7 @@ export const pyGotchas: Deck = {
       prompt: 'Why is the ValueError branch unreachable?',
       code: 'try:\n    parse(x)\nexcept Exception:\n    handle_generic()\nexcept ValueError:\n    handle_value()',
       choices: [
-        'except clauses match top-down — the broad Exception catches everything first; order narrow → broad',
+        'except clauses match top-down: the broad Exception catches everything first; order narrow → broad',
         'ValueError is not an Exception subclass',
         'Only one except is allowed',
         'It is reachable',
@@ -202,7 +202,7 @@ export const pyGotchas: Deck = {
       choices: ['30', 'NameError', 'None', '3'],
       answer: 0,
       explanation:
-        'n binds in the enclosing scope (walrus has no private scope), the condition passes, x = 30. If the condition failed, print(x) would NameError — conditional assignment leaves gaps.',
+        'n binds in the enclosing scope (walrus has no private scope), the condition passes, x = 30. If the condition failed, print(x) would NameError: conditional assignment leaves gaps.',
     },
     {
       id: 'gt-return-in-loop',
@@ -210,10 +210,10 @@ export const pyGotchas: Deck = {
       prompt: 'What is wrong with this primality check?',
       code: 'for i in range(2, int(n ** 0.5) + 1):\n    if n % i == 0:\n        return False\n    return True',
       choices: [
-        'return True sits inside the loop — it answers after testing only the FIRST divisor; dedent it below the loop',
+        'return True sits inside the loop: it answers after testing only the FIRST divisor; dedent it below the loop',
         'The range bound is off by one',
         'return False should come after the loop',
-        'Nothing — it works',
+        'Nothing: it works',
       ],
       answer: 0,
       explanation:

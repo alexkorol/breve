@@ -13,21 +13,21 @@ export const dataCleaning: Deck = {
       type: 'flash',
       front:
         'Interview: "You get a messy CSV. Walk me through cleaning it." Give the structured answer.',
-      back: 'A pipeline you can recite: 1) Profile first — shape, dtypes, head(), describe(), null counts. 2) Fix types (dates, numeric strings, categories). 3) Remove duplicates. 4) Handle missing values — ask WHY they’re missing before choosing drop/impute/flag. 5) Investigate outliers — typo or truth? 6) Standardize strings and category labels. 7) Validate ranges and cross-field consistency. 8) Do it in code, not by hand, so it’s reproducible and documented. Naming the steps in order is 80% of the answer.',
+      back: 'A pipeline you can recite: 1) Profile first; shape, dtypes, head(), describe(), null counts. 2) Fix types (dates, numeric strings, categories). 3) Remove duplicates. 4) Handle missing values: ask WHY they’re missing before choosing drop/impute/flag. 5) Investigate outliers: typo or truth? 6) Standardize strings and category labels. 7) Validate ranges and cross-field consistency. 8) Do it in code, not by hand, so it’s reproducible and documented. Naming the steps in order is 80% of the answer.',
     },
     {
       id: 'dc-first-move',
       type: 'mcq',
       prompt: 'First thing you do with a dataset you have never seen?',
       choices: [
-        'Profile it — df.info(), df.describe(), null counts, a few rows',
+        'Profile it: df.info(), df.describe(), null counts, a few rows',
         'Impute all missing values with the mean',
         'Drop every row containing a null',
         'Normalize all numeric columns',
       ],
       answer: 0,
       explanation:
-        'Never transform before you understand. Profiling reveals wrong dtypes, sentinel values like -999, duplicates, and skew — each changes what "cleaning" means.',
+        'Never transform before you understand. Profiling reveals wrong dtypes, sentinel values like -999, duplicates, and skew: each changes what "cleaning" means.',
     },
     {
       id: 'dc-null-count',
@@ -37,12 +37,12 @@ export const dataCleaning: Deck = {
       answers: ['sum'],
       distractors: ['count', 'mean', 'any'],
       explanation:
-        'True counts as 1, so summing booleans counts nulls. (.mean() gives the fraction missing — also worth knowing.)',
+        'True counts as 1, so summing booleans counts nulls. (.mean() gives the fraction missing: also worth knowing.)',
     },
     {
       id: 'dc-missing-strategies',
       type: 'flash',
-      front: 'Your options for missing values — and how you choose.',
+      front: 'Your options for missing values, and how you choose.',
       back: 'Drop rows (fine when few and random), drop the whole column (when mostly empty), impute median/mode (median beats mean under skew), model/KNN imputation (when relationships matter), or add an is_missing indicator column (when missingness itself is signal). Choose based on how much is missing and WHY. Always compute imputation values on training data only.',
     },
     {
@@ -51,7 +51,7 @@ export const dataCleaning: Deck = {
       prompt:
         'In a salary survey, income is missing mostly for high earners. Dropping those rows would…',
       choices: [
-        'Bias the data — this is MNAR, not missing at random',
+        'Bias the data: this is MNAR, not missing at random',
         'Be fine, dropping nulls is always safe',
         'Improve model accuracy',
         'Only matter if more than half are missing',
@@ -89,8 +89,8 @@ export const dataCleaning: Deck = {
       type: 'mcq',
       prompt: 'Which outlier rule is itself robust to extreme outliers?',
       choices: [
-        'IQR rule — flag values beyond 1.5×IQR from the quartiles',
-        'Z-score > 3 — based on mean and standard deviation',
+        'IQR rule: flag values beyond 1.5×IQR from the quartiles',
+        'Z-score > 3: based on mean and standard deviation',
         'Min-max clipping to [0, 1]',
         'Removing the top 50% of values',
       ],
@@ -102,7 +102,7 @@ export const dataCleaning: Deck = {
       id: 'dc-outlier-action',
       type: 'flash',
       front: 'You found outliers. What do you actually do with them?',
-      back: 'Investigate before touching: is it a data error (age 250, unit mixup) → fix or drop; or a real extreme (an actual whale customer) → keep it, and consider winsorizing/capping, a log transform, or robust models. The interview trap is "I’d remove outliers" — the right verb is "I’d investigate them."',
+      back: 'Investigate before touching: is it a data error (age 250, unit mixup) → fix or drop; or a real extreme (an actual whale customer) → keep it, and consider winsorizing/capping, a log transform, or robust models. The interview trap is "I’d remove outliers": the right verb is "I’d investigate them."',
     },
     {
       id: 'dc-leakage-scale',
@@ -123,7 +123,7 @@ export const dataCleaning: Deck = {
       id: 'dc-leakage-def',
       type: 'flash',
       front: 'Define data leakage and name three common causes.',
-      back: 'Leakage = information unavailable at prediction time sneaking into training, giving fake validation scores that collapse in production. Classics: 1) preprocessing (scaling/imputing) fit on the full dataset before splitting, 2) target leakage — features derived from the outcome (e.g. "charged_off_date" when predicting default), 3) temporal leakage — random splits on time-series letting the model train on the future.',
+      back: 'Leakage = information unavailable at prediction time sneaking into training, giving fake validation scores that collapse in production. Classics: 1) preprocessing (scaling/imputing) fit on the full dataset before splitting, 2) target leakage; features derived from the outcome (e.g. "charged_off_date" when predicting default), 3) temporal leakage: random splits on time-series letting the model train on the future.',
     },
     {
       id: 'dc-encode',
@@ -152,13 +152,13 @@ export const dataCleaning: Deck = {
     {
       id: 'dc-scaling',
       type: 'flash',
-      front: 'Standardization vs min-max scaling — and which models don’t care?',
+      front: 'Standardization vs min-max scaling, and which models don’t care?',
       back: 'Standardization: (x−mean)/std → centered, unbounded; the default, robust-ish to outliers. Min-max: squeeze to [0,1]; nice for neural nets, but one outlier crushes the rest. Scaling matters for distance- and gradient-based models (kNN, SVM, linear/logistic regression, neural nets). Tree ensembles (random forest, XGBoost) split on order, so scaling changes nothing.',
     },
     {
       id: 'dc-imbalance',
       type: 'mcq',
-      prompt: 'Handling a 99:1 class imbalance — which is correct?',
+      prompt: 'Handling a 99:1 class imbalance, which is correct?',
       choices: [
         'Resample (e.g. SMOTE) the training set only; keep the test set untouched',
         'Oversample the whole dataset, then split',
@@ -167,7 +167,7 @@ export const dataCleaning: Deck = {
       ],
       answer: 0,
       explanation:
-        'The test set must mirror reality. Resampling before the split also clones synthetic rows into the test set — leakage plus a fantasy evaluation. Also mention class weights as the simpler alternative.',
+        'The test set must mirror reality. Resampling before the split also clones synthetic rows into the test set: leakage plus a fantasy evaluation. Also mention class weights as the simpler alternative.',
     },
   ],
 };

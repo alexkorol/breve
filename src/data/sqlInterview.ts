@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const sqlInterview: Deck = {
   id: 'sql-interview',
   title: 'SQL Interview',
-  description: 'Joins, GROUP BY traps, and window functions — the screen before the screen.',
+  description: 'Joins, GROUP BY traps, and window functions: the screen before the screen.',
   icon: '🗄️',
   color: '#eab308',
   track: 'Coding Interview',
@@ -11,7 +11,7 @@ export const sqlInterview: Deck = {
     {
       id: 'sql-joins',
       type: 'mcq',
-      prompt: '`INNER JOIN` vs `LEFT JOIN` — the actual difference?',
+      prompt: '`INNER JOIN` vs `LEFT JOIN`: the actual difference?',
       choices: [
         'LEFT keeps unmatched left-table rows with NULLs; INNER drops them',
         'LEFT is faster than INNER',
@@ -30,21 +30,21 @@ export const sqlInterview: Deck = {
       answers: ['GROUP'],
       distractors: ['ORDER', 'SORT', 'PARTITION'],
       explanation:
-        'Every non-aggregated column in the SELECT must appear in GROUP BY — the error interviewers most love to plant.',
+        'Every non-aggregated column in the SELECT must appear in GROUP BY: the error interviewers most love to plant.',
     },
     {
       id: 'sql-having',
       type: 'mcq',
       prompt: 'Filter to cities with more than 100 users. `WHERE` or `HAVING`?',
       choices: [
-        'HAVING — it filters after aggregation; WHERE runs before groups exist',
-        'WHERE — it is always more efficient',
+        'HAVING: it filters after aggregation; WHERE runs before groups exist',
+        'WHERE: it is always more efficient',
         'Either works identically',
         'Neither; you need a second query',
       ],
       answer: 0,
       explanation:
-        'WHERE filters rows going in; HAVING filters groups coming out. `HAVING COUNT(*) > 100` — you cannot reference an aggregate in WHERE.',
+        'WHERE filters rows going in; HAVING filters groups coming out. `HAVING COUNT(*) > 100`: you cannot reference an aggregate in WHERE.',
     },
     {
       id: 'sql-exec-order',
@@ -58,7 +58,7 @@ export const sqlInterview: Deck = {
       prompt: 'Arrange the logical execution order of a SQL query.',
       items: ['FROM / JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'SELECT', 'ORDER BY / LIMIT'],
       explanation:
-        'Written order ≠ execution order — this is why WHERE can’t see aggregates and SELECT aliases don’t exist yet in WHERE.',
+        'Written order ≠ execution order: this is why WHERE can’t see aggregates and SELECT aliases don’t exist yet in WHERE.',
     },
     {
       id: 'sql-second-highest',
@@ -68,27 +68,27 @@ export const sqlInterview: Deck = {
       answers: ['MAX'],
       distractors: ['MIN', 'AVG', 'TOP'],
       explanation:
-        'Max of everything below the max. Also mention the window-function version — DENSE_RANK() = 2 — which generalizes to Nth highest.',
+        'Max of everything below the max. Also mention the window-function version. DENSE_RANK() = 2, which generalizes to Nth highest.',
     },
     {
       id: 'sql-null',
       type: 'mcq',
       prompt: 'Why does `WHERE email = NULL` return nothing, ever?',
       choices: [
-        'NULL compares as unknown — use IS NULL / IS NOT NULL',
+        'NULL compares as unknown: use IS NULL / IS NOT NULL',
         'NULL must be quoted as a string',
         'It should be == instead of =',
         'The column needs an index first',
       ],
       answer: 0,
       explanation:
-        'Any comparison with NULL yields UNKNOWN, which WHERE treats as false. Corollary: NULLs also silently vanish from NOT IN lists — a notorious trap.',
+        'Any comparison with NULL yields UNKNOWN, which WHERE treats as false. Corollary: NULLs also silently vanish from NOT IN lists; a notorious trap.',
     },
     {
       id: 'sql-window-ranks',
       type: 'flash',
-      front: '`ROW_NUMBER` vs `RANK` vs `DENSE_RANK` — scores 90, 90, 85.',
-      back: 'ROW_NUMBER: 1,2,3 — unique numbers, ties broken arbitrarily. RANK: 1,1,3 — ties share, next rank skips. DENSE_RANK: 1,1,2 — ties share, no gaps. All used as OVER (PARTITION BY … ORDER BY …); "top-N per group" is ROW_NUMBER ≤ N.',
+      front: '`ROW_NUMBER` vs `RANK` vs `DENSE_RANK`: scores 90, 90, 85.',
+      back: 'ROW_NUMBER: 1,2,3; unique numbers, ties broken arbitrarily. RANK: 1,1,3; ties share, next rank skips. DENSE_RANK: 1,1,2; ties share, no gaps. All used as OVER (PARTITION BY … ORDER BY …); "top-N per group" is ROW_NUMBER ≤ N.',
     },
     {
       id: 'sql-dedupe',
@@ -130,13 +130,13 @@ export const sqlInterview: Deck = {
       ],
       answer: 0,
       explanation:
-        'Default to UNION ALL unless you specifically need dedup — saying that unprompted reads as someone who has watched a query plan.',
+        'Default to UNION ALL unless you specifically need dedup: saying that unprompted reads as someone who has watched a query plan.',
     },
     {
       id: 'sql-exists',
       type: 'flash',
       front: 'When would you reach for `EXISTS` over `IN`?',
-      back: 'EXISTS (SELECT 1 …) short-circuits on the first match — strong for correlated checks against large subqueries. IN materializes the whole list first, and NOT IN silently returns nothing if that list contains a NULL. NOT EXISTS is the safe spelling of "has none".',
+      back: 'EXISTS (SELECT 1 …) short-circuits on the first match: strong for correlated checks against large subqueries. IN materializes the whole list first, and NOT IN silently returns nothing if that list contains a NULL. NOT EXISTS is the safe spelling of "has none".',
     },
     {
       id: 'sql-distinct',

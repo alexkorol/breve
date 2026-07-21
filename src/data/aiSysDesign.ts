@@ -3,7 +3,7 @@ import type { Deck } from '../types';
 export const aiSysDesign: Deck = {
   id: 'ai-sys-design',
   title: 'AI System Design',
-  description: 'The "design a support bot" round — frameworks for whiteboard composure.',
+  description: 'The "design a support bot" round: frameworks for whiteboard composure.',
   icon: '📐',
   color: '#f87171',
   track: 'AI Engineering',
@@ -12,12 +12,12 @@ export const aiSysDesign: Deck = {
       id: 'sd-framework',
       type: 'flash',
       front: 'The 5-step frame for ANY "design an AI system" interview question.',
-      back: '1) Requirements: users, scale, latency budget, cost ceiling, failure tolerance — ASK before designing. 2) Simplest architecture that could work (often one model call + retrieval). 3) Data flow end to end, naming components. 4) Evaluation & feedback loop — how you know it works and improves. 5) Failure modes & guardrails. Interviewers grade the PROCESS; step 4 is where AI candidates differentiate, because most forget it.',
+      back: '1) Requirements: users, scale, latency budget, cost ceiling, failure tolerance. ASK before designing. 2) Simplest architecture that could work (often one model call + retrieval). 3) Data flow end to end, naming components. 4) Evaluation & feedback loop: how you know it works and improves. 5) Failure modes & guardrails. Interviewers grade the PROCESS; step 4 is where AI candidates differentiate, because most forget it.',
     },
     {
       id: 'sd-support-bot',
       type: 'flash',
-      front: 'Whiteboard drill: "Design a customer-support bot over our help docs." — 90 seconds.',
+      front: 'Whiteboard drill: "Design a customer-support bot over our help docs.": 90 seconds.',
       back: 'Ingestion: docs → chunk (structure-aware, heading context) → embed → vector store; nightly sync. Query path: rewrite conversational query → hybrid retrieve → rerank → generate with citations, strict "answer only from context". Guardrails: confidence threshold → human handoff; injection defenses; PII filtering. Eval: golden Q&A set, retrieval recall@k, groundedness judge, thumbs-down review queue. Ops: streaming, model routing, prompt caching, dashboards. That skeleton adapts to any RAG product question.',
     },
     {
@@ -39,7 +39,7 @@ export const aiSysDesign: Deck = {
       type: 'mcq',
       prompt: 'Where does human-in-the-loop belong in an AI pipeline?',
       choices: [
-        'Wherever error cost exceeds review cost — with uncertainty routing deciding WHICH items humans see',
+        'Wherever error cost exceeds review cost: with uncertainty routing deciding WHICH items humans see',
         'Reviewing every output, always',
         'Nowhere; automation is the goal',
         'Only during development',
@@ -60,7 +60,7 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'Each layer has a staleness/correctness tradeoff — semantic caching especially needs a similarity threshold and TTL. Naming all three unprompted is a strong systems signal.',
+        'Each layer has a staleness/correctness tradeoff: semantic caching especially needs a similarity threshold and TTL. Naming all three unprompted is a strong systems signal.',
     },
     {
       id: 'sd-fallback',
@@ -74,14 +74,14 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'Model-agnostic plumbing (an OpenRouter-style gateway) makes the first rung nearly free. "What happens when the model is down?" is a favorite follow-up — have the ladder ready.',
+        'Model-agnostic plumbing (an OpenRouter-style gateway) makes the first rung nearly free. "What happens when the model is down?" is a favorite follow-up: have the ladder ready.',
     },
     {
       id: 'sd-latency-budget',
       type: 'mcq',
       prompt: 'Chat product, 3-second perceived-latency budget. How do you spend it?',
       choices: [
-        'Retrieval + rerank ≤ 500ms, TTFT ≤ 1.5s via streaming — the user reads while decode continues',
+        'Retrieval + rerank ≤ 500ms, TTFT ≤ 1.5s via streaming: the user reads while decode continues',
         'Generate fully (10s), then display',
         'Skip retrieval to save time',
         'Batch user requests each minute',
@@ -93,15 +93,15 @@ export const aiSysDesign: Deck = {
     {
       id: 'sd-feedback-loop',
       type: 'flash',
-      front: 'Design the feedback loop — how does a shipped AI product get better?',
-      back: 'Capture: thumbs up/down with the full trace (prompt version, retrieved chunks, model, output). Triage: negative-feedback review queue — humans label the failure mode (retrieval miss? hallucination? formatting?). Feed back: failures become eval cases (regression suite grows), then prompt/retrieval fixes, eventually fine-tuning data. The flywheel: traces → labels → evals → fixes → better traces. Without capture at step 1, nothing downstream exists.',
+      front: 'Design the feedback loop: how does a shipped AI product get better?',
+      back: 'Capture: thumbs up/down with the full trace (prompt version, retrieved chunks, model, output). Triage: negative-feedback review queue; humans label the failure mode (retrieval miss? hallucination? formatting?). Feed back: failures become eval cases (regression suite grows), then prompt/retrieval fixes, eventually fine-tuning data. The flywheel: traces → labels → evals → fixes → better traces. Without capture at step 1, nothing downstream exists.',
     },
     {
       id: 'sd-cost-estimate',
       type: 'mcq',
       prompt: 'Back-of-envelope: 100k queries/day, ~2k input + 500 output tokens each, at $3/M in and $15/M out. Daily cost?',
       choices: [
-        '≈ $1,350/day — (0.2B × $3 + 0.05B × $15) per million',
+        '≈ $1,350/day: (0.2B × $3 + 0.05B × $15) per million',
         '≈ $135/day',
         '≈ $13,500/day',
         'Impossible to estimate',
@@ -122,12 +122,12 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'LLM endpoints are expensive compute behind an HTTP call — treat abuse as a cost attack, not just a nuisance. Per-key budgets are the non-negotiable.',
+        'LLM endpoints are expensive compute behind an HTTP call: treat abuse as a cost attack, not just a nuisance. Per-key budgets are the non-negotiable.',
     },
     {
       id: 'sd-buy-vs-build',
       type: 'flash',
-      front: '"Should we build this AI feature or use a vendor?" — the structured answer.',
+      front: '"Should we build this AI feature or use a vendor?": the structured answer.',
       back: 'Build when the capability IS your differentiation, data is proprietary, or vendor costs at scale exceed an owned solution. Buy/API when it’s table-stakes functionality, volume is unproven, or speed-to-market rules. The hybrid default: prototype on the best API to validate demand, then optimize costs (routing, distillation, self-hosting) once usage justifies it. Premature GPU ownership is the AI version of premature optimization.',
     },
     {
@@ -142,7 +142,7 @@ export const aiSysDesign: Deck = {
       ],
       answer: 0,
       explanation:
-        'A silent model update can shift behavior overnight — the scheduled canary eval catches what infra metrics can’t. "Quality is a metric too" is the closing line.',
+        'A silent model update can shift behavior overnight: the scheduled canary eval catches what infra metrics can’t. "Quality is a metric too" is the closing line.',
     },
   ],
 };

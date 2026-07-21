@@ -50,7 +50,8 @@ const CARD_SCHEMA_DOC = `Card formats (every card needs a unique "id" string):
 - {"id","type":"fill","prompt","code":<snippet containing ____ exactly once>,"answers":[accepted strings],"distractors":[3 wrong tokens],"explanation"}
 - {"id","type":"tf","prompt":<a statement to judge>,"answer":<true|false>,"explanation"} — optional "code". Make false statements plausibly wrong, not silly.
 - {"id","type":"order","prompt","items":[3-6 steps in CORRECT order],"explanation"} — steps/pipeline stages/code lines the learner arranges; they see them shuffled.
-Inline code in any text field uses backticks. Explanations are 1-2 sentences stating WHY.`;
+Inline code in any text field uses backticks. Explanations are 1-2 sentences stating WHY.
+Style rule: NEVER use em dashes (—) anywhere in card text. Use a colon, comma, parentheses, or a separate sentence instead.`;
 
 async function callForDeck(system: string, user: string): Promise<string> {
   const client = await makeClient();
