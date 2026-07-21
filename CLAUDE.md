@@ -14,6 +14,10 @@ Local-first React PWA for spaced-repetition interview prep (formerly "Breve"; th
 
 - Provider-agnostic by key prefix in `src/ai.ts`: OpenRouter is primary (OpenAI chat-completions format via fetch/SSE, any model slug); `sk-ant-` keys go directly to Anthropic via the lazily imported SDK. Keep new AI features going through `callText()` so both providers keep working.
 
+## iOS app
+
+- The App Store build wraps this PWA with Capacitor. See `docs/ios.md` for current state and the macOS-side setup steps. The `ios/` platform folder is generated on macOS (`npx cap add ios`) and committed; build first, then `npm run ios:sync`.
+
 ## Session mechanics (do not regress)
 
 - Sessions are 10-card packs (`PACK_SIZE` in `src/session.ts`); no in-session requeue of missed cards (they come back ~10 min later via `srs.ts`).

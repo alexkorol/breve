@@ -3,3 +3,10 @@ dist
 dev-dist
 *.local
 .DS_Store
+
+# Capacitor iOS: the ios/ platform folder is committed, generated artifacts are not
+ios/App/Pods
+ios/App/App/public
+ios/App/App/capacitor.config.json
+ios/capacitor-cordova-ios-plugins
+ios/DerivedData
