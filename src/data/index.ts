@@ -34,6 +34,11 @@ import { inferenceOpt } from './inferenceOpt';
 import { aiSysDesign } from './aiSysDesign';
 import { azureAiServices } from './azureAiServices';
 import { aiInterviewDrills } from './aiInterviewDrills';
+import { sysFundamentals } from './sysFundamentals';
+import { sysScaling } from './sysScaling';
+import { sysStorage } from './sysStorage';
+import { sysQueuesCaches } from './sysQueuesCaches';
+import { sysCaseDrills } from './sysCaseDrills';
 
 /**
  * Curriculum order: decks appear grouped by track, in this sequence.
@@ -73,6 +78,12 @@ export const decks: Deck[] = [
   patternsStringsHash,
   patternsGraphsDp,
   sqlInterview,
+  // System Design
+  sysFundamentals,
+  sysScaling,
+  sysStorage,
+  sysQueuesCaches,
+  sysCaseDrills,
   // Python
   pythonBasics,
   pythonAdvanced,
