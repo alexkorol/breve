@@ -10,7 +10,6 @@ import {
   loadCustomDecks,
   saveCustomDecks,
   parseDeckFile,
-  getSetting,
 } from './storage';
 import { deckJsonFromHash } from './share';
 import { decks as builtinDecks, DAILY_REVIEW_ID, dailyReviewDeck } from './data';
@@ -42,14 +41,10 @@ export default function App() {
   const [state, setState] = useState<AppState>(loadState);
   const [customDecks, setCustomDecks] = useState<Deck[]>(loadCustomDecks);
   const [view, setView] = useState<View>({ name: 'home' });
-  const [hidePersonal, setHidePersonal] = useState(getSetting('hidePersonal') === 'on');
   const [shareNotice, setShareNotice] = useState('');
   const [pendingShared, setPendingShared] = useState<Deck | null>(null);
 
-  const allDecks = useMemo(() => {
-    const decks = [...builtinDecks, ...customDecks];
-    return hidePersonal ? decks.filter((d) => d.track !== 'My Projects') : decks;
-  }, [customDecks, hidePersonal]);
+  const allDecks = useMemo(() => [...builtinDecks, ...customDecks], [customDecks]);
 
   const reviewsToday = state.stats.reviewsByDay[dayKey()] ?? 0;
 
@@ -182,10 +177,10 @@ export default function App() {
             {
               id: MISSES_ID,
               title: 'Interview Misses',
-              description: 'Drills built from your own postmortems — never stumble twice.',
+              description: 'Drills built from your own postmortems: never stumble twice.',
               icon: '🎯',
               color: '#f85149',
-              track: 'My Projects',
+              track: 'Imported',
               custom: true,
               cards,
             },
@@ -271,7 +266,6 @@ export default function App() {
       <Settings
         state={state}
         onImport={importState}
-        onHidePersonalChange={setHidePersonal}
         onBack={() => setView({ name: 'home' })}
       />
     );

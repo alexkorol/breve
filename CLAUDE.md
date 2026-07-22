@@ -5,7 +5,7 @@ Local-first React PWA for spaced-repetition interview prep (formerly "Breve"; th
 ## Card content style (all decks and generated material)
 
 - **No em dashes (—), ever.** Use a colon, comma, parentheses, or a separate sentence. This applies to card fronts, backs, prompts, choices, explanations, and deck descriptions, and to the AI generation prompts in `src/ai.ts`.
-- No personal references (specific employers, project codenames, personal metrics). The `proj*` decks in the My Projects track are the only exception.
+- No personal references (specific employers, project codenames, personal metrics), anywhere. The app is a consumer product; personal decks live outside the repo as import files.
 - No cheerleading or meta commentary in answers ("say it out loud", "this is interview gold", pep-talk closers). Answers end when the technical answer ends.
 - Substantive interview guidance (what interviewers probe, how to structure an answer) is welcome; keep it factual.
 - **No walls of text.** Any answer covering a pipeline, checklist, or 4+ steps uses `\n` line breaks with numbered or labeled lines (the `Rich` renderer turns `\n` into real breaks). Arrow chains (→) are allowed only as short notation, roughly 4 steps on one line; never as a paragraph-length chain.

@@ -163,7 +163,7 @@ export function Home({
   };
   const backupAge = daysSinceBackup();
   const showBackupNudge = state.stats.totalReviews > 0 && backupAge > 7;
-  // Weekly steering loop: export the readiness report and drop it in career_dev's inbox.
+  // Weekly loop: nudge an export of the readiness report once a week.
   const [reportExported, setReportExported] = useState(false);
   const showReportNudge =
     !reportExported && state.stats.totalReviews > 0 && daysSinceReport() >= 7;
@@ -267,8 +267,8 @@ export function Home({
             setReportExported(true);
           }}
         >
-          📤 Weekly report is ready — tap to export, then drop it in career_dev’s inbox to
-          steer the study plan.
+          📤 Weekly report is ready: tap to export a summary of your week and where
+          you stand by track.
         </button>
       )}
 

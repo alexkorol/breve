@@ -259,7 +259,7 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
           practiced answering from memory. Dim bar = cards seen.
         </p>
         <button className="btn ghost block" onClick={() => exportReport(decks, state)}>
-          Export weekly report for career_dev (.md)
+          Export weekly report (.md)
         </button>
       </section>
 

@@ -5,10 +5,10 @@ import { dayKey, downloadText, getSetting, setSetting } from './storage';
 import { dayIntensity, flameTier } from './flame';
 
 /**
- * Weekly readiness report for the career_dev pipeline. The file is dropped
- * into career_dev's inbox/, where the morning routine clarifies it — so the
- * preamble states what it is and what it's for, and every section is a factual
- * signal the study-plan steering can act on without seeing the app.
+ * Weekly readiness report: a self-describing markdown file the user can keep,
+ * share, or feed to an AI assistant to steer what they study next. The
+ * preamble states what it is, and every section is a factual signal that can
+ * be acted on without seeing the app.
  */
 
 function cardTitle(card: Card): string {
@@ -49,10 +49,10 @@ export function buildReport(decks: Deck[], state: AppState): string {
   const lines = [
     `# Jimothy weekly readiness report — ${dayKey()}`,
     '',
-    '> Source: Jimothy spaced-repetition PWA (alexkorol.github.io/jimothy), exported weekly.',
-    '> Purpose: steering signal for STUDY_PLAN.md and deck priorities — readiness by track,',
-    '> consistency, production-recall evidence, and the cards Alex keeps missing.',
-    '> Compare with the previous week’s report for deltas.',
+    '> Source: Jimothy, a spaced-repetition interview trainer. Exported weekly.',
+    '> Readiness by track, consistency, production-recall evidence, and the cards',
+    '> you keep missing. Compare with the previous week for deltas, or hand it to',
+    '> an AI assistant to plan what to study next.',
     '',
     '## Consistency',
     '',
@@ -89,8 +89,7 @@ export function buildReport(decks: Deck[], state: AppState): string {
   lines.push(
     '',
     '_Readiness = 70% mastery + 30% coverage, blended 60/40 with recall-mode grades where present._',
-    '_Avg recall = production ability: answering from memory, AI-graded 0–100. The known gap is_',
-    '_explaining own projects — watch the My Projects row._',
+    '_Avg recall = production ability: answering from memory, AI-graded 0-100._',
   );
 
   const weak = seenEntries

@@ -15,9 +15,6 @@ import { aiEngineering } from './aiEngineering';
 import { pyPairs } from './pyPairs';
 import { fastapiServing } from './fastapiServing';
 import { llmEvalBias } from './llmEvalBias';
-import { projSongcraft } from './projSongcraft';
-import { projProsodyJudge } from './projProsodyJudge';
-import { projLedgerlens } from './projLedgerlens';
 import { credAi103 } from './credAi103';
 import { credHfAgents } from './credHfAgents';
 import { pyStrings } from './pyStrings';
@@ -55,10 +52,6 @@ export const decks: Deck[] = [
   llmEvalBias,
   finetuning,
   aiSysDesign,
-  // My Projects
-  projLedgerlens,
-  projSongcraft,
-  projProsodyJudge,
   // Credentials
   credAi103,
   credHfAgents,

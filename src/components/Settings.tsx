@@ -14,7 +14,6 @@ import { loadPlan, remainingDays, createGiftGrants, savePlan } from '../membersh
 interface Props {
   state: AppState;
   onImport: (state: AppState) => void;
-  onHidePersonalChange: (hidden: boolean) => void;
   onBack: () => void;
 }
 
@@ -145,7 +144,7 @@ function Toggle({ name, label, hint, onChange }: { name: string; label: string; 
   );
 }
 
-export function Settings({ state, onImport, onHidePersonalChange, onBack }: Props) {
+export function Settings({ state, onImport, onBack }: Props) {
   const [key, setKey] = useState(getApiKey());
   const [model, setModelState] = useState(getModel());
   const [saved, setSaved] = useState(false);
@@ -220,12 +219,6 @@ export function Settings({ state, onImport, onHidePersonalChange, onBack }: Prop
           name="recallTimer"
           label="60-second answer timer"
           hint="Interview pressure: recall answers auto-submit when time runs out."
-        />
-        <Toggle
-          name="hidePersonal"
-          label="Hide My Projects track"
-          hint="Tidies the app when someone else is using it — personal project decks disappear from home and Daily Review."
-          onChange={onHidePersonalChange}
         />
       </section>
 
