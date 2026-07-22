@@ -297,6 +297,7 @@ export default function App() {
         state={state}
         onImport={importState}
         onUnlock={gated ? () => setShowPaywall(true) : undefined}
+        onPlanChange={setPlan}
         onBack={() => setView({ name: 'home' })}
       />
     );

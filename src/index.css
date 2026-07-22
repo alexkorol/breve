@@ -1828,3 +1828,16 @@ button {
   background: var(--bg-inset);
   border: 1px solid var(--border);
 }
+
+/* Testimonial composer */
+.testimonial-input {
+  width: 100%;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 12px;
+  font: inherit;
+  margin-bottom: 10px;
+  resize: vertical;
+}

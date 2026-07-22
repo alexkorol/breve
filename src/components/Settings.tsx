@@ -8,48 +8,100 @@ import {
   setSetting,
   daysSinceBackup,
 } from '../storage';
-import type { GiftGrant } from '../membership';
-import { loadPlan, remainingDays, createGiftGrants, savePlan } from '../membership';
+import type { Plan } from '../membership';
+import { loadPlan, remainingDays } from '../membership';
+import { redeemGiftCode } from '../giftcodes';
 
 interface Props {
   state: AppState;
   onImport: (state: AppState) => void;
   /** Present on the gated native build: opens the unlock sheet. */
   onUnlock?: () => void;
+  /** Notifies App so gating reacts immediately to a redeemed gift code. */
+  onPlanChange?: (plan: Plan) => void;
   onBack: () => void;
 }
 
 /**
- * "I met my goal" — a paid user who no longer needs the app (got the job)
- * gifts the remainder of their membership to one or more friends.
- * Hidden entirely on the free tier, so it stays invisible until payments ship.
+ * Membership: plan status, gift-code redemption, and the "I met my goal"
+ * testimonial program (12 giftable one-month passes; fulfillment is manual
+ * until the backend ships). Never tied to App Store reviews.
  */
-function MembershipSection({ onUnlock }: { onUnlock?: () => void }) {
-  const [plan, setPlan] = useState(loadPlan);
-  const [gifting, setGifting] = useState(false);
-  const [recipients, setRecipients] = useState<string[]>(['']);
-  const [grants, setGrants] = useState<GiftGrant[]>([]);
+const TESTIMONIAL_EMAIL = 'korolalexei@gmail.com';
+const GOAL_STREAK = 30;
+const GOAL_REVIEWS = 500;
 
-  // Gated native build: the section is the unlock entry point.
+function MembershipSection({
+  onUnlock,
+  onPlanChange,
+}: {
+  onUnlock?: () => void;
+  onPlanChange?: (plan: Plan) => void;
+}) {
+  const [plan, setPlan] = useState(loadPlan);
+  const [code, setCode] = useState('');
+  const [redeemMsg, setRedeemMsg] = useState('');
+
+  const redeem = async () => {
+    const result = await redeemGiftCode(code);
+    if (result.ok) {
+      setPlan(result.plan);
+      onPlanChange?.(result.plan);
+      setCode('');
+      setRedeemMsg('Gift month activated. Everything is unlocked for 30 days.');
+    } else {
+      setRedeemMsg(
+        result.reason === 'already-used'
+          ? 'That code was already redeemed on this device.'
+          : 'That code is not valid. Check for typos and try again.',
+      );
+    }
+  };
+
+  const redeemRow = (
+    <>
+      <div className="setting-row">
+        <div className="setting-text">
+          <strong>Have a gift code?</strong>
+          <p>A friend can gift you a month of full access.</p>
+        </div>
+      </div>
+      <div className="gift-recipient-row">
+        <input
+          placeholder="JIM1.…"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          autoCapitalize="none"
+          autoCorrect="off"
+        />
+        <button className="btn ghost" disabled={!code.trim()} onClick={() => void redeem()}>
+          Redeem
+        </button>
+      </div>
+      {redeemMsg && <p className="chart-note">{redeemMsg}</p>}
+    </>
+  );
+
   if (plan.tier !== 'paid') {
-    if (!onUnlock) return null;
     return (
       <section className="stats-section">
-        <h3>Unlock everything</h3>
-        <div className="setting-row">
-          <div className="setting-text">
-            <strong>One purchase, every deck forever</strong>
-            <p>All built-in decks and every future one. No subscription. Restore is on the same sheet.</p>
+        <h3>Membership</h3>
+        {onUnlock && (
+          <div className="setting-row">
+            <div className="setting-text">
+              <strong>One purchase, every deck forever</strong>
+              <p>All built-in decks and every future one. No subscription.</p>
+            </div>
+            <button className="btn primary" onClick={onUnlock}>
+              Unlock
+            </button>
           </div>
-          <button className="btn primary" onClick={onUnlock}>
-            Unlock
-          </button>
-        </div>
+        )}
+        {redeemRow}
       </section>
     );
   }
 
-  // Lifetime (one-time) unlock: nothing expires, so no gift flow.
   if (plan.expiresAt === undefined) {
     return (
       <section className="stats-section">
@@ -59,94 +111,82 @@ function MembershipSection({ onUnlock }: { onUnlock?: () => void }) {
     );
   }
 
-  const days = remainingDays(plan);
-  const done = grants.length > 0;
+  return (
+    <section className="stats-section">
+      <h3>Membership</h3>
+      <p className="chart-note">
+        Gift month active: full access for {remainingDays(plan)} more day
+        {remainingDays(plan) === 1 ? '' : 's'}.
+      </p>
+      {redeemRow}
+    </section>
+  );
+}
 
-  const sendGifts = () => {
-    const created = createGiftGrants(plan, recipients);
-    if (created.length === 0) return;
-    setGrants(created);
-    // The sender's remaining term is transferred away.
-    savePlan({ tier: 'free' });
-    setPlan({ tier: 'free' });
-  };
+/**
+ * Usage-gated testimonial program. Submitting a story (manual fulfillment for
+ * now) earns 12 one-month gift codes to hand out. Deliberately not connected
+ * to App Store reviews: incentivized reviews are prohibited.
+ */
+function MetGoalSection({ state }: { state: AppState }) {
+  const [open, setOpen] = useState(false);
+  const [story, setStory] = useState('');
+  const [sent, setSent] = useState(getSetting('goalTestimonial') === 'sent');
 
-  const shareGrant = async (g: GiftGrant) => {
-    const text = `I met my goal with Jimothy — passing my membership on to you: ${g.days} days, code ${g.code}`;
-    if (navigator.share) await navigator.share({ text }).catch(() => undefined);
-    else await navigator.clipboard?.writeText(text);
+  const eligible =
+    state.stats.streak >= GOAL_STREAK || state.stats.totalReviews >= GOAL_REVIEWS;
+  if (!eligible) return null;
+
+  const submit = () => {
+    const subject = encodeURIComponent('I met my goal with Jimothy');
+    const body = encodeURIComponent(
+      `${story.trim()}\n\n(Stats: ${state.stats.totalReviews} reviews, ${state.stats.streak}-day streak.)\n\nSend my 12 gift months to this address.`,
+    );
+    window.location.href = `mailto:${TESTIMONIAL_EMAIL}?subject=${subject}&body=${body}`;
+    setSetting('goalTestimonial', 'sent');
+    setSent(true);
   };
 
   return (
     <section className="stats-section">
-      <h3>Membership</h3>
-      {!gifting ? (
+      <h3>I met my goal 🎁</h3>
+      {sent ? (
+        <p className="chart-note">
+          Story received. Your 12 gift months arrive by email within a day or two: hand them to
+          friends and other learners.
+        </p>
+      ) : !open ? (
         <div className="setting-row">
           <div className="setting-text">
-            <strong>I met my goal 🎁</strong>
+            <strong>Got the job? Passed the interview?</strong>
             <p>
-              Got the job? Gift the {days} days left on your membership to one or more friends —
-              split evenly between them.
+              Share your story and get 12 one-month full-access passes to give to friends and
+              other learners.
             </p>
           </div>
-          <button className="btn ghost" onClick={() => setGifting(true)}>
-            Gift it
+          <button className="btn ghost" onClick={() => setOpen(true)}>
+            Share it
           </button>
         </div>
-      ) : !done ? (
-        <>
-          <p className="chart-note">
-            {days} days left to give. Add one or more recipients — each gets an equal share, and
-            your own membership ends when you send.
-          </p>
-          <div className="gift-recipients">
-            {recipients.map((r, i) => (
-              <div key={i} className="gift-recipient-row">
-                <input
-                  placeholder="Friend’s name or email"
-                  value={r}
-                  onChange={(e) =>
-                    setRecipients((prev) => prev.map((p, j) => (j === i ? e.target.value : p)))
-                  }
-                />
-                {recipients.length > 1 && (
-                  <button
-                    className="icon-btn"
-                    aria-label="Remove recipient"
-                    onClick={() => setRecipients((prev) => prev.filter((_, j) => j !== i))}
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-          <button className="link-btn" onClick={() => setRecipients((prev) => [...prev, ''])}>
-            + Add another recipient
-          </button>
-          <button
-            className="btn primary block"
-            disabled={recipients.every((r) => !r.trim())}
-            onClick={sendGifts}
-          >
-            Send my membership as a gift
-          </button>
-          <button className="btn ghost block" onClick={() => setGifting(false)}>
-            Cancel
-          </button>
-        </>
       ) : (
         <>
-          <p className="chart-note">
-            Done — your membership has been passed on. Share each code with its recipient:
-          </p>
-          <div className="gift-codes">
-            {grants.map((g) => (
-              <button key={g.code} className="btn ghost" onClick={() => void shareGrant(g)}>
-                {g.recipient}: {g.code} · {g.days} days — tap to share
-              </button>
-            ))}
-          </div>
+          <textarea
+            className="testimonial-input"
+            rows={5}
+            placeholder="What were you preparing for, and how did it go?"
+            value={story}
+            onChange={(e) => setStory(e.target.value)}
+          />
+          <button
+            className="btn primary block"
+            disabled={story.trim().length < 40}
+            onClick={submit}
+          >
+            Send my story (opens email)
+          </button>
+          <button className="btn ghost block" onClick={() => setOpen(false)}>
+            Cancel
+          </button>
         </>
       )}
     </section>
@@ -174,7 +214,7 @@ function Toggle({ name, label, hint, onChange }: { name: string; label: string; 
   );
 }
 
-export function Settings({ state, onImport, onUnlock, onBack }: Props) {
+export function Settings({ state, onImport, onUnlock, onPlanChange, onBack }: Props) {
   const [key, setKey] = useState(getApiKey());
   const [model, setModelState] = useState(getModel());
   const [saved, setSaved] = useState(false);
@@ -209,7 +249,8 @@ export function Settings({ state, onImport, onUnlock, onBack }: Props) {
         <span className="detail-track">⚙️ Settings</span>
       </header>
 
-      <MembershipSection onUnlock={onUnlock} />
+      <MembershipSection onUnlock={onUnlock} onPlanChange={onPlanChange} />
+      <MetGoalSection state={state} />
 
       <section className="stats-section">
         <h3>AI features (deck generation, grading, postmortems)</h3>
