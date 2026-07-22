@@ -42,6 +42,10 @@ import { sysCaseDrills } from './sysCaseDrills';
 import { behStarMethod } from './behStarMethod';
 import { behConflictFailure } from './behConflictFailure';
 import { behSeniorSignals } from './behSeniorSignals';
+import { jsFundamentals } from './jsFundamentals';
+import { jsAsync } from './jsAsync';
+import { tsTypes } from './tsTypes';
+import { jsGotchas } from './jsGotchas';
 
 /**
  * Curriculum order: decks appear grouped by track, in this sequence.
@@ -91,6 +95,11 @@ export const decks: Deck[] = [
   behStarMethod,
   behConflictFailure,
   behSeniorSignals,
+  // JavaScript & TypeScript
+  jsFundamentals,
+  jsAsync,
+  tsTypes,
+  jsGotchas,
   // Python
   pythonBasics,
   pythonAdvanced,
