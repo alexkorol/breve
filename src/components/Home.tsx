@@ -7,6 +7,7 @@ import { exportReport, daysSinceReport } from '../report';
 import { DAILY_REVIEW_ID } from '../data';
 import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
 import { dayIntensity, flameTier, intensityLevel, streakOnDay } from '../flame';
+import { daysUntilInterview, dailyNewBudget } from '../pace';
 import { Flame } from './Flame';
 
 const TRACKS_KEY = 'breve:ui:tracks';
@@ -114,6 +115,35 @@ function DeckCard({
         {!ready && !deck.locked && <span className="badge done">✓</span>}
       </div>
     </button>
+  );
+}
+
+/** Interview-countdown status line; hidden until a date is set in Settings. */
+function CountdownBanner({
+  decks,
+  progress,
+}: {
+  decks: Deck[];
+  progress: Record<string, CardProgress>;
+}) {
+  const days = daysUntilInterview();
+  if (days === null) return null;
+  if (days < 0) return null;
+  const unseen = decks.reduce((n, d) => n + d.cards.filter((c) => !progress[c.id]).length, 0);
+  const budget = dailyNewBudget(unseen);
+  let detail: string;
+  if (days <= 1) {
+    detail = unseen > 0 ? 'Review mode: no new cards, sharpen what you know.' : 'Review mode. You covered everything.';
+  } else if (unseen === 0) {
+    detail = 'Everything seen at least once. Keep reviewing daily.';
+  } else {
+    detail = `${budget} new cards a day covers the remaining ${unseen} in time.`;
+  }
+  return (
+    <div className="countdown-banner">
+      🎯 {days === 0 ? 'Interview day.' : `${days} day${days === 1 ? '' : 's'} to interview day.`}{' '}
+      {detail}
+    </div>
   );
 }
 
@@ -318,6 +348,8 @@ export function Home({
       </div>
 
       <WeekFlames stats={state.stats} />
+
+      <CountdownBanner decks={decks} progress={state.progress} />
 
       {focusDecks.length > 0 && (
         <section className="track focus-track">

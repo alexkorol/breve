@@ -15,6 +15,8 @@ export interface SessionOptions {
   kind?: CardKind;
   /** Set false to serve due cards only — no new cards (Daily Review). */
   includeNew?: boolean;
+  /** Remaining new-card allowance today (interview countdown pacing). */
+  maxNew?: number;
 }
 
 export function shuffle<T>(items: T[]): T[] {
@@ -54,7 +56,7 @@ export function buildSession(
   now = Date.now(),
   opts: SessionOptions = {},
 ): Card[] {
-  const { kind, includeNew = true } = opts;
+  const { kind, includeNew = true, maxNew } = opts;
   const due: Card[] = [];
   const fresh: Card[] = [];
   for (const card of deck.cards) {
@@ -66,7 +68,8 @@ export function buildSession(
   due.sort((a, b) => progress[a.id].due - progress[b.id].due);
   const pack = due.slice(0, PACK_SIZE);
   if (includeNew && pack.length < PACK_SIZE) {
-    pack.push(...shuffle(fresh).slice(0, PACK_SIZE - pack.length));
+    const allowance = Math.min(PACK_SIZE - pack.length, maxNew ?? Infinity);
+    if (allowance > 0) pack.push(...shuffle(fresh).slice(0, allowance));
   }
   // Stable partition: quick first, longform last.
   return [...pack.filter((c) => cardKind(c) === 'quick'), ...pack.filter((c) => cardKind(c) === 'longform')];

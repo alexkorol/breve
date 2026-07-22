@@ -107,6 +107,8 @@ export interface Stats {
   reviewsByDay: Record<string, number>;
   /** Deck ids fully read per day; each read counts as 1 toward daily intensity. */
   readsByDay: Record<string, string[]>;
+  /** New cards introduced per day; drives interview-countdown pacing. Optional: absent in old saves. */
+  newByDay?: Record<string, number>;
 }
 
 export interface AppState {

@@ -27,10 +27,40 @@ interface Props {
   /** Live count of reviews done today, for the goal banner. */
   reviewsToday: number;
   onReview: (cardId: string, grade: Grade, recallScore?: number) => void;
+  /** Renders the share-your-flame affordance on strong finishes. */
+  onShareStreak?: () => void;
   onExit: () => void;
 }
 
-export function Session({ deck, progress, forceAll, sourceDecks, options, reviewsToday, onReview, onExit }: Props) {
+/**
+ * One line of Jimothy under the pack result. Dry and warm, never saccharine;
+ * deterministic pick so re-renders do not reshuffle the copy.
+ */
+const END_LINES: Record<'great' | 'mid' | 'rough', string[]> = {
+  great: [
+    'Clean pack. Jimothy nods slowly. 🦝',
+    'Sharp. Bank it or keep rolling.',
+    'Barely a stumble. The schedule will find the weak spots anyway.',
+  ],
+  mid: [
+    'Solid. The missed ones circle back in a few minutes.',
+    'Progress is the reps, not the percent.',
+    'Good grind. Misses are the cards doing their job.',
+  ],
+  rough: [
+    'Rough pack. That is what first passes look like.',
+    'Every miss is already scheduled to come back. Nothing lost.',
+    'Jimothy has rough days too. He keeps waddling. 🦝',
+  ],
+};
+
+function endLine(pct: number, seed: number): string {
+  const bucket = pct >= 80 ? 'great' : pct >= 50 ? 'mid' : 'rough';
+  const lines = END_LINES[bucket];
+  return lines[seed % lines.length];
+}
+
+export function Session({ deck, progress, forceAll, sourceDecks, options, reviewsToday, onReview, onShareStreak, onExit }: Props) {
   // card id → owning deck, for the topic chip in mixed sessions.
   const topicByCard = useMemo(() => {
     if (!sourceDecks) return undefined;
@@ -78,16 +108,21 @@ export function Session({ deck, progress, forceAll, sourceDecks, options, review
     const left = forceAll
       ? { due: 0, fresh: 0 }
       : deckCounts(deck, progress, Date.now(), options?.kind);
-    const nextPackCount = left.due + (options?.includeNew === false ? 0 : left.fresh);
+    const nextPackCount =
+      left.due +
+      (options?.includeNew === false ? 0 : Math.min(left.fresh, options?.maxNew ?? Infinity));
     return (
       <div className="screen">
         <div className="session-end">
           <div className="end-emoji">{pct >= 80 ? '🎉' : pct >= 50 ? '💪' : '📚'}</div>
           <h2>Pack complete</h2>
           {total > 0 ? (
-            <p>
-              {total} card{total === 1 ? '' : 's'} reviewed · {pct}% right
-            </p>
+            <>
+              <p>
+                {total} card{total === 1 ? '' : 's'} reviewed · {pct}% right
+              </p>
+              <p className="end-line">{endLine(pct, reviewsToday + total)}</p>
+            </>
           ) : (
             <p>Nothing due in this deck right now — come back later.</p>
           )}
@@ -95,6 +130,11 @@ export function Session({ deck, progress, forceAll, sourceDecks, options, review
             {goalReached ? '🎯 Daily goal reached — ' : ''}
             {Math.min(reviewsToday, 999)}/{DAILY_GOAL} today
           </div>
+          {goalReached && onShareStreak && (
+            <button className="link-btn" onClick={onShareStreak}>
+              📤 Share today's flame
+            </button>
+          )}
           {nextPackCount > 0 && (
             <button
               className="btn primary block"

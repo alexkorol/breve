@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AppState, Card, CardKind, Deck } from './types';
 import type { Grade } from './srs';
-import { applyGrade, newProgress } from './srs';
+import { applyGrade, newProgress, isMastered } from './srs';
+import { shareStreakImage } from './shareimg';
 import {
   loadState,
   saveState,
@@ -16,6 +17,7 @@ import {
 import { deckJsonFromHash } from './share';
 import { loadPlan } from './membership';
 import { hapticTap } from './native';
+import { dailyNewBudget } from './pace';
 import { gateDecks, gatingActive } from './gating';
 import { reconcileEntitlement } from './iap';
 import { Paywall } from './components/Paywall';
@@ -30,7 +32,8 @@ import { Settings } from './components/Settings';
 import { Generate } from './components/Generate';
 import { Postmortem } from './components/Postmortem';
 import { SurgeToast } from './components/SurgeToast';
-import { crossedCheckpoint, dayIntensity } from './flame';
+import { crossedCheckpoint, dayIntensity, flameTier } from './flame';
+import { updateStreakWidget } from './native';
 
 const WEAK_ID = 'weak-cards';
 const MISSES_ID = 'misses';
@@ -77,6 +80,22 @@ export default function App() {
   );
 
   const reviewsToday = state.stats.reviewsByDay[dayKey()] ?? 0;
+
+  // Keep the home-screen widget in sync with the streak.
+  useEffect(() => {
+    updateStreakWidget(state.stats.streak, reviewsToday, flameTier(state.stats.streak).name);
+  }, [state.stats.streak, reviewsToday]);
+
+  // Interview countdown: today's remaining allowance of new cards.
+  const maxNewToday = useMemo(() => {
+    const unseen = allDecks.reduce(
+      (n, d) => n + d.cards.filter((c) => !state.progress[c.id]).length,
+      0,
+    );
+    const budget = dailyNewBudget(unseen);
+    if (budget === Infinity) return undefined;
+    return Math.max(0, budget - (state.stats.newByDay?.[dayKey()] ?? 0));
+  }, [allDecks, state.progress, state.stats.newByDay]);
 
   // Quick, non-invasive celebration when today's intensity crosses a checkpoint.
   const [surge, setSurge] = useState<{ checkpoint: number; at: number } | null>(null);
@@ -146,6 +165,9 @@ export default function App() {
       const current = prev.progress[cardId] ?? newProgress();
       const today = dayKey();
       const stats = { ...prev.stats };
+      if (!prev.progress[cardId]) {
+        stats.newByDay = { ...stats.newByDay, [today]: (stats.newByDay?.[today] ?? 0) + 1 };
+      }
       stats.totalReviews += 1;
       stats.reviewsByDay = {
         ...stats.reviewsByDay,
@@ -243,8 +265,19 @@ export default function App() {
             kind: view.kind,
             // Daily Review never introduces new cards — it can only shrink.
             includeNew: view.deckId !== DAILY_REVIEW_ID,
+            maxNew: maxNewToday,
           }}
           reviewsToday={reviewsToday}
+          onShareStreak={() =>
+            void shareStreakImage(
+              state.stats,
+              allDecks.reduce(
+                (n, d) => n + d.cards.filter((c) => isMastered(state.progress[c.id])).length,
+                0,
+              ),
+              allDecks.reduce((n, d) => n + (d.lockedTotal ?? d.cards.length), 0),
+            )
+          }
           onReview={recordReview}
           onExit={() => setView(back)}
         />
@@ -276,6 +309,7 @@ export default function App() {
           onStudy={() => setView({ name: 'browse', deckId: view.deckId })}
           onRemove={deck.custom ? () => removeDeck(deck.id) : undefined}
           onUnlock={deck.locked ? () => setShowPaywall(true) : undefined}
+          maxNew={maxNewToday}
           onBack={() => setView({ name: 'home' })}
         />
       );

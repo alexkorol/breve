@@ -13,6 +13,7 @@ import {
   streakOnDay,
 } from '../flame';
 import { Flame } from './Flame';
+import { shareStreakImage } from '../shareimg';
 
 interface Props {
   decks: Deck[];
@@ -113,6 +114,22 @@ export function Stats({ decks, state, onPracticeWeak, onBack }: Props) {
           <span>mastered</span>
         </div>
       </div>
+
+      <button
+        className="btn ghost block"
+        onClick={() =>
+          void shareStreakImage(
+            state.stats,
+            decks.reduce(
+              (n, d) => n + d.cards.filter((c) => isMastered(state.progress[c.id])).length,
+              0,
+            ),
+            decks.reduce((n, d) => n + (d.lockedTotal ?? d.cards.length), 0),
+          )
+        }
+      >
+        📤 Share your flame
+      </button>
 
       <section className="stats-section">
         <h3>Your flame</h3>

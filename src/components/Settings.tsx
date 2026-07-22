@@ -7,11 +7,13 @@ import {
   getSetting,
   setSetting,
   daysSinceBackup,
+  dayKey,
 } from '../storage';
 import type { Plan } from '../membership';
 import { loadPlan, remainingDays } from '../membership';
 import { redeemGiftCode } from '../giftcodes';
 import { isNative, setDailyReminder } from '../native';
+import { getInterviewDate, setInterviewDate } from '../pace';
 
 interface Props {
   state: AppState;
@@ -194,6 +196,31 @@ function MetGoalSection({ state }: { state: AppState }) {
   );
 }
 
+/** Interview-countdown target date; clear it to return to open-ended pacing. */
+function InterviewDateRow() {
+  const [date, setDate] = useState(getInterviewDate());
+  return (
+    <div className="setting-row">
+      <div className="setting-text">
+        <strong>Interview date</strong>
+        <p>
+          Set it and sessions pace new cards so you cover everything in time, with the last day
+          kept for pure review. Clear it to go open-ended.
+        </p>
+      </div>
+      <input
+        type="date"
+        value={date}
+        min={dayKey()}
+        onChange={(e) => {
+          setInterviewDate(e.target.value);
+          setDate(e.target.value);
+        }}
+      />
+    </div>
+  );
+}
+
 /** Daily study reminder: native only, opt-in, cancellable. */
 function ReminderRow() {
   const [time, setTime] = useState(getSetting('reminderTime'));
@@ -328,6 +355,7 @@ export function Settings({ state, onImport, onUnlock, onPlanChange, onBack }: Pr
           hint="Interview pressure: recall answers auto-submit when time runs out."
         />
         <ReminderRow />
+        <InterviewDateRow />
       </section>
 
       <section className="stats-section">

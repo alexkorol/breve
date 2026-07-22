@@ -14,12 +14,15 @@ interface Props {
   onRemove?: () => void;
   /** Present when the deck is paywalled: opens the unlock sheet. */
   onUnlock?: () => void;
+  /** Remaining new-card allowance today (interview countdown pacing). */
+  maxNew?: number;
   onBack: () => void;
 }
 
-export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onUnlock, onBack }: Props) {
+export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onUnlock, maxNew, onBack }: Props) {
   const [shareState, setShareState] = useState('');
-  const { due, fresh } = deckCounts(deck, progress);
+  const { due, fresh: freshRaw } = deckCounts(deck, progress);
+  const fresh = Math.min(freshRaw, maxNew ?? Infinity);
 
   const share = async () => {
     try {
