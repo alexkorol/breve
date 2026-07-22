@@ -39,6 +39,9 @@ import { sysScaling } from './sysScaling';
 import { sysStorage } from './sysStorage';
 import { sysQueuesCaches } from './sysQueuesCaches';
 import { sysCaseDrills } from './sysCaseDrills';
+import { behStarMethod } from './behStarMethod';
+import { behConflictFailure } from './behConflictFailure';
+import { behSeniorSignals } from './behSeniorSignals';
 
 /**
  * Curriculum order: decks appear grouped by track, in this sequence.
@@ -84,6 +87,10 @@ export const decks: Deck[] = [
   sysStorage,
   sysQueuesCaches,
   sysCaseDrills,
+  // Behavioral
+  behStarMethod,
+  behConflictFailure,
+  behSeniorSignals,
   // Python
   pythonBasics,
   pythonAdvanced,
