@@ -10,12 +10,15 @@ import {
   loadCustomDecks,
   saveCustomDecks,
   parseDeckFile,
+  getSetting,
+  setSetting,
 } from './storage';
 import { deckJsonFromHash } from './share';
 import { loadPlan } from './membership';
 import { gateDecks, gatingActive } from './gating';
 import { reconcileEntitlement } from './iap';
 import { Paywall } from './components/Paywall';
+import { Welcome } from './components/Welcome';
 import { decks as builtinDecks, DAILY_REVIEW_ID, dailyReviewDeck } from './data';
 import { Home } from './components/Home';
 import { Session } from './components/Session';
@@ -49,6 +52,14 @@ export default function App() {
   const [pendingShared, setPendingShared] = useState<Deck | null>(null);
   const [plan, setPlan] = useState(loadPlan);
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(
+    () => getSetting('onboarded') !== 'done' && loadState().stats.totalReviews === 0,
+  );
+  const finishWelcome = (startSession: boolean) => {
+    setSetting('onboarded', 'done');
+    setShowWelcome(false);
+    if (startSession) setView({ name: 'study', deckId: 'big-o' });
+  };
 
   // Fresh install or restored backup: StoreKit may know about a purchase the
   // local plan doesn't. Grant it silently.
@@ -346,6 +357,9 @@ export default function App() {
   return (
     <>
       {screen}
+      {showWelcome && (
+        <Welcome onStart={() => finishWelcome(true)} onDismiss={() => finishWelcome(false)} />
+      )}
       {showPaywall && (
         <Paywall
           deckCount={builtinDecks.length}
