@@ -63,3 +63,41 @@ export async function initNativeStorage(): Promise<void> {
   setInterval(mirror, MIRROR_INTERVAL_MS);
   mirror();
 }
+
+/** Light tap on card grading; silently does nothing on web. */
+export function hapticTap(): void {
+  if (!isNative) return;
+  void import('@capacitor/haptics')
+    .then(({ Haptics, ImpactStyle }) => Haptics.impact({ style: ImpactStyle.Light }))
+    .catch(() => {});
+}
+
+const REMINDER_ID = 1;
+
+/**
+ * Schedule (or cancel, with null) the daily study reminder. Returns false if
+ * the user denied notification permission. Native only; opt-in from Settings.
+ */
+export async function setDailyReminder(time: string | null): Promise<boolean> {
+  if (!isNative) return false;
+  const { LocalNotifications } = await import('@capacitor/local-notifications');
+  if (!time) {
+    await LocalNotifications.cancel({ notifications: [{ id: REMINDER_ID }] }).catch(() => {});
+    return true;
+  }
+  const perm = await LocalNotifications.requestPermissions();
+  if (perm.display !== 'granted') return false;
+  const [hour, minute] = time.split(':').map(Number);
+  await LocalNotifications.cancel({ notifications: [{ id: REMINDER_ID }] }).catch(() => {});
+  await LocalNotifications.schedule({
+    notifications: [
+      {
+        id: REMINDER_ID,
+        title: 'Keep the flame lit 🔥',
+        body: 'A ten-card session is all it takes.',
+        schedule: { on: { hour, minute }, allowWhileIdle: true },
+      },
+    ],
+  });
+  return true;
+}

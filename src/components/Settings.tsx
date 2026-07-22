@@ -11,6 +11,7 @@ import {
 import type { Plan } from '../membership';
 import { loadPlan, remainingDays } from '../membership';
 import { redeemGiftCode } from '../giftcodes';
+import { isNative, setDailyReminder } from '../native';
 
 interface Props {
   state: AppState;
@@ -193,6 +194,41 @@ function MetGoalSection({ state }: { state: AppState }) {
   );
 }
 
+/** Daily study reminder: native only, opt-in, cancellable. */
+function ReminderRow() {
+  const [time, setTime] = useState(getSetting('reminderTime'));
+  const [denied, setDenied] = useState(false);
+  if (!isNative) return null;
+
+  const apply = async (next: string) => {
+    setDenied(false);
+    const ok = await setDailyReminder(next || null);
+    if (!ok && next) {
+      setDenied(true);
+      return;
+    }
+    setSetting('reminderTime', next);
+    setTime(next);
+  };
+
+  return (
+    <div className="setting-row">
+      <div className="setting-text">
+        <strong>Daily reminder</strong>
+        <p>
+          One notification a day to keep the streak alive. Clear the time to turn it off.
+          {denied && ' Notifications are blocked: enable them for Jimothy in iOS Settings.'}
+        </p>
+      </div>
+      <input
+        type="time"
+        value={time}
+        onChange={(e) => void apply(e.target.value)}
+      />
+    </div>
+  );
+}
+
 function Toggle({ name, label, hint, onChange }: { name: string; label: string; hint: string; onChange?: (on: boolean) => void }) {
   const [on, setOn] = useState(getSetting(name) === 'on');
   return (
@@ -291,6 +327,7 @@ export function Settings({ state, onImport, onUnlock, onPlanChange, onBack }: Pr
           label="60-second answer timer"
           hint="Interview pressure: recall answers auto-submit when time runs out."
         />
+        <ReminderRow />
       </section>
 
       <section className="stats-section">

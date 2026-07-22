@@ -15,6 +15,7 @@ import {
 } from './storage';
 import { deckJsonFromHash } from './share';
 import { loadPlan } from './membership';
+import { hapticTap } from './native';
 import { gateDecks, gatingActive } from './gating';
 import { reconcileEntitlement } from './iap';
 import { Paywall } from './components/Paywall';
@@ -140,6 +141,7 @@ export default function App() {
   );
 
   const recordReview = useCallback((cardId: string, grade: Grade, recallScore?: number) => {
+    hapticTap();
     setState((prev) => {
       const current = prev.progress[cardId] ?? newProgress();
       const today = dayKey();
