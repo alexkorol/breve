@@ -76,7 +76,7 @@ export const pandasNumpy: Deck = {
       id: 'pn-vectorize',
       type: 'flash',
       front: 'Why is vectorized NumPy/pandas code so much faster than a Python for-loop?',
-      back: 'The loop runs in compiled C over contiguous typed memory instead of the Python interpreter boxing every element, typically 10–100×. Interview phrasing: "I’d express it as array operations rather than iterating rows; .apply() with a lambda is still a Python-level loop in disguise."',
+      back: 'The loop runs in compiled C over contiguous typed memory instead of the Python interpreter boxing every element, typically 10 to 100x. Interview phrasing: "I’d express it as array operations rather than iterating rows; .apply() with a lambda is still a Python-level loop in disguise."',
     },
     {
       id: 'pn-colmean',
@@ -131,6 +131,71 @@ export const pandasNumpy: Deck = {
       distractors: ['size', 'dims', 'len()'],
       explanation:
         'A (rows, cols) tuple: note it’s an attribute, no parentheses. df.size is rows×cols as one number; len(df) is rows only.',
+    },
+    {
+      id: 'pn-named-agg',
+      type: 'mcq',
+      prompt: 'Named aggregation: which call yields exactly the columns `avg_price` and `n` per city?',
+      choices: [
+        "df.groupby('city').agg(avg_price=('price', 'mean'), n=('price', 'count'))",
+        "df.groupby('city').agg({'price': ['mean', 'count']})",
+        "df.groupby('city')['price'].mean().rename('avg_price')",
+        "df.agg(avg_price='mean', n='count')",
+      ],
+      answer: 0,
+      explanation:
+        'The keyword=(column, func) form names output columns directly. The dict form also computes both but returns MultiIndex columns you then have to flatten; the rename version only produces one aggregate.',
+    },
+    {
+      id: 'pn-np-view',
+      type: 'mcq',
+      prompt: 'NumPy: after this runs, what happened to `a`?',
+      code: 'b = a[2:5]\nb[0] = 99',
+      choices: [
+        'a[2] is now 99: basic slicing returns a view sharing memory with a',
+        'a is unchanged: slicing always copies',
+        'ValueError: slices of an array are read-only',
+        'It depends on the dtype of a',
+      ],
+      answer: 0,
+      explanation:
+        'Basic slices are views into the same buffer; fancy indexing and boolean masks return copies. Use a[2:5].copy() when you need isolation. Pandas inherits this ambiguity, which is why SettingWithCopyWarning exists.',
+    },
+    {
+      id: 'pn-loc-slice',
+      type: 'tf',
+      prompt: '`df.loc["a":"c"]` includes the row labeled "c", but `df.iloc[0:3]` excludes position 3.',
+      answer: true,
+      explanation:
+        'Label slicing with loc is inclusive at both ends (there is no natural "one before label c"); iloc keeps Python\'s half-open convention. Mixing up the two conventions is a classic off-by-one.',
+    },
+    {
+      id: 'pn-broadcast-rules',
+      type: 'flash',
+      front: 'State NumPy\'s broadcasting rules precisely.',
+      back: '1. Align shapes from the trailing (rightmost) dimension.\n2. Two dimensions are compatible if they are equal, or if one of them is 1.\n3. A missing leading dimension counts as size 1.\n4. Every size-1 dimension is stretched (no data copied) to match the other array.\nAny incompatible pair raises ValueError: (3, 4) + (4,) works, (3, 4) + (3,) does not.',
+    },
+    {
+      id: 'pn-fillna',
+      type: 'flash',
+      front: 'Walk me through your options for missing values in a dataframe and when you would pick each.',
+      back: '1. dropna(): fine when losses are small; check the row count before and after.\n2. fillna(constant): a domain-meaningful default (0 for "no purchases", "unknown" for a category).\n3. ffill / bfill: ordered or time-series data where the last observation should carry forward.\n4. Statistical fill (mean or median, ideally per group): keeps rows for modeling; median resists outliers.\n5. Nullable dtypes ("Int64", "boolean"): hold pd.NA without the silent int to float upcast.',
+    },
+    {
+      id: 'pn-resample',
+      type: 'flash',
+      front: 'You have daily sales and need monthly totals. What does the pandas code look like, and what does it require?',
+      back: 'df.resample("MS", on="date")["sales"].sum(): resample is groupby over time buckets. It requires real datetimes, either a DatetimeIndex or an on= column parsed with pd.to_datetime. Downsample with sum/mean; upsampling to a finer grid instead creates empty buckets you fill with ffill or interpolate.',
+    },
+    {
+      id: 'pn-to-datetime',
+      type: 'fill',
+      prompt: 'Parse a string column into real timestamps:',
+      code: "df['date'] = pd.____(df['date'])",
+      answers: ['to_datetime'],
+      distractors: ['datetime', 'parse_dates', 'Timestamp'],
+      explanation:
+        'Until parsed, dates are just strings: range filters and sorting misbehave. Parsing unlocks the .dt accessor (.dt.year, .dt.day_name()) and resample. In read_csv, parse_dates=["date"] does the same at load time.',
     },
   ],
 };

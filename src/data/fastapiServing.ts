@@ -129,5 +129,78 @@ export const fastapiServing: Deck = {
       front: 'Interview: "Walk me through the API layer of your RAG app."',
       back: 'POST /query takes a Pydantic model (question, top_k, filters); an auth dependency validates the caller.\nThe handler: embed the question → retrieve top-k chunks → build the prompt → call the LLM with a timeout and one retry → stream the answer with citations via SSE.\nAround it: GET /health for the load balancer, structured logs with a request ID per query, and 503 with a friendly message when the LLM provider is down.',
     },
+    {
+      id: 'fa-response-model',
+      type: 'mcq',
+      prompt: 'Why set `response_model` on an endpoint that already returns a Pydantic object?',
+      code: '@app.post("/users", response_model=UserOut)\ndef create_user(user: UserIn):\n    return db_create(user)  # has hashed_password',
+      choices: [
+        'It filters the output to only the declared fields, so internal ones like hashed_password never leave the API',
+        'It speeds up serialization by skipping validation',
+        'It is only for the OpenAPI docs and has no runtime effect',
+        'It converts the response to XML when the client asks',
+      ],
+      answer: 0,
+      explanation:
+        'response_model validates AND filters output: return a rich internal object, clients only see UserOut fields. It also drives the docs schema. The classic security question it answers: "how do you avoid leaking DB fields?"',
+    },
+    {
+      id: 'fa-field-validator',
+      type: 'fill',
+      prompt: 'Custom validation in Pydantic v2:',
+      code: 'class Query(BaseModel):\n    question: str\n\n    @____("question")\n    @classmethod\n    def not_blank(cls, v: str) -> str:\n        if not v.strip():\n            raise ValueError("blank")\n        return v',
+      answers: ['field_validator'],
+      distractors: ['validator', 'validate_field', 'check_field'],
+      explanation:
+        'Pydantic v2 renamed @validator to @field_validator (and root validators to @model_validator). Raise ValueError to reject; FastAPI turns it into a field-level 422 automatically.',
+    },
+    {
+      id: 'fa-cors',
+      type: 'mcq',
+      prompt: 'Your React frontend on localhost:5173 calls the API on localhost:8000 and the browser blocks it. Fix?',
+      choices: [
+        'Add CORSMiddleware with allow_origins listing the frontend origin',
+        'Return status 200 instead of 201',
+        'Switch the endpoint from POST to GET',
+        'Have the frontend send an Authorization header',
+      ],
+      answer: 0,
+      explanation:
+        'Cross-origin browser requests need CORS headers from the server: app.add_middleware(CORSMiddleware, allow_origins=[...], allow_methods, allow_headers). allow_origins=["*"] cannot be combined with credentials; list real origins in production.',
+    },
+    {
+      id: 'fa-yield-dependency',
+      type: 'order',
+      prompt: 'Order the lifecycle of a yield dependency (def get_db(): db = Session(); yield db; db.close()):',
+      items: [
+        'Request arrives; FastAPI resolves the dependency',
+        'Code before yield runs (open the DB session)',
+        'The yielded value is injected and the endpoint runs',
+        'The response is sent to the client',
+        'Code after yield runs (close the session)',
+      ],
+      explanation:
+        'yield splits the dependency into setup and teardown; teardown runs even if the endpoint raised. Wrap the yield in try/finally for guaranteed cleanup. This is the idiomatic per-request resource pattern.',
+    },
+    {
+      id: 'fa-testclient',
+      type: 'flash',
+      front: 'How do you test FastAPI endpoints, including ones that hit a real database or LLM?',
+      back: 'TestClient(app) (httpx under the hood) calls the app in-process, no server: client.post("/ask", json={...}) then assert on status and body.\nFor external resources, swap the dependency: app.dependency_overrides[get_db] = fake_db, so the endpoint code runs unchanged against a fake.\nThis pairing is the reason to route resources through Depends instead of importing globals: globals need monkeypatching, dependencies are swappable by design.\nClear overrides after each test (fixture teardown) so tests stay independent.',
+    },
+    {
+      id: 'fa-scaling',
+      type: 'flash',
+      front: 'One uvicorn process is maxed out. Threads, workers, or more machines?',
+      back: 'Not threads: the GIL means Python threads only help blocking I/O, and async already covers I/O concurrency inside one process.\nFirst: uvicorn --workers N (roughly CPU cores): separate processes, so they sidestep the GIL and use all cores.\nThen scale out: more instances behind a load balancer; works because API workers are stateless (state lives in the DB/cache).\nCaveat: per-process memory is duplicated, so heavy in-process models multiply RAM; that pushes model inference into its own service.',
+    },
+    {
+      id: 'fa-timeouts',
+      type: 'tf',
+      prompt: 'FastAPI applies a request timeout by default, so a hung LLM call will eventually return a 504 on its own.',
+      answer: false,
+      explanation:
+        'Neither FastAPI nor uvicorn imposes a per-request timeout; a hung await hangs forever. Enforce timeouts yourself: httpx.AsyncClient(timeout=...) or asyncio.timeout() around downstream calls, plus a proxy/load balancer timeout as the backstop.',
+    },
   ],
 };

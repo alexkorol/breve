@@ -12,6 +12,10 @@ import {
   parseDeckFile,
 } from './storage';
 import { deckJsonFromHash } from './share';
+import { loadPlan } from './membership';
+import { gateDecks, gatingActive } from './gating';
+import { reconcileEntitlement } from './iap';
+import { Paywall } from './components/Paywall';
 import { decks as builtinDecks, DAILY_REVIEW_ID, dailyReviewDeck } from './data';
 import { Home } from './components/Home';
 import { Session } from './components/Session';
@@ -43,8 +47,22 @@ export default function App() {
   const [view, setView] = useState<View>({ name: 'home' });
   const [shareNotice, setShareNotice] = useState('');
   const [pendingShared, setPendingShared] = useState<Deck | null>(null);
+  const [plan, setPlan] = useState(loadPlan);
+  const [showPaywall, setShowPaywall] = useState(false);
 
-  const allDecks = useMemo(() => [...builtinDecks, ...customDecks], [customDecks]);
+  // Fresh install or restored backup: StoreKit may know about a purchase the
+  // local plan doesn't. Grant it silently.
+  useEffect(() => {
+    void reconcileEntitlement().then((restored) => {
+      if (restored) setPlan(restored);
+    });
+  }, []);
+
+  const gated = gatingActive(plan);
+  const allDecks = useMemo(
+    () => gateDecks([...builtinDecks, ...customDecks], gated),
+    [customDecks, gated],
+  );
 
   const reviewsToday = state.stats.reviewsByDay[dayKey()] ?? 0;
 
@@ -244,6 +262,7 @@ export default function App() {
           onPractice={() => setView({ name: 'study', deckId: view.deckId })}
           onStudy={() => setView({ name: 'browse', deckId: view.deckId })}
           onRemove={deck.custom ? () => removeDeck(deck.id) : undefined}
+          onUnlock={deck.locked ? () => setShowPaywall(true) : undefined}
           onBack={() => setView({ name: 'home' })}
         />
       );
@@ -266,6 +285,7 @@ export default function App() {
       <Settings
         state={state}
         onImport={importState}
+        onUnlock={gated ? () => setShowPaywall(true) : undefined}
         onBack={() => setView({ name: 'home' })}
       />
     );
@@ -326,6 +346,17 @@ export default function App() {
   return (
     <>
       {screen}
+      {showPaywall && (
+        <Paywall
+          deckCount={builtinDecks.length}
+          cardCount={builtinDecks.reduce((n, d) => n + d.cards.length, 0)}
+          onUnlocked={(p) => {
+            setPlan(p);
+            setShowPaywall(false);
+          }}
+          onClose={() => setShowPaywall(false)}
+        />
+      )}
       {surge && (
         <SurgeToast
           key={surge.at}

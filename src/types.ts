@@ -79,6 +79,10 @@ export interface Deck {
   track: string;
   /** True for user-imported decks (stored locally, removable). */
   custom?: boolean;
+  /** Set at runtime by gating: deck is paywalled and `cards` holds only the preview. */
+  locked?: boolean;
+  /** Full card count of a locked deck, for display. */
+  lockedTotal?: number;
   cards: Card[];
 }
 

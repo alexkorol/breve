@@ -12,10 +12,12 @@ interface Props {
   onStudy: () => void;
   /** Present only for user-imported decks. */
   onRemove?: () => void;
+  /** Present when the deck is paywalled: opens the unlock sheet. */
+  onUnlock?: () => void;
   onBack: () => void;
 }
 
-export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBack }: Props) {
+export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onUnlock, onBack }: Props) {
   const [shareState, setShareState] = useState('');
   const { due, fresh } = deckCounts(deck, progress);
 
@@ -73,6 +75,12 @@ export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBa
         </div>
       </div>
 
+      {deck.locked && (
+        <p className="preview-note">
+          🔒 Preview deck: the first {deck.cards.length} of {deck.lockedTotal} cards are free.
+        </p>
+      )}
+
       <div className="detail-actions">
         <button className="btn primary block" disabled={!ready} onClick={onPractice}>
           {ready
@@ -82,8 +90,13 @@ export function DeckDetail({ deck, progress, onPractice, onStudy, onRemove, onBa
             : 'All caught up — practice again later'}
         </button>
         <button className="btn ghost block" onClick={onStudy}>
-          📖 Study cards · read all {deck.cards.length}
+          📖 Study cards · read {deck.locked ? `the ${deck.cards.length}-card preview` : `all ${deck.cards.length}`}
         </button>
+        {deck.locked && onUnlock && (
+          <button className="btn primary block unlock-btn" onClick={onUnlock}>
+            Unlock all {deck.lockedTotal} cards (and every other deck)
+          </button>
+        )}
       </div>
 
       <div className="data-row">

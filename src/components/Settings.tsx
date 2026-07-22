@@ -14,6 +14,8 @@ import { loadPlan, remainingDays, createGiftGrants, savePlan } from '../membersh
 interface Props {
   state: AppState;
   onImport: (state: AppState) => void;
+  /** Present on the gated native build: opens the unlock sheet. */
+  onUnlock?: () => void;
   onBack: () => void;
 }
 
@@ -22,12 +24,40 @@ interface Props {
  * gifts the remainder of their membership to one or more friends.
  * Hidden entirely on the free tier, so it stays invisible until payments ship.
  */
-function MembershipSection() {
+function MembershipSection({ onUnlock }: { onUnlock?: () => void }) {
   const [plan, setPlan] = useState(loadPlan);
   const [gifting, setGifting] = useState(false);
   const [recipients, setRecipients] = useState<string[]>(['']);
   const [grants, setGrants] = useState<GiftGrant[]>([]);
-  if (plan.tier !== 'paid') return null;
+
+  // Gated native build: the section is the unlock entry point.
+  if (plan.tier !== 'paid') {
+    if (!onUnlock) return null;
+    return (
+      <section className="stats-section">
+        <h3>Unlock everything</h3>
+        <div className="setting-row">
+          <div className="setting-text">
+            <strong>One purchase, every deck forever</strong>
+            <p>All built-in decks and every future one. No subscription. Restore is on the same sheet.</p>
+          </div>
+          <button className="btn primary" onClick={onUnlock}>
+            Unlock
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  // Lifetime (one-time) unlock: nothing expires, so no gift flow.
+  if (plan.expiresAt === undefined) {
+    return (
+      <section className="stats-section">
+        <h3>Membership</h3>
+        <p className="chart-note">Everything unlocked. Thanks for supporting Jimothy. 🦝</p>
+      </section>
+    );
+  }
 
   const days = remainingDays(plan);
   const done = grants.length > 0;
@@ -144,7 +174,7 @@ function Toggle({ name, label, hint, onChange }: { name: string; label: string; 
   );
 }
 
-export function Settings({ state, onImport, onBack }: Props) {
+export function Settings({ state, onImport, onUnlock, onBack }: Props) {
   const [key, setKey] = useState(getApiKey());
   const [model, setModelState] = useState(getModel());
   const [saved, setSaved] = useState(false);
@@ -179,7 +209,7 @@ export function Settings({ state, onImport, onBack }: Props) {
         <span className="detail-track">⚙️ Settings</span>
       </header>
 
-      <MembershipSection />
+      <MembershipSection onUnlock={onUnlock} />
 
       <section className="stats-section">
         <h3>AI features (deck generation, grading, postmortems)</h3>

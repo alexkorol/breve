@@ -1766,3 +1766,65 @@ button {
   display: block;
   margin-top: 6px;
 }
+
+/* Paywall & gating */
+.paywall-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 60;
+}
+.paywall {
+  position: relative;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 28px 20px calc(env(safe-area-inset-bottom) + 24px);
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+.paywall h2 {
+  margin: 8px 0 4px;
+}
+.paywall-icon {
+  font-size: 40px;
+}
+.paywall-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.paywall-pitch {
+  color: var(--text-dim);
+  margin: 0 0 12px;
+}
+.paywall-points {
+  text-align: left;
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+.paywall-points li {
+  margin-bottom: 6px;
+}
+.paywall-notice {
+  margin-top: 10px;
+}
+.unlock-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+}
+.preview-note {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+.badge.lock {
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+}

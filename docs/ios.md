@@ -23,6 +23,13 @@ Goal: ship Jimothy as a real App Store app by wrapping the existing Vite/React P
 - **AI calls.** OpenRouter and Anthropic calls are plain fetch/SSE from the webview and should work natively (no CORS restrictions in Capacitor). Verify streaming still renders.
 - **Keyboard.** Test typed-answer inputs; consider `@capacitor/keyboard` if the webview viewport jumps.
 
+## In-app purchase (one-time unlock)
+
+- Product id `com.alexkorol.jimothy.unlock` (non-consumable). The native side is `ios/App/App/UnlockPlugin.swift` (StoreKit 2), registered via `AppViewController` (Main.storyboard points at it); the JS side is `src/iap.ts`, gating in `src/gating.ts`.
+- Before purchases work: create the non-consumable IAP with that exact product id in App Store Connect (the Paid Applications agreement must be signed first) and set its price ($24.99 tier, or $14.99 for the launch window).
+- To test purchases in the simulator before App Store Connect setup: add a StoreKit configuration file in Xcode (File > New > File > StoreKit Configuration) with the product, and select it in the scheme's Run options.
+- Gating is native-only: the web/PWA build stays ungated.
+
 ## App Store checklist (later)
 
 - 1024x1024 App Store icon (no transparency). Existing icon assets are in `public/icons/`.

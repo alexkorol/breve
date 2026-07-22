@@ -152,5 +152,81 @@ export const sklearnWorkflow: Deck = {
       explanation:
         'Serializing the full pipeline guarantees serving applies byte-identical preprocessing. Re-implementing transforms in the API layer is where train/serve skew is born.',
     },
+    {
+      id: 'sk-randomized-search',
+      type: 'flash',
+      front: 'GridSearchCV vs RandomizedSearchCV: when do you reach for the random one?',
+      back: 'Grid tries every combination: cost explodes exponentially with each added hyperparameter. RandomizedSearchCV samples n_iter combos from distributions, so you control the budget directly.\n1. Few discrete params, cheap fits: grid is fine.\n2. Continuous params (C, learning_rate) or 3+ dimensions: randomized, since it explores each axis at many distinct values instead of a coarse lattice.\n3. Usually only a couple of hyperparameters matter; random search finds good values for those without wasting fits on full crosses of the ones that do not.',
+    },
+    {
+      id: 'sk-class-imbalance',
+      type: 'mcq',
+      prompt: '1% positives. Cheapest first move in sklearn, and the trap if you resample instead?',
+      choices: [
+        'class_weight="balanced" on the estimator; if you oversample, do it inside the CV folds (train portion only), never before splitting',
+        'Oversample the whole dataset before train_test_split so both halves are balanced',
+        'Drop negatives until classes are even, then evaluate on the balanced set',
+        'Switch scoring to accuracy so the imbalance stops mattering',
+      ],
+      answer: 0,
+      explanation:
+        'class_weight reweights the loss with zero data manipulation. Resampling before the split copies (or synthesizes) minority rows into the test side: the model is graded on near-duplicates of its own training data. imblearn ships a Pipeline that resamples only during fit for exactly this reason.',
+    },
+    {
+      id: 'sk-calibration',
+      type: 'flash',
+      front: 'Your model says predict_proba 0.9. Should you believe it, and how would you check?',
+      back: 'Not by default. Well-calibrated means that among all 0.9 predictions, about 90% are actually positive. Random forests and boosted trees are typically overconfident or distorted; SVMs need calibration for probabilities at all.\n1. Check: calibration_curve (reliability diagram), Brier score.\n2. Fix: CalibratedClassifierCV wrapping the model, method="isotonic" with plenty of data, "sigmoid" (Platt) when data is scarce.\n3. When it matters: whenever probabilities feed decisions (expected cost, ranking, thresholds), not just argmax labels.',
+    },
+    {
+      id: 'sk-scaling-who',
+      type: 'mcq',
+      prompt: 'Which models actually need feature scaling?',
+      choices: [
+        'Distance and gradient based ones (KNN, SVM, PCA, regularized linear models, neural nets); tree ensembles do not care',
+        'All models: sklearn requires standardized input',
+        'Only neural networks',
+        'Tree ensembles most of all, since splits are threshold based',
+      ],
+      answer: 0,
+      explanation:
+        'Trees split on one feature at a time, so any monotonic rescaling leaves the splits unchanged. Anything computing distances, dot products, or shared penalties across features needs scaling, or the largest-unit feature silently dominates. L1/L2 regularization also penalizes unscaled coefficients unevenly.',
+    },
+    {
+      id: 'sk-joblib-version',
+      type: 'tf',
+      prompt: 'A pipeline saved with joblib.dump is safe to load under any later scikit-learn version.',
+      answer: false,
+      explanation:
+        'joblib is pickle: it stores object internals, not a stable format. Loading across sklearn versions can error or, worse, silently misbehave, which is why sklearn warns on version mismatch. Pin the exact sklearn version alongside the artifact, and keep the training code plus data so the model can be retrained after upgrades.',
+    },
+    {
+      id: 'sk-permutation-importance',
+      type: 'mcq',
+      prompt: 'Why prefer permutation_importance over a forest’s feature_importances_?',
+      choices: [
+        'Impurity importance inflates high-cardinality features and reflects only training fit; permutation measures real score drop, ideally on held-out data',
+        'feature_importances_ is deprecated',
+        'Permutation importance is faster to compute',
+        'They always rank features identically',
+      ],
+      answer: 0,
+      explanation:
+        'Impurity-based importance is computed from training-time splits, so a random ID column can look important. permutation_importance shuffles one feature and measures the metric drop on validation data, model-agnostically. Caveat: correlated features share credit, so their individual scores can all look low.',
+    },
+    {
+      id: 'sk-workflow-order',
+      type: 'order',
+      prompt: 'Order the leak-proof supervised workflow, from raw data to the reported number:',
+      items: [
+        'train_test_split (stratified), test set locked away',
+        'Build the Pipeline: preprocessing plus estimator',
+        'Cross-validate and tune hyperparameters on the training set only',
+        'Refit the best pipeline on all training data',
+        'Score on the test set once and report that number',
+      ],
+      explanation:
+        'Splitting comes before anything fitted touches the data, tuning happens strictly inside the training set, and the test set is spent exactly once. Re-tuning after seeing the test score turns the test set into a validation set.',
+    },
   ],
 };

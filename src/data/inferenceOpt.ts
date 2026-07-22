@@ -156,5 +156,81 @@ export const inferenceOpt: Deck = {
       explanation:
         'Bounded concurrency (a semaphore) plus backoff is the standard batch-client design. Fallback answers ("try again shortly") beat hanging spinners.',
     },
+    {
+      id: 'io-kv-math',
+      type: 'flash',
+      front: 'Estimate KV cache size per token for a transformer. What terms go into the formula?',
+      back: 'Per token: 2 (K and V) × layers × kv_heads × head_dim × bytes per element.\nExample, Llama-2-7B in fp16: 2 × 32 × 32 × 128 × 2 ≈ 0.5 MB per token.\nSo a 128k-token context needs ~64GB of KV: more than the ~14GB of weights.\nThe formula shows the levers: GQA/MQA shrink kv_heads, KV quantization shrinks bytes, and batch size multiplies the whole thing.',
+    },
+    {
+      id: 'io-quant-tradeoffs',
+      type: 'mcq',
+      prompt: 'Weight-only quantization (GPTQ/AWQ int4) vs weight-and-activation quantization (int8 W8A8): the key difference?',
+      choices: [
+        'Weight-only shrinks memory traffic but still computes in fp16; W8A8 also uses integer tensor cores for compute, but activation outliers make it harder to do without quality loss',
+        'Weight-only is always more accurate at the same bit width',
+        'W8A8 only works on CPUs',
+        'They are the same technique with different names',
+      ],
+      answer: 0,
+      explanation:
+        'Weight-only int4 dequantizes on the fly: ideal for bandwidth-bound decode, usually near-lossless on large models. W8A8 (SmoothQuant-style) targets compute-bound prefill and large batches; activations have outlier channels, so it needs calibration tricks. Perplexity cost grows as bits drop: 8-bit is near-free, 4-bit weights are mild, aggressive activation or sub-4-bit quant is where quality visibly degrades.',
+    },
+    {
+      id: 'io-tensor-pipeline',
+      type: 'mcq',
+      prompt: 'The model does not fit on one GPU. Tensor parallelism vs pipeline parallelism?',
+      choices: [
+        'TP splits each layer\'s matrices across GPUs (all-reduce every layer, needs NVLink-class interconnect, cuts per-token latency); PP splits layers into sequential stages (only activations cross, tolerates slow links, adds bubble overhead)',
+        'They are interchangeable; pick whichever is easier to configure',
+        'PP is always faster because it communicates less',
+        'TP shards the training data, PP shards the optimizer state',
+      ],
+      answer: 0,
+      explanation:
+        'The standard deployment: TP within a node (fast interconnect), PP across nodes (slow interconnect). For inference, TP helps latency because every GPU works on the same token; PP helps fit but each token still traverses all stages serially.',
+    },
+    {
+      id: 'io-spec-acceptance',
+      type: 'tf',
+      prompt: 'Speculative decoding always speeds up generation, regardless of the draft model\'s acceptance rate.',
+      answer: false,
+      explanation:
+        'Low acceptance means the draft work plus verification passes are wasted and it can be SLOWER than plain decoding. It wins when the draft aligns with the target (same family/tokenizer, predictable text like code or boilerplate). Gains also shrink at high batch sizes, where the GPU is no longer idle during decode.',
+    },
+    {
+      id: 'io-constrained-decoding',
+      type: 'mcq',
+      prompt: 'Constrained decoding for structured output (JSON schema, grammars): how does it work and what does it cost?',
+      choices: [
+        'A state machine masks the logits each step so only grammar-valid tokens can be sampled: syntax validity is guaranteed, at the cost of per-step mask overhead and possible quality loss when the schema fights the model\'s natural phrasing',
+        'The model is fine-tuned on JSON before every request',
+        'Invalid outputs are silently retried until one parses',
+        'It truncates the output at the first closing brace',
+      ],
+      answer: 0,
+      explanation:
+        'This is how "JSON mode" and tools like Outlines/XGrammar work. Guaranteed-parseable beats retry loops for reliability and cost. The subtle risk: hard constraints can force low-probability continuations, so keep schemas loose where content quality matters.',
+    },
+    {
+      id: 'io-batch-roofline',
+      type: 'flash',
+      front: 'Why does increasing batch size raise decode throughput almost for free, and what eventually stops it?',
+      back: 'Decode reads all weights once per step no matter how many sequences are in the batch, so extra sequences amortize the same memory traffic: tokens/s scales nearly linearly at small batches.\nThree things end the free lunch:\n1. KV cache memory: each sequence adds its own KV, and the GPU runs out.\n2. Arithmetic intensity rises with batch until the workload turns compute-bound.\n3. Per-token latency for each user creeps up as steps get heavier.\nServing is choosing a point on this throughput vs latency curve, not maximizing one number.',
+    },
+    {
+      id: 'io-request-lifecycle',
+      type: 'order',
+      prompt: 'Order the life of one request inside a continuous-batching server (vLLM-style):',
+      items: [
+        'Request arrives and is tokenized',
+        'Scheduler admits it into the running batch when KV pages are available',
+        'Prefill computes the prompt\'s KV cache and emits the first token (TTFT)',
+        'Decode steps interleave with every other in-flight request',
+        'Generation finishes; its KV pages are freed for waiting requests',
+      ],
+      explanation:
+        'The scheduler plus paged KV is the whole trick: admission is gated by free KV pages, and freeing pages promptly is what keeps new requests flowing in mid-flight.',
+    },
   ],
 };

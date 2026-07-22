@@ -130,5 +130,70 @@ export const pythonAdvanced: Deck = {
       explanation:
         'Repeated calls with the same (hashable) arguments return the cached result: the one-line answer to "how would you speed up this recursive Fibonacci?"',
     },
+    {
+      id: 'pya-mutable-default',
+      type: 'mcq',
+      prompt: 'What does the second call print?',
+      code: 'def add(item, bucket=[]):\n    bucket.append(item)\n    return bucket\n\nadd(1)\nprint(add(2))',
+      choices: [
+        '[1, 2]; the default list is created once and shared across calls',
+        '[2]; each call gets a fresh default list',
+        '[]; defaults are reset after every call',
+        'TypeError: mutable defaults are not allowed',
+      ],
+      answer: 0,
+      explanation:
+        'Default values are evaluated once, at function definition time, not per call. The idiom: default to None and create the list inside the body.',
+    },
+    {
+      id: 'pya-is-interning',
+      type: 'tf',
+      prompt: 'In CPython, `a = 256; b = 256; a is b` is True, but the same test with 257 can be False.',
+      answer: true,
+      explanation:
+        'CPython interns small ints (-5 to 256) and some strings, so equal values can share one object. That is an implementation detail: use == for value comparison and reserve `is` for identity, like `x is None`.',
+    },
+    {
+      id: 'pya-wraps',
+      type: 'mcq',
+      prompt: 'Why put `@functools.wraps(fn)` on the wrapper inside a decorator?',
+      choices: [
+        "It copies fn's __name__, __doc__, and other metadata onto the wrapper",
+        'It caches results of repeated calls',
+        'It is required, or applying the decorator raises TypeError',
+        'It prevents the decorator from being applied twice',
+      ],
+      answer: 0,
+      explanation:
+        'Without it, the decorated function reports the wrapper\'s name and docstring, breaking help(), debugging, and pickling. A decorator that takes arguments needs one more layer: a factory that receives the arguments and returns the real decorator.',
+    },
+    {
+      id: 'pya-contextlib',
+      type: 'fill',
+      prompt: 'Write a context manager as a generator with contextlib:',
+      code: '@contextmanager\ndef managed(path):\n    f = open(path)\n    try:\n        ____ f\n    finally:\n        f.close()',
+      answers: ['yield'],
+      distractors: ['return', 'await', 'raise'],
+      explanation:
+        'Code before the yield runs on __enter__, the yielded value binds to `as`, and the finally block runs on __exit__ even if the with-body raised.',
+    },
+    {
+      id: 'pya-abc-protocol',
+      type: 'flash',
+      front: 'Abstract base classes vs typing.Protocol: when do you use each?',
+      back: 'ABCs are nominal: implementers must inherit from the base, which enforces required methods at instantiation and can share default implementations.\nProtocols are structural: any class with matching methods satisfies the type, no inheritance needed, checked statically (or at runtime with @runtime_checkable).\nUse a Protocol to type third-party or duck-typed objects you cannot make inherit from you; use an ABC when you own the hierarchy and want shared behavior.',
+    },
+    {
+      id: 'pya-property-descriptor',
+      type: 'flash',
+      front: 'How does @property work under the hood?',
+      back: 'property is a descriptor: a class attribute whose __get__, __set__, and __delete__ methods intercept attribute access on instances. Reading obj.x finds the property object on the class and calls its __get__, which runs your getter. Bound methods, classmethod, staticmethod, and __slots__ all ride the same descriptor protocol.',
+    },
+    {
+      id: 'pya-dataclass-vs',
+      type: 'flash',
+      front: 'When would you pick a dataclass vs a NamedTuple vs a TypedDict?',
+      back: '1. dataclass: mutable by default, supports defaults, methods, frozen=True, __post_init__; the general-purpose record.\n2. NamedTuple: immutable, iterable and indexable like a tuple, lighter than a dataclass; good for small fixed records.\n3. TypedDict: no runtime class at all, it just type-checks the keys and value types of a plain dict; use for JSON-shaped data at API boundaries.',
+    },
   ],
 };

@@ -119,5 +119,69 @@ export const patternsGraphsDp: Deck = {
       front: 'The "binary search on the answer" pattern, when does it apply?',
       back: 'When you can’t compute the optimum directly but can CHECK a guess quickly, and feasibility is monotonic ("if speed k works, k+1 works"). Binary search the smallest feasible value: Koko eating bananas, ship packages within D days, split array to minimize largest sum. Search space is the answer range, not the array.',
     },
+    {
+      id: 'gd-bfs-vs-dfs',
+      type: 'flash',
+      front: 'BFS or DFS: how do you pick in an interview?',
+      back: 'BFS when the problem says shortest path in an unweighted graph or "minimum number of steps" (word ladder, grid shortest path): the first time BFS reaches a node is via a fewest-edges path. DFS when you must explore or enumerate everything: connectivity, cycle detection, backtracking over candidate solutions. Both are O(V+E); the memory shapes differ (BFS holds a whole frontier, DFS holds one path).',
+    },
+    {
+      id: 'gd-union-find',
+      type: 'flash',
+      front: 'Union-find (disjoint set): how does it work, and when do you reach for it instead of DFS?',
+      back: 'Two arrays: parent and rank (or size). find() walks to the root and compresses the path; union() links roots by rank. Amortized near O(1) per operation (inverse Ackermann). It wins when edges arrive incrementally or connectivity is queried many times: components as edges stream in, redundant connection, accounts merge, cycle check inside Kruskal. For one-shot connectivity on a static graph, a plain DFS is just as good.',
+    },
+    {
+      id: 'gd-dijkstra-negative',
+      type: 'mcq',
+      prompt: "Why does Dijkstra's algorithm fail on graphs with negative edge weights?",
+      choices: [
+        'It finalizes a node when popped from the min-heap, assuming its distance can never improve; a negative edge later can break that assumption',
+        'The priority queue cannot store negative keys',
+        'It only terminates on acyclic graphs',
+        'Negative weights overflow the distance array',
+      ],
+      answer: 0,
+      explanation:
+        'Dijkstra is greedy: the closest unvisited node is popped and locked in, which is only safe if no future edge can shorten its path. A negative edge can. The standard follow-up: Bellman-Ford runs O(V·E), tolerates negative edges, and detects negative cycles.',
+    },
+    {
+      id: 'gd-knapsack-1d',
+      type: 'mcq',
+      prompt: '0/1 knapsack compressed to a 1D array: which direction do you iterate capacity, and why?',
+      choices: [
+        'High to low, so dp[c - w] still holds the previous item-row value and the item is not counted twice',
+        'Low to high, so smaller capacities are computed first',
+        'Either direction gives the same result',
+        'Low to high, but only when weights are sorted',
+      ],
+      answer: 0,
+      explanation:
+        'The update is dp[c] = max(dp[c], dp[c - w] + v). Iterating capacity downward means dp[c - w] was written on the previous item\'s pass, so each item is used at most once. Iterating upward lets the item feed its own row: that is exactly unbounded knapsack, which is why interviewers ask.',
+    },
+    {
+      id: 'gd-lcs-fill',
+      type: 'fill',
+      prompt: 'Longest common subsequence: the recurrence when characters match:',
+      code: 'if a[i - 1] == b[j - 1]:\n    dp[i][j] = ____ + 1\nelse:\n    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])',
+      answers: ['dp[i - 1][j - 1]'],
+      distractors: ['dp[i][j]', 'dp[i - 1][j]', 'dp[i][j - 1]'],
+      explanation:
+        'A match extends the best LCS of both prefixes shortened by one: the diagonal cell. On a mismatch, drop a character from one string or the other and take the max. The table is O(m·n), and since each row only reads the row above, space compresses to O(n).',
+    },
+    {
+      id: 'gd-grid-dp-edges',
+      type: 'tf',
+      prompt: 'In grid DP such as min path sum, the first row and first column can both be initialized to 0.',
+      answer: false,
+      explanation:
+        'Edge cells have only one way in, so the first row accumulates left to right and the first column top to bottom (for unique paths they are all 1). Wrong edge initialization is the classic grid DP bug; 0 is only correct with a padded table whose border is a neutral value.',
+    },
+    {
+      id: 'gd-memo-vs-tab',
+      type: 'flash',
+      front: 'Memoization vs tabulation: how do you choose, and what are the tradeoffs?',
+      back: 'Memoization (top-down): the natural recursion plus a cache.\n1. Easier to derive: it mirrors the brute force.\n2. Only touches reachable states.\n3. Risk: recursion depth can blow the stack, plus per-call overhead.\nTabulation (bottom-up): fill a table in dependency order.\n1. No stack limit and tight loops.\n2. Enables space tricks like keeping only the previous row.\n3. Cost: you must work out the iteration order, and you may compute states the answer never uses.',
+    },
   ],
 };

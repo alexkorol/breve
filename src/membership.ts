@@ -19,7 +19,10 @@ export function loadPlan(): Plan {
     const raw = getSetting('plan');
     if (!raw) return { tier: 'free' };
     const parsed = JSON.parse(raw) as Plan;
-    if (parsed.tier === 'paid' && (parsed.expiresAt ?? 0) > Date.now()) return parsed;
+    // No expiresAt on a paid plan means a lifetime (one-time) unlock.
+    if (parsed.tier === 'paid' && (parsed.expiresAt === undefined || parsed.expiresAt > Date.now())) {
+      return parsed;
+    }
     return { tier: 'free' };
   } catch {
     return { tier: 'free' };

@@ -108,9 +108,10 @@ function DeckCard({
         </div>
       </div>
       <div className="deck-badges">
+        {deck.locked && <span className="badge lock">🔒</span>}
         {due > 0 && <span className="badge due">{due} due</span>}
         {fresh > 0 && <span className="badge fresh">{fresh} new</span>}
-        {!ready && <span className="badge done">✓</span>}
+        {!ready && !deck.locked && <span className="badge done">✓</span>}
       </div>
     </button>
   );
