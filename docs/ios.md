@@ -30,24 +30,6 @@ Goal: ship Jimothy as a real App Store app by wrapping the existing Vite/React P
 - To test purchases in the simulator before App Store Connect setup: add a StoreKit configuration file in Xcode (File > New > File > StoreKit Configuration) with the product, and select it in the scheme's Run options.
 - Gating is native-only: the web/PWA build stays ungated.
 
-## Home-screen streak widget (one Xcode step remaining)
-
-Everything scriptable is done: the app pushes streak data through
-`StreakWidgetPlugin.swift` into the app group `group.com.alexkorol.jimothy`
-after every review, and the widget source lives at
-`ios/JimothyWidget/JimothyWidget.swift`. Creating the extension target needs
-the Xcode GUI and a signing team:
-
-1. In Xcode: File > New > Target > Widget Extension, name `JimothyWidget`,
-   uncheck configuration intents. Delete the generated source; add
-   `ios/JimothyWidget/JimothyWidget.swift` to the target instead.
-2. Add the App Groups capability with `group.com.alexkorol.jimothy` to BOTH
-   the App target and the JimothyWidget target (this registers the group with
-   the developer account, so it needs the paid team selected).
-3. Build. The widget appears in the home-screen widget gallery.
-
-Until then the plugin writes into a nil suite and is a harmless no-op.
-
 ## App Store checklist (later)
 
 - 1024x1024 App Store icon (no transparency). Existing icon assets are in `public/icons/`.

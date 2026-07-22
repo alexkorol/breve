@@ -32,8 +32,7 @@ import { Settings } from './components/Settings';
 import { Generate } from './components/Generate';
 import { Postmortem } from './components/Postmortem';
 import { SurgeToast } from './components/SurgeToast';
-import { crossedCheckpoint, dayIntensity, flameTier } from './flame';
-import { updateStreakWidget } from './native';
+import { crossedCheckpoint, dayIntensity } from './flame';
 
 const WEAK_ID = 'weak-cards';
 const MISSES_ID = 'misses';
@@ -80,11 +79,6 @@ export default function App() {
   );
 
   const reviewsToday = state.stats.reviewsByDay[dayKey()] ?? 0;
-
-  // Keep the home-screen widget in sync with the streak.
-  useEffect(() => {
-    updateStreakWidget(state.stats.streak, reviewsToday, flameTier(state.stats.streak).name);
-  }, [state.stats.streak, reviewsToday]);
 
   // Interview countdown: today's remaining allowance of new cards.
   const maxNewToday = useMemo(() => {

@@ -6,6 +6,5 @@ import Capacitor
 class AppViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(UnlockPlugin())
-        bridge?.registerPluginInstance(StreakWidgetPlugin())
     }
 }

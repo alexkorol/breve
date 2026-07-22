@@ -64,19 +64,6 @@ export async function initNativeStorage(): Promise<void> {
   mirror();
 }
 
-/** Push streak stats to the home-screen widget; no-op on web or pre-App-Group builds. */
-export function updateStreakWidget(streak: number, reviewsToday: number, tierName: string): void {
-  if (!isNative) return;
-  void import('@capacitor/core')
-    .then(({ registerPlugin }) => {
-      const StreakWidget = registerPlugin<{
-        update(opts: { streak: number; reviewsToday: number; tierName: string }): Promise<void>;
-      }>('StreakWidget');
-      return StreakWidget.update({ streak, reviewsToday, tierName });
-    })
-    .catch(() => {});
-}
-
 /** Light tap on card grading; silently does nothing on web. */
 export function hapticTap(): void {
   if (!isNative) return;
