@@ -60,7 +60,7 @@ export const dsaInterview: Deck = {
       id: 'dsa-quicksort',
       type: 'mcq',
       prompt: 'Average-case time complexity of quicksort?',
-      choices: ['O(n log n)', 'O(n²)', 'O(n)', 'O(log n)'],
+      choices: ['O(n log n)', 'O(n²), same as its worst case', 'O(n)', 'O(log n), the depth of the recursion tree'],
       answer: 0,
       explanation:
         'Average O(n log n); worst case O(n²) on adversarial pivots (already-sorted input with naive pivot choice). Randomized pivots make the worst case vanishingly unlikely.',
@@ -121,7 +121,7 @@ export const dsaInterview: Deck = {
       prompt: 'Find the FIRST label that appears a second time in a stream. Cleanest approach?',
       choices: [
         'A seen-set: return the label the moment membership check hits, else add and continue',
-        'Count all occurrences in a dict, then rescan for the first count ≥ 2',
+        'Count all occurrences in a dict in one pass, then rescan the stream for the first label whose count is ≥ 2',
         'Sort the list and scan for adjacent duplicates',
         'Nested loops comparing every pair',
       ],

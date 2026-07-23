@@ -15,8 +15,8 @@ export const pandasNumpy: Deck = {
       choices: [
         'loc selects by label, iloc by integer position',
         'loc is for rows, iloc for columns',
-        'iloc is the faster alias of loc',
-        'loc modifies in place, iloc returns a copy',
+        'iloc is a faster alias of loc that skips the label lookup on the index',
+        'loc modifies the frame in place, while iloc always returns a defensive copy',
       ],
       answer: 0,
       explanation:
@@ -39,7 +39,7 @@ export const pandasNumpy: Deck = {
       code: "df[df['age'] > 30]['salary'] = 0",
       choices: [
         'Chained indexing: the assignment may hit a temporary copy',
-        'Assigning a float into an int column',
+        'Assigning a float into an int column, which forces a silent dtype upcast',
         'Using loc instead of iloc',
         'A version mismatch between pandas and NumPy',
       ],
@@ -95,8 +95,8 @@ export const pandasNumpy: Deck = {
       choices: [
         "df['status'].value_counts()",
         "df['status'].describe()",
-        "df.groupby('status')",
-        "df['status'].unique()",
+        "df.groupby('status').first()",
+        "df['status'].unique().tolist()",
       ],
       answer: 0,
       explanation:
@@ -114,7 +114,7 @@ export const pandasNumpy: Deck = {
       prompt: 'An integer column suddenly became float64 after loading. Most likely cause?',
       choices: [
         'It contains NaN: classic NumPy has no integer NaN, so pandas upcasts',
-        'CSV files store all numbers as floats',
+        'CSV files store every number as a float, so read_csv can only produce float columns',
         'A pandas bug',
         'The column exceeded int64 range',
       ],
@@ -138,7 +138,7 @@ export const pandasNumpy: Deck = {
       prompt: 'Named aggregation: which call yields exactly the columns `avg_price` and `n` per city?',
       choices: [
         "df.groupby('city').agg(avg_price=('price', 'mean'), n=('price', 'count'))",
-        "df.groupby('city').agg({'price': ['mean', 'count']})",
+        "df.groupby('city').agg({'price': ['mean', 'count']}).rename(columns={'mean': 'avg_price', 'count': 'n'})",
         "df.groupby('city')['price'].mean().rename('avg_price')",
         "df.agg(avg_price='mean', n='count')",
       ],
@@ -153,7 +153,7 @@ export const pandasNumpy: Deck = {
       code: 'b = a[2:5]\nb[0] = 99',
       choices: [
         'a[2] is now 99: basic slicing returns a view sharing memory with a',
-        'a is unchanged: slicing always copies',
+        'a is unchanged: slicing allocates a fresh array, the same as list slicing in plain Python',
         'ValueError: slices of an array are read-only',
         'It depends on the dtype of a',
       ],

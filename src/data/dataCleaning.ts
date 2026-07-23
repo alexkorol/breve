@@ -10,10 +10,18 @@ export const dataCleaning: Deck = {
   cards: [
     {
       id: 'dc-walkthrough',
-      type: 'flash',
-      front:
-        'Interview: "You get a messy CSV. Walk me through cleaning it." Give the structured answer.',
-      back: 'A pipeline you can recite:\n1. Profile first: shape, dtypes, head(), describe(), null counts.\n2. Fix types: dates, numeric strings, categories.\n3. Remove duplicates.\n4. Handle missing values: ask WHY they’re missing before choosing drop/impute/flag.\n5. Investigate outliers: typo or truth?\n6. Standardize strings and category labels.\n7. Validate ranges and cross-field consistency.\n8. Do it in code, not by hand, so it’s reproducible and documented.\nNaming the steps in order is 80% of the answer.',
+      type: 'order',
+      prompt: 'Put the messy-CSV cleaning pipeline in order.',
+      items: [
+        'Profile: shape, dtypes, head(), describe(), null counts',
+        'Fix types: dates, numeric strings, categories',
+        'Remove duplicates',
+        'Handle missing values: ask why they are missing first',
+        'Investigate outliers: typo or truth?',
+        'Validate ranges and cross-field consistency',
+      ],
+      explanation:
+        'Do it all in code, not by hand, so the cleaning is reproducible and documented. Naming the steps in order is 80% of the answer.',
     },
     {
       id: 'dc-first-move',
@@ -21,8 +29,8 @@ export const dataCleaning: Deck = {
       prompt: 'First thing you do with a dataset you have never seen?',
       choices: [
         'Profile it: df.info(), df.describe(), null counts, a few rows',
-        'Impute all missing values with the mean',
-        'Drop every row containing a null',
+        'Impute all missing values with the mean so later steps never hit a NaN',
+        'Drop every row containing a null: models require complete cases',
         'Normalize all numeric columns',
       ],
       answer: 0,
@@ -52,8 +60,8 @@ export const dataCleaning: Deck = {
         'In a salary survey, income is missing mostly for high earners. Dropping those rows would…',
       choices: [
         'Bias the data: this is MNAR, not missing at random',
-        'Be fine, dropping nulls is always safe',
-        'Improve model accuracy',
+        'Be fine: complete-case analysis is unbiased whenever enough rows remain',
+        'Improve accuracy, since the model trains only on clean, fully observed rows',
         'Only matter if more than half are missing',
       ],
       answer: 0,
@@ -76,7 +84,7 @@ export const dataCleaning: Deck = {
       prompt: 'Why can duplicate rows be worse than they look?',
       choices: [
         'They leak across train/test splits and inflate evaluation scores',
-        'They only waste memory',
+        'They only waste memory and training time; the fitted model itself is unaffected',
         'They cause syntax errors in pandas',
         'They are impossible to detect',
       ],
@@ -90,7 +98,7 @@ export const dataCleaning: Deck = {
       prompt: 'Which outlier rule is itself robust to extreme outliers?',
       choices: [
         'IQR rule: flag values beyond 1.5×IQR from the quartiles',
-        'Z-score > 3: based on mean and standard deviation',
+        'Z-score > 3: the mean and standard deviation give it a stable, outlier-proof reference point',
         'Min-max clipping to [0, 1]',
         'Removing the top 50% of values',
       ],
@@ -112,8 +120,8 @@ export const dataCleaning: Deck = {
       choices: [
         'The scaler learned mean/std from test rows before the split',
         'StandardScaler cannot be used before a split',
-        'train_test_split shuffles, which is leakage',
-        'There is no leakage here',
+        'train_test_split shuffles rows, which mixes future into past and is itself leakage',
+        'There is no leakage: scaling is a stateless transform, so fitting it on all rows is harmless',
       ],
       answer: 0,
       explanation:
@@ -141,7 +149,7 @@ export const dataCleaning: Deck = {
       prompt: 'Encode `size = {S, M, L, XL}` vs `city = {NYC, LA, Chicago}`. Which pairing is right?',
       choices: [
         'size → ordinal integers (order is real), city → one-hot (no order)',
-        'Both → ordinal integers',
+        'Both → ordinal integers: it keeps dimensionality low and trees can split on any integer code',
         'size → one-hot, city → ordinal integers',
         'Both → leave as strings',
       ],
@@ -161,7 +169,7 @@ export const dataCleaning: Deck = {
       prompt: 'Handling a 99:1 class imbalance, which is correct?',
       choices: [
         'Resample (e.g. SMOTE) the training set only; keep the test set untouched',
-        'Oversample the whole dataset, then split',
+        'Oversample the whole dataset, then split: both sets stay balanced and comparable',
         'Oversample the test set so metrics look stable',
         'Class imbalance never needs handling',
       ],

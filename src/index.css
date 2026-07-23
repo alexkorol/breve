@@ -53,13 +53,15 @@ button {
 #root {
   max-width: 520px;
   margin: 0 auto;
-  min-height: 100dvh;
+  /* svh, not dvh: dvh re-resolves while WKWebView animates its insets, which
+     visibly bounced vertically-centered screens (the Pack Complete jump). */
+  min-height: 100svh;
 }
 
 .screen {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  min-height: 100svh;
   padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 24px);
 }
 
@@ -726,6 +728,9 @@ button {
 .bar-label {
   font-size: 9px;
   color: var(--text-dim);
+  /* Empty labels must reserve the same height, or their bars sit lower. */
+  line-height: 11px;
+  min-height: 11px;
 }
 
 .chart-note {

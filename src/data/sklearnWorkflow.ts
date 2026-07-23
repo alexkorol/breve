@@ -30,8 +30,8 @@ export const sklearnWorkflow: Deck = {
       prompt: 'Why `scaler.transform(X_test)` and never `scaler.fit_transform(X_test)`?',
       choices: [
         'Refitting on test learns test statistics: leakage, and train/test land in different spaces',
-        'fit_transform is slower',
-        'Test sets cannot be transformed twice',
+        'fit_transform recomputes the statistics twice, so it is slower; the outputs are otherwise the same',
+        'Test sets cannot be transformed twice: fit_transform would scale already-scaled values',
         'Both are equivalent',
       ],
       answer: 0,
@@ -54,9 +54,9 @@ export const sklearnWorkflow: Deck = {
       prompt: 'Numeric columns need scaling, categoricals need one-hot. The idiomatic tool?',
       choices: [
         'ColumnTransformer: different transformers per column group, inside the Pipeline',
-        'Transform manually before splitting',
+        'Transform manually before splitting: scaling the full frame once keeps train and test consistent',
         'Two separate models',
-        'Convert everything to strings',
+        'Convert everything to strings so OneHotEncoder can process every column uniformly',
       ],
       answer: 0,
       explanation:
@@ -79,8 +79,8 @@ export const sklearnWorkflow: Deck = {
       choices: [
         'Every param combo is CV-scored; best_estimator_ is refit on all training data: use that',
         'It fits once with default params',
-        'It touches the test set to pick the winner',
-        'You must refit manually',
+        'Each combo is scored on the held-out test set, which is what the cv argument controls',
+        'It scores combos but only stores best_params_: you instantiate and refit the winner manually',
       ],
       answer: 0,
       explanation:
@@ -92,9 +92,9 @@ export const sklearnWorkflow: Deck = {
       prompt: '`predict()` vs `predict_proba()`, and which one does threshold tuning need?',
       choices: [
         'predict applies a fixed 0.5 cut; predict_proba gives scores so YOU choose the threshold',
-        'predict_proba is only for regression',
+        'predict_proba returns regression-style continuous outputs, so threshold tuning belongs to regressors',
         'predict is more accurate',
-        'They are identical for classifiers',
+        'They are identical for classifiers: both apply the same built-in cutoff you cannot change',
       ],
       answer: 0,
       explanation:
@@ -116,8 +116,8 @@ export const sklearnWorkflow: Deck = {
       prompt: 'Why set random_state everywhere?',
       choices: [
         'Reproducibility: splits, shuffles, and stochastic models give identical results across runs',
-        'It improves accuracy',
-        'sklearn errors without it',
+        'It improves accuracy: a fixed seed lets stochastic optimizers converge to the same better minimum',
+        'sklearn refuses to fit stochastic estimators without it and raises a ValueError',
         'It seeds the GPU',
       ],
       answer: 0,
@@ -130,8 +130,8 @@ export const sklearnWorkflow: Deck = {
       prompt: 'The one-line baseline model?',
       choices: [
         'DummyClassifier(strategy="most_frequent"): the floor every real model must beat',
-        'LinearRegression on the labels',
-        'A random forest with defaults',
+        'LinearRegression on the class labels, rounded to the nearest integer class',
+        'A random forest with defaults: strong out of the box, so it doubles as the baseline',
         'There is no baseline estimator',
       ],
       answer: 0,
@@ -144,7 +144,7 @@ export const sklearnWorkflow: Deck = {
       prompt: 'Shipping the trained pipeline to production: the standard move?',
       choices: [
         'joblib.dump(pipe, "model.joblib"): persist the WHOLE pipeline, preprocessing included',
-        'Save only the model weights and rewrite preprocessing in the API',
+        'Save only the model weights and rewrite preprocessing in the API layer: smaller artifact, cleaner serving code',
         'Pickle just the scaler',
         'Retrain on every request',
       ],
@@ -164,8 +164,8 @@ export const sklearnWorkflow: Deck = {
       prompt: '1% positives. Cheapest first move in sklearn, and the trap if you resample instead?',
       choices: [
         'class_weight="balanced" on the estimator; if you oversample, do it inside the CV folds (train portion only), never before splitting',
-        'Oversample the whole dataset before train_test_split so both halves are balanced',
-        'Drop negatives until classes are even, then evaluate on the balanced set',
+        'Oversample the whole dataset before train_test_split so both halves are balanced and every metric gets computed on a perfectly even class mix',
+        'Drop negatives until classes are even, then evaluate on the balanced set so precision and recall are directly comparable',
         'Switch scoring to accuracy so the imbalance stops mattering',
       ],
       answer: 0,
@@ -184,9 +184,9 @@ export const sklearnWorkflow: Deck = {
       prompt: 'Which models actually need feature scaling?',
       choices: [
         'Distance and gradient based ones (KNN, SVM, PCA, regularized linear models, neural nets); tree ensembles do not care',
-        'All models: sklearn requires standardized input',
+        'All models: every sklearn estimator assumes standardized input, and unscaled features break the fit numerically or stall convergence',
         'Only neural networks',
-        'Tree ensembles most of all, since splits are threshold based',
+        'Tree ensembles most of all: split thresholds only compare correctly when features share one scale',
       ],
       answer: 0,
       explanation:
@@ -206,8 +206,8 @@ export const sklearnWorkflow: Deck = {
       prompt: 'Why prefer permutation_importance over a forest’s feature_importances_?',
       choices: [
         'Impurity importance inflates high-cardinality features and reflects only training fit; permutation measures real score drop, ideally on held-out data',
-        'feature_importances_ is deprecated',
-        'Permutation importance is faster to compute',
+        'feature_importances_ is deprecated and scheduled for removal in a future sklearn release',
+        'Permutation importance is faster to compute: it reuses the fitted model instead of building new trees, so it scales better with many features and repeats',
         'They always rank features identically',
       ],
       answer: 0,

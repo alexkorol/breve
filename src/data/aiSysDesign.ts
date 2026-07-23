@@ -26,8 +26,8 @@ export const aiSysDesign: Deck = {
       prompt: 'The interviewer says "design an AI code reviewer." Your FIRST move?',
       choices: [
         'Clarify scope: which languages, inline comments or summary, latency (pre-merge vs async), what does "good" mean?',
-        'Start drawing the architecture immediately',
-        'Pick the model first',
+        'Start drawing the standard RAG architecture immediately: interviewers award points for covering components quickly',
+        'Pick the model first, since context window and pricing constrain every downstream design decision',
         'Estimate GPU count',
       ],
       answer: 0,
@@ -40,9 +40,9 @@ export const aiSysDesign: Deck = {
       prompt: 'Where does human-in-the-loop belong in an AI pipeline?',
       choices: [
         'Wherever error cost exceeds review cost: with uncertainty routing deciding WHICH items humans see',
-        'Reviewing every output, always',
+        'Reviewing every output before release, since sampling can never catch rare high-severity failures',
         'Nowhere; automation is the goal',
-        'Only during development',
+        'Only during development: once shipped, the model is validated and human review just adds latency',
       ],
       answer: 0,
       explanation:
@@ -54,8 +54,8 @@ export const aiSysDesign: Deck = {
       prompt: 'The three cache layers of an LLM product, cheapest hit first?',
       choices: [
         'Exact-response cache → semantic cache (similar-enough queries) → provider prompt-prefix cache',
-        'GPU cache → RAM → disk',
-        'Only one cache is ever needed',
+        'GPU KV cache → in-memory cache → disk cache, following the hardware memory hierarchy fastest first',
+        'A single semantic cache: exact-match and prefix caching are just subsets of similarity matching',
         'Caching breaks LLM correctness',
       ],
       answer: 0,
@@ -69,7 +69,7 @@ export const aiSysDesign: Deck = {
       choices: [
         'Degrade gracefully per a designed ladder: secondary provider → smaller local model → cached/static responses → honest error',
         'Show spinners until it returns',
-        'Retry every request forever',
+        'Retry every request with exponential backoff and jitter until the provider recovers, so no user interaction is ever dropped',
         'Have no plan; outages are rare',
       ],
       answer: 0,
@@ -82,8 +82,8 @@ export const aiSysDesign: Deck = {
       prompt: 'Chat product, 3-second perceived-latency budget. How do you spend it?',
       choices: [
         'Retrieval + rerank ≤ 500ms, TTFT ≤ 1.5s via streaming: the user reads while decode continues',
-        'Generate fully (10s), then display',
-        'Skip retrieval to save time',
+        'Generate the full response before rendering so users never see partial or revised text on screen',
+        'Skip retrieval: the model weights already contain the knowledge, and RAG only adds latency',
         'Batch user requests each minute',
       ],
       answer: 0,
@@ -92,9 +92,16 @@ export const aiSysDesign: Deck = {
     },
     {
       id: 'sd-feedback-loop',
-      type: 'flash',
-      front: 'Design the feedback loop: how does a shipped AI product get better?',
-      back: 'Capture: thumbs up/down with the full trace (prompt version, retrieved chunks, model, output).\nTriage: a negative-feedback review queue where humans label the failure mode (retrieval miss? hallucination? formatting?).\nFeed back: failures become eval cases so the regression suite grows, then prompt/retrieval fixes, eventually fine-tuning data.\nThe flywheel: traces → labels → evals → fixes → better traces. Without capture at step 1, nothing downstream exists.',
+      type: 'order',
+      prompt: 'Order the feedback flywheel that makes a shipped AI product better.',
+      items: [
+        'Capture: thumbs up/down with the full trace (prompt version, chunks, model, output)',
+        'Triage: humans label the failure mode in a review queue',
+        'Failures become eval cases, growing the regression suite',
+        'Fixes ship: prompt and retrieval changes, eventually fine-tuning data',
+      ],
+      explanation:
+        'Without capture at step 1, nothing downstream exists: you cannot label, eval, or fix what you never recorded.',
     },
     {
       id: 'sd-cost-estimate',
@@ -102,9 +109,9 @@ export const aiSysDesign: Deck = {
       prompt: 'Back-of-envelope: 100k queries/day, ~2k input + 500 output tokens each, at $3/M in and $15/M out. Daily cost?',
       choices: [
         '≈ $1,350/day: (0.2B × $3 + 0.05B × $15) per million',
-        '≈ $135/day',
-        '≈ $13,500/day',
-        'Impossible to estimate',
+        '≈ $135/day: caching and batching cut the naive token bill about 90% in practice',
+        '≈ $13,500/day: retries and multi-turn context make 1M queries the real planning number',
+        'Impossible to estimate without the provider\'s batch discounts and cache hit rate',
       ],
       answer: 0,
       explanation:
@@ -116,8 +123,8 @@ export const aiSysDesign: Deck = {
       prompt: 'Your free AI endpoint is getting hammered by scripts. Defense stack?',
       choices: [
         'Auth + per-user rate limits + spend caps + anomaly alerts + output size limits',
-        'Hope the provider rate-limits for you',
-        'CAPTCHA alone',
+        'Rely on the provider\'s rate limits: they already meter tokens per key upstream of your service',
+        'CAPTCHA on every request: if bots cannot reach the endpoint, no other limits are needed',
         'Make the model refuse robots',
       ],
       answer: 0,
@@ -136,9 +143,9 @@ export const aiSysDesign: Deck = {
       prompt: 'Day-2 operations: what do you alert on for an LLM feature?',
       choices: [
         'Error/refusal rates, latency percentiles (p95 TTFT), token spend vs budget, eval-score drift on a canary set, feedback-rate changes',
-        'Only server CPU',
+        'Standard infra metrics only (CPU, memory, 5xx rate, uptime): an LLM feature is a stateless service, so the usual dashboards cover it',
         'Nothing; LLMs are stateless',
-        'Raw output length',
+        'Raw output length and tokens per response: quality regressions always show up as length anomalies',
       ],
       answer: 0,
       explanation:

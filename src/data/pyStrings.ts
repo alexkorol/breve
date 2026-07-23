@@ -22,7 +22,7 @@ export const pyStrings: Deck = {
       id: 'st-immutable',
       type: 'mcq',
       prompt: 'What does `s[0] = "X"` do to a string?',
-      choices: ['Raises TypeError; strings are immutable', 'Replaces the first character', 'Prepends X', 'Returns a new string'],
+      choices: ['Raises TypeError; strings are immutable', 'Replaces the first character in place, like list item assignment', 'Prepends X', 'Returns a new string'],
       answer: 0,
       explanation:
         'Build a new string instead: "X" + s[1:]. Immutability is also why repeated += in a loop is O(n²): collect parts in a list and join once.',
@@ -33,7 +33,7 @@ export const pyStrings: Deck = {
       prompt: 'Building a long string from 10,000 pieces: the right way?',
       choices: [
         'Append pieces to a list, then "".join(parts) once',
-        's += piece in a loop is equally fast',
+        's += piece in a loop: CPython resizes the string in place, so it is equally fast',
         'Use recursion',
         'Write to a file and read it back',
       ],
@@ -113,8 +113,8 @@ export const pyStrings: Deck = {
       prompt: '`re.match` vs `re.search`?',
       choices: [
         'match anchors at the start of the string; search finds the pattern anywhere',
-        'match is case-insensitive',
-        'search returns all matches',
+        'match is case-insensitive; search honors the case of the pattern',
+        'search returns every non-overlapping match as a list; match returns only the first one',
         'They are identical',
       ],
       answer: 0,
@@ -146,7 +146,7 @@ export const pyStrings: Deck = {
       prompt: 'Why does `r"<.*>"` match all of `"<a><b>"` instead of just `"<a>"`?',
       choices: [
         '* is greedy: it takes the longest match; use .*? for non-greedy',
-        'The regex engine reads right to left',
+        'The regex engine scans right to left, so it locks onto the closing > of the last tag first',
         'Angle brackets are special characters',
         'It is a Python bug',
       ],
@@ -170,8 +170,8 @@ export const pyStrings: Deck = {
       prompt: 'Clean a string to letters-only lowercase for a palindrome check?',
       choices: [
         '"".join(c.lower() for c in s if c.isalnum())',
-        's.lower().strip()',
-        's.replace(" ", "")',
+        's.lower().strip(): strip removes punctuation and spaces throughout the string',
+        's.replace(" ", "").lower(): spaces are the only non-letter characters that matter',
         'set(s.lower())',
       ],
       answer: 0,
@@ -184,7 +184,7 @@ export const pyStrings: Deck = {
       prompt: 'What is `"a,b".split(",")` vs `"a,,b".split(",")`?',
       choices: [
         "['a', 'b'] vs ['a', '', 'b']: empty fields are preserved",
-        'Both give [\'a\', \'b\']',
+        'Both give [\'a\', \'b\']: split(sep) collapses runs of the separator like bare split() does',
         'The second raises ValueError',
         "['a,b'] vs ['a', 'b']",
       ],

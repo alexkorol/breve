@@ -20,9 +20,9 @@ export const sysStorage: Deck = {
       prompt: 'New product, unclear future query patterns, moderate traffic. Best default datastore?',
       choices: [
         'Postgres: ACID, joins, ad-hoc SQL, and it scales further than most products ever need',
-        'Cassandra, to be ready for future scale',
-        'MongoDB, because the schema might change',
-        'DynamoDB, to avoid managing servers',
+        'Cassandra: adopting wide-column scale-out from day one avoids a painful migration once traffic grows',
+        'MongoDB: schemaless documents let the data model evolve without ever running a migration',
+        'DynamoDB: serverless, with no capacity planning and single-digit-millisecond reads at any scale',
       ],
       answer: 0,
       explanation:
@@ -64,9 +64,9 @@ export const sysStorage: Deck = {
       prompt: 'A page loads 50 orders, then queries the user for each order in a loop: 51 queries total. The name and the fix?',
       choices: [
         'N+1 query problem: batch with a JOIN or one IN (...) query for all user ids',
-        'Connection starvation: raise the pool size',
-        'Missing index: add one on orders.user_id',
-        'Slow network: put a cache in front',
+        'Connection pool starvation: 51 queries exhaust the pool, so raise the pool size to match concurrency',
+        'Missing index: add one on orders.user_id so each per-order lookup stops scanning the table',
+        'Slow network: put a read-through cache in front so repeated user lookups come from memory',
       ],
       answer: 0,
       explanation:
@@ -90,9 +90,9 @@ export const sysStorage: Deck = {
       prompt: 'Under read committed (the Postgres default), which anomalies can still occur?',
       choices: [
         'Non-repeatable and phantom reads, but never dirty reads',
-        'Dirty reads only',
-        'None: read committed prevents all three',
-        'All three',
+        'Dirty reads only, because the default level takes no locks while reading',
+        'None: read committed prevents all three, which is exactly why Postgres made it the default',
+        'All three, since only serializable prevents any anomaly at all',
       ],
       answer: 0,
       explanation:
@@ -104,9 +104,9 @@ export const sysStorage: Deck = {
       prompt: 'Two users may edit the same record, but conflicts are rare. Optimistic or pessimistic locking?',
       choices: [
         'Optimistic: version column, compare-and-bump at write time, retry on conflict',
-        'Pessimistic: hold SELECT ... FOR UPDATE while the user edits',
-        'Pessimistic: lock the whole table during edits',
-        'Neither: last write wins is acceptable',
+        'Pessimistic: hold SELECT ... FOR UPDATE for the whole edit session so a conflict can never happen',
+        'Pessimistic: lock the whole table during edits to keep the locking logic simple',
+        'Neither: last write wins is acceptable because conflicts are rare anyway',
       ],
       answer: 0,
       explanation:
@@ -137,9 +137,9 @@ export const sysStorage: Deck = {
       prompt: 'Ingesting a heavy stream of sensor events; reads are rare. B-tree or LSM engine?',
       choices: [
         'LSM: sequential appends and batched flushes beat in-place page updates for write throughput',
-        'B-tree: mature and read-optimized',
-        'LSM, because its reads are faster',
-        'B-tree, because LSM engines cannot do range scans',
+        'B-tree: in-place page updates avoid background compaction, so sustained ingestion stays smoother over time',
+        'LSM, because checking the memtable first makes its reads faster than a B-tree lookup',
+        'B-tree, because LSM engines cannot serve range scans over sorted keys',
       ],
       answer: 0,
       explanation:
@@ -173,8 +173,8 @@ export const sysStorage: Deck = {
       prompt: 'A dashboard join across five tables is slow, so you consider storing a precomputed denormalized copy. The real tradeoff?',
       choices: [
         'Faster reads, but every write must now update multiple copies consistently, risking drift',
-        'More disk usage, which is the main cost',
-        'None: normalization is only an academic concern',
+        'More disk usage: storing the same data twice roughly doubles storage, which is the main cost at scale',
+        'None: normalization is an academic concern, and modern query planners erase the difference anyway',
         'Slower reads in exchange for simpler writes',
       ],
       answer: 0,

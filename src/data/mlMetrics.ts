@@ -70,8 +70,8 @@ export const mlMetrics: Deck = {
         'A small fraud team can review only the top 100 alerts per day out of millions of transactions. Which metric matters most for what you send them?',
       choices: [
         'Precision: wasted reviews on false alarms burn the scarce resource',
-        'Recall: catching every fraud is all that matters',
-        'Accuracy: overall correctness',
+        'Recall: fraud is the rare class, and with rare classes missing a positive is always the more expensive error',
+        'Accuracy: it summarizes both error types in a single number, so it is the fairest choice',
         'Mean squared error',
       ],
       answer: 0,
@@ -98,7 +98,7 @@ export const mlMetrics: Deck = {
       choices: [
         'When 99% of the data is one class: always predicting it scores 99%',
         'When the model is a neural network',
-        'When the test set is too large',
+        'When the test set is so large that tiny, meaningless differences become statistically significant',
         'Accuracy is always the best summary metric',
       ],
       answer: 0,
@@ -123,7 +123,7 @@ export const mlMetrics: Deck = {
       prompt: 'A model has AUC = 0.5. What does that tell you?',
       choices: [
         'It ranks positives no better than random guessing',
-        'It is correct half the time',
+        'It classifies exactly half of the test examples correctly at the default threshold',
         'Precision and recall are both 0.5',
         'The threshold is set to 0.5',
       ],

@@ -1,4 +1,4 @@
-export type CardType = 'mcq' | 'flash' | 'fill' | 'tf' | 'order';
+export type CardType = 'mcq' | 'flash' | 'fill' | 'tf' | 'order' | 'multifill';
 
 interface BaseCard {
   id: string;
@@ -38,6 +38,21 @@ export interface FillCard extends BaseCard {
   explanation?: string;
 }
 
+/**
+ * Code with several numbered blanks (`__1__`, `__2__`, ...), each filled by
+ * tapping a term chip. `blanks[i]` is the correct term for `__i+1__`.
+ */
+export interface MultiFillCard extends BaseCard {
+  type: 'multifill';
+  prompt: string;
+  code: string;
+  /** Correct terms, one per blank, in blank order. */
+  blanks: string[];
+  /** Wrong terms mixed into the chip bank. */
+  distractors: string[];
+  explanation?: string;
+}
+
 /** True/false statement — the fastest quick-check format. */
 export interface TfCard extends BaseCard {
   type: 'tf';
@@ -57,7 +72,7 @@ export interface OrderCard extends BaseCard {
   explanation?: string;
 }
 
-export type Card = McqCard | FlashCard | FillCard | TfCard | OrderCard;
+export type Card = McqCard | FlashCard | FillCard | TfCard | OrderCard | MultiFillCard;
 
 /**
  * Quick cards (tap-to-answer: mcq/fill/tf/order) and longform cards

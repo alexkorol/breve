@@ -78,8 +78,8 @@ export const jsGotchas: Deck = {
       code: "console.log(Array(3).map(() => 'x'));",
       choices: [
         '[ <3 empty items> ]: three holes, untouched',
-        "['x', 'x', 'x']",
-        '[undefined, undefined, undefined]',
+        "['x', 'x', 'x']: map visits every index up to length",
+        '[undefined, undefined, undefined]: holes read as undefined, so map passes them through',
         'It throws a RangeError',
       ],
       answer: 0,

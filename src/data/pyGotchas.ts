@@ -24,7 +24,7 @@ export const pyGotchas: Deck = {
       prompt: 'Why is `grid = [[0] * 3] * 3` broken?',
       choices: [
         'All three rows are the SAME list: writing grid[0][0] changes every row',
-        'It creates a 9-element flat list',
+        'It flattens into a single 9-element list because * concatenates the inner lists',
         'Multiplication of lists is not allowed',
         'It works fine',
       ],
@@ -38,7 +38,7 @@ export const pyGotchas: Deck = {
       prompt: 'Why does `a is b` return True for `a = b = 256` but often False for 257?',
       choices: [
         'CPython caches small ints (-5..256) as singletons; larger ones may be distinct objects',
-        '257 overflows the int type',
+        '257 overflows the internal small-int type, so it gets boxed into a separate long object on each use',
         'is compares values above 256',
         'It is random',
       ],
@@ -50,7 +50,12 @@ export const pyGotchas: Deck = {
       id: 'gt-chained-comparison',
       type: 'mcq',
       prompt: 'What does `1 < 3 > 2` evaluate to?',
-      choices: ['True; chained comparisons: (1 < 3) and (3 > 2)', 'False', 'SyntaxError', '2'],
+      choices: [
+        'True; chained comparisons: (1 < 3) and (3 > 2)',
+        'False: it evaluates left to right, so (1 < 3) is True, and True > 2 is False',
+        'SyntaxError',
+        '2',
+      ],
       answer: 0,
       explanation:
         'Python chains comparisons: a < b < c means (a < b) and (b < c) with b evaluated once. Elegant when intended, bewildering when accidental.',
@@ -71,7 +76,7 @@ export const pyGotchas: Deck = {
       prompt: 'You pass a list to a function that sorts it. The caller’s list is now sorted too. Why?',
       choices: [
         'Lists pass by reference: the function mutated the caller’s object; sort a copy (sorted(x) or x[:]) instead',
-        'Python copies lists on function calls',
+        'Python copies lists at call time, but sort() is a C builtin that bypasses the copy and writes to the original buffer directly',
         'sort() returns a new list',
         'It is a scoping bug in Python',
       ],
@@ -87,7 +92,7 @@ export const pyGotchas: Deck = {
         'Mutating a list while iterating skips elements: filter into a new list instead',
         'remove() is O(1) so nothing',
         'Negative numbers cannot be removed',
-        'It raises RuntimeError always',
+        'It always raises RuntimeError: list changed size during iteration, the same guard dicts have',
       ],
       answer: 0,
       explanation:
@@ -101,7 +106,7 @@ export const pyGotchas: Deck = {
         'It swallows every error silently: bugs vanish instead of surfacing; catch specific exceptions and at least log',
         'It is a syntax error in Python 3.12',
         'pass is slower than continue',
-        'Exceptions cannot be caught broadly',
+        'Catching the broad Exception class is deprecated: Python 3 requires listing concrete exception types, so this warns at runtime',
       ],
       answer: 0,
       explanation:
@@ -113,7 +118,7 @@ export const pyGotchas: Deck = {
       prompt: 'Why is `0.1 + 0.2 == 0.3` False?',
       choices: [
         'Binary floats can’t represent 0.1 exactly: compare with math.isclose() or a tolerance',
-        'Python rounds incorrectly',
+        'Python’s float printing rounds incorrectly: the sum really equals 0.3 but == compares the rounded display strings',
         'The == operator is broken for floats',
         'It is True',
       ],
@@ -127,7 +132,7 @@ export const pyGotchas: Deck = {
       prompt: 'After `for i in range(3): pass`, what is `i`?',
       choices: [
         '2: loop variables leak into the enclosing scope',
-        'NameError: loops have their own scope',
+        'NameError: the loop body is a block scope, and i is garbage-collected when the loop ends',
         '3',
         'None',
       ],
@@ -151,7 +156,7 @@ export const pyGotchas: Deck = {
       prompt: 'After `list = [1, 2, 3]`, calling `list("abc")` fails. Why?',
       choices: [
         'You shadowed the built-in list with your variable: rename the variable',
-        'Strings can no longer be converted',
+        'Assigning to list overwrites the builtin for the whole interpreter, so no module can convert strings anymore',
         'list() only accepts numbers',
         'A restart always fixes it permanently',
       ],
@@ -176,7 +181,7 @@ export const pyGotchas: Deck = {
       code: 'try:\n    parse(x)\nexcept Exception:\n    handle_generic()\nexcept ValueError:\n    handle_value()',
       choices: [
         'except clauses match top-down: the broad Exception catches everything first; order narrow → broad',
-        'ValueError is not an Exception subclass',
+        'ValueError inherits from ArithmeticError, not Exception, so the second clause can never match its type at runtime',
         'Only one except is allowed',
         'It is reachable',
       ],
@@ -212,7 +217,7 @@ export const pyGotchas: Deck = {
       choices: [
         'return True sits inside the loop: it answers after testing only the FIRST divisor; dedent it below the loop',
         'The range bound is off by one',
-        'return False should come after the loop',
+        'return False should come after the loop: one divisor is not enough evidence, so every candidate must be checked before failing',
         'Nothing: it works',
       ],
       answer: 0,

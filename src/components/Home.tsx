@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import type { AppState, CardKind, CardProgress, Deck, Stats } from '../types';
 import { isMastered } from '../srs';
 import { deckCounts, DAILY_GOAL } from '../session';
-import { dayKey, exportState, parseDeckFile, daysSinceBackup } from '../storage';
+import { dayKey, exportState, parseDeckFile, daysSinceBackup, daysSinceFirstSeen } from '../storage';
 import { exportReport, daysSinceReport } from '../report';
 import { DAILY_REVIEW_ID } from '../data';
 import { pickFocus, loadFocusReroll, saveFocusReroll } from '../focus';
@@ -192,12 +192,18 @@ export function Home({
     saveFocusReroll(today, next);
     setFocusReroll(next);
   };
+  // Both nudges are capped by install age: a fresh install owes nobody a backup
+  // or a weekly report, even though its "last backup" date is Infinity ago.
+  const sinceFirstSeen = daysSinceFirstSeen();
   const backupAge = daysSinceBackup();
-  const showBackupNudge = state.stats.totalReviews > 0 && backupAge > 7;
+  const showBackupNudge =
+    state.stats.totalReviews > 0 && Math.min(backupAge, sinceFirstSeen) > 7;
   // Weekly loop: nudge an export of the readiness report once a week.
   const [reportExported, setReportExported] = useState(false);
   const showReportNudge =
-    !reportExported && state.stats.totalReviews > 0 && daysSinceReport() >= 7;
+    !reportExported &&
+    state.stats.totalReviews > 0 &&
+    Math.min(daysSinceReport(), sinceFirstSeen) >= 7;
 
   const toggleTrack = (track: string) => {
     setOpenTracks((prev) => {

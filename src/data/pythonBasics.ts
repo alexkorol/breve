@@ -160,5 +160,25 @@ export const pythonBasics: Deck = {
       explanation:
         'n ** 0.5 == math.sqrt(n): any composite has a factor at or below its square root. The + 1 matters because range excludes its stop: without it a perfect-square factor never gets tested.',
     },
+    {
+      id: 'pyb-mf-with-open',
+      type: 'multifill',
+      prompt: 'Open a file so it closes automatically, then read it line by line:',
+      code: '__1__ open("data.txt") __2__ f:\n    for line in __3__:\n        print(line.strip())',
+      blanks: ['with', 'as', 'f'],
+      distractors: ['try', 'import', 'open', 'file'],
+      explanation:
+        'The with statement closes the file even if the body raises; iterating the handle yields one line at a time without loading the whole file.',
+    },
+    {
+      id: 'pyb-mf-sort-key',
+      type: 'multifill',
+      prompt: 'Sort words by length, longest first, without mutating the original list:',
+      code: 'result = __1__(words, key=__2__, reverse=__3__)',
+      blanks: ['sorted', 'len', 'True'],
+      distractors: ['sort', 'length', 'False', 'desc'],
+      explanation:
+        'sorted() returns a new list (list.sort() mutates in place and returns None); key=len ranks by length; reverse=True flips to descending.',
+    },
   ],
 };

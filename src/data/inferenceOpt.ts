@@ -20,7 +20,7 @@ export const inferenceOpt: Deck = {
       prompt: 'What dominates GPU memory during long-context serving?',
       choices: [
         'The KV cache: it grows linearly with context length × batch size, rivaling the weights themselves',
-        'The model weights only',
+        'The model weights: parameter count scales with the context window, so long-context checkpoints load more layers per token',
         'Python overhead',
         'Log buffers',
       ],
@@ -34,7 +34,7 @@ export const inferenceOpt: Deck = {
       prompt: 'vLLM’s PagedAttention: the core idea?',
       choices: [
         'KV cache in non-contiguous pages, like OS virtual memory: eliminating fragmentation so batches pack tighter',
-        'Attention computed on the CPU',
+        'KV blocks offloaded to CPU RAM and swapped onto the GPU page by page, the way an operating system swaps memory to disk',
         'Skipping attention for old tokens',
         'A new model architecture',
       ],
@@ -48,7 +48,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Continuous (in-flight) batching beats static batching because…',
       choices: [
         'Finished sequences exit and new ones join mid-flight, no waiting for the longest generation in the batch',
-        'It uses bigger batches only',
+        'It pads every sequence in the batch to a common length so the GPU runs one perfectly uniform matmul at full occupancy',
         'It skips short requests',
         'It requires no scheduler',
       ],
@@ -62,7 +62,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Speculative decoding: how can a small model speed up a big one without changing outputs?',
       choices: [
         'The draft model proposes k tokens; the big model verifies them in ONE parallel pass: accepted tokens are provably identical to what it would have produced',
-        'The small model answers easy queries entirely',
+        'The small model generates the full response and the big model rewrites only the sentences it disagrees with, so most of the output is drafted entirely by the cheap model',
         'It caches common answers',
         'It lowers precision temporarily',
       ],
@@ -76,7 +76,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Why does int4 quantization speed up DECODE specifically?',
       choices: [
         'Decode is memory-bandwidth-bound: smaller weights mean fewer bytes read per token',
-        'It reduces the number of layers',
+        'int4 tensor cores execute four times more operations per cycle, so the win comes from faster arithmetic in the matmuls',
         'int4 math is more accurate',
         'It shrinks the vocabulary',
       ],
@@ -100,7 +100,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Provider prompt caching: what exactly is cached and what does it save?',
       choices: [
         'The KV cache of a stable prompt PREFIX: repeat requests skip recomputing it: much cheaper tokens and faster TTFT',
-        'Full responses keyed by user',
+        'Full completions keyed by a hash of the entire prompt: an identical request returns the stored answer with zero model compute',
         'The model weights per customer',
         'Embeddings of the prompt',
       ],
@@ -116,7 +116,7 @@ export const inferenceOpt: Deck = {
         'Model routing: send the easy 80% to a model 10× cheaper, escalate the hard 20%',
         'Shorter variable names in prompts',
         'Turning off logging',
-        'Batching user requests overnight',
+        'Batching user requests into overnight offline jobs so every call qualifies for bulk batch-API pricing',
       ],
       answer: 0,
       explanation:
@@ -128,7 +128,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Why does streaming matter even when total generation time is unchanged?',
       choices: [
         'Perceived latency collapses: users read at ~5 tokens/s while the model generates faster; TTFT becomes the only wait',
-        'It reduces server cost',
+        'It reduces server cost: tokens leave GPU memory as they are produced, so KV cache pages can be freed incrementally mid-generation',
         'It improves output quality',
         'It avoids rate limits',
       ],
@@ -148,7 +148,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Production LLM API calls fail intermittently (429s, timeouts). The resilient client pattern?',
       choices: [
         'Exponential backoff with jitter, a retry budget, timeouts per call, and a fallback model/response path',
-        'Retry instantly in a tight loop',
+        'Retry immediately in a tight loop: a 429 means capacity just freed up, so the fastest client back in line wins the slot',
         'One attempt; fail the request',
         'Cache every possible response',
       ],
@@ -168,7 +168,7 @@ export const inferenceOpt: Deck = {
       prompt: 'Weight-only quantization (GPTQ/AWQ int4) vs weight-and-activation quantization (int8 W8A8): the key difference?',
       choices: [
         'Weight-only shrinks memory traffic but still computes in fp16; W8A8 also uses integer tensor cores for compute, but activation outliers make it harder to do without quality loss',
-        'Weight-only is always more accurate at the same bit width',
+        'Weight-only is more accurate because its weights are calibrated offline, while W8A8 must requantize the weights at request time, recomputing scale factors for every incoming batch and losing precision each time',
         'W8A8 only works on CPUs',
         'They are the same technique with different names',
       ],
@@ -184,7 +184,7 @@ export const inferenceOpt: Deck = {
         'TP splits each layer\'s matrices across GPUs (all-reduce every layer, needs NVLink-class interconnect, cuts per-token latency); PP splits layers into sequential stages (only activations cross, tolerates slow links, adds bubble overhead)',
         'They are interchangeable; pick whichever is easier to configure',
         'PP is always faster because it communicates less',
-        'TP shards the training data, PP shards the optimizer state',
+        'TP shards the training data so each GPU sees different batches, PP shards the optimizer state across ranks (ZeRO/FSDP-style); both are training-only techniques and neither applies at inference, since serving has no gradients or optimizer state to distribute',
       ],
       answer: 0,
       explanation:
@@ -205,7 +205,7 @@ export const inferenceOpt: Deck = {
       choices: [
         'A state machine masks the logits each step so only grammar-valid tokens can be sampled: syntax validity is guaranteed, at the cost of per-step mask overhead and possible quality loss when the schema fights the model\'s natural phrasing',
         'The model is fine-tuned on JSON before every request',
-        'Invalid outputs are silently retried until one parses',
+        'The model samples freely, a validator parses the result, and invalid outputs are silently resampled at higher temperature until one parses: validity is only probabilistic, but the model\'s natural phrasing is never disturbed, which is why providers brand it "JSON mode"',
         'It truncates the output at the first closing brace',
       ],
       answer: 0,

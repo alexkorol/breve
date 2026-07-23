@@ -21,8 +21,8 @@ export const dlCore: Deck = {
       choices: [
         'Gradients vanish: each layer multiplies by sigmoid′ ≤ 0.25, shrinking exponentially',
         'Sigmoids are too expensive to compute',
-        'The weights overflow to infinity',
-        'Sigmoid outputs cannot be negative, so the loss is wrong',
+        'The weights overflow to infinity: sigmoid activations compound multiplicatively through depth until values explode',
+        'Sigmoid outputs cannot be negative, so every gradient shares one sign and the loss surface has no descent direction',
       ],
       answer: 0,
       explanation:
@@ -60,8 +60,8 @@ export const dlCore: Deck = {
       prompt: 'What does batch/layer normalization mainly buy you?',
       choices: [
         'Stable, faster training: activations keep a consistent scale so larger learning rates work',
-        'A smaller model at inference',
-        'Guaranteed better test accuracy',
+        'A smaller model at inference: normalized activations compress into fewer bits, shrinking the stored weights',
+        'Guaranteed better test accuracy: normalization is a regularizer, so it always improves generalization',
         'It replaces the need for an optimizer',
       ],
       answer: 0,
@@ -74,8 +74,8 @@ export const dlCore: Deck = {
       prompt: 'What happens to dropout at inference time?',
       choices: [
         'It is turned off: all units active, with activations scaled to compensate',
-        'It keeps dropping units for regularization',
-        'It only drops the output layer',
+        'It keeps dropping units: the regularization must stay active or co-adaptation returns at test time',
+        'It only drops the output layer, since hidden layers are already trained',
         'The dropout rate is doubled',
       ],
       answer: 0,
@@ -110,8 +110,8 @@ export const dlCore: Deck = {
       choices: [
         'Early steps have chaotic gradients; a big LR then can blow up training irrecoverably',
         'GPUs need time to reach full clock speed',
-        'It reduces memory usage',
-        'Adam requires it mathematically',
+        'It reduces peak memory: small early steps keep optimizer state buffers from allocating at full size',
+        'Adam requires it mathematically: the moment estimates are undefined until the running averages fill',
       ],
       answer: 0,
       explanation:

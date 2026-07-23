@@ -32,7 +32,7 @@ export const tsTypes: Deck = {
       prompt: 'const x: Cat | Dog. Before any narrowing, which members can you access on x?',
       choices: [
         'Only members that exist on every type in the union',
-        'All members of both Cat and Dog',
+        'All members of both Cat and Dog, since the value could turn out to be either one',
         'None until you cast x to one of them',
         'The members of whichever type is listed first',
       ],
@@ -46,7 +46,7 @@ export const tsTypes: Deck = {
       prompt: "What does `as const` change about `const config = { retries: 3, mode: 'fast' } as const`?",
       choices: [
         "Every property becomes readonly and keeps its literal type (3, 'fast') instead of widening",
-        'The object becomes immutable at runtime, like Object.freeze',
+        'The object becomes deeply immutable at runtime, like a recursive Object.freeze applied at creation',
         'The object is converted to a const enum',
         'Nothing: const declarations already prevent widening inside objects',
       ],
@@ -60,7 +60,7 @@ export const tsTypes: Deck = {
       prompt: 'Model fetch state so that `data` is only reachable when the request succeeded. The right tool?',
       choices: [
         'A discriminated union: one variant per state, each with a literal status tag',
-        'One interface with optional loading, data, and error fields',
+        'One interface with optional loading, data, and error fields, checked with truthiness before each use',
         'An enum for the status plus a class with nullable fields',
         'A boolean isLoading flag next to data: T | null',
       ],
@@ -96,7 +96,7 @@ export const tsTypes: Deck = {
       prompt: 'function get<T, K extends keyof T>(obj: T, key: K): T[K]. What does this signature guarantee?',
       choices: [
         'key must be a real property name of obj, and the return type is that property\'s exact type',
-        'key can be any string, and the return type is any',
+        'key can be any string at the call site, and the return type widens to the union of all property types',
         'It only works when T is an interface, not a type alias',
         'obj must be assignable to Record<string, unknown>',
       ],
@@ -132,7 +132,7 @@ export const tsTypes: Deck = {
       prompt: 'What does strictNullChecks actually change?',
       choices: [
         'null and undefined stop being assignable to every type; you must model and narrow them explicitly',
-        'The compiler throws runtime errors when a value is null',
+        'The compiler injects runtime null checks into the emitted JS that throw the moment a null is dereferenced',
         'The null type is banned from the codebase',
         'All object properties become required',
       ],
@@ -146,7 +146,7 @@ export const tsTypes: Deck = {
       prompt: "enum Status { Active = 'active' } vs type Status = 'active' | 'inactive'. Why do unions usually win?",
       choices: [
         'Unions are erased at compile time, need no import at use sites, and match plain strings structurally',
-        'Enums cannot be used in switch statements',
+        'Enums cannot be narrowed by switch statements, so exhaustiveness checks with never only work on unions',
         'Unions are faster than enums at runtime',
         'Enums cannot hold string values',
       ],

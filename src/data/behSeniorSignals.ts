@@ -20,8 +20,8 @@ export const behSeniorSignals: Deck = {
       prompt: 'A mid-level and a senior candidate tell the same project as their "hardest project" story. What usually separates the senior telling?',
       choices: [
         'Where it starts: the senior owned the problem before it was a defined project, and the impact extends past their own code',
-        'More technical depth in the implementation details',
-        'A bigger team and a longer timeline',
+        'More technical depth: seniors are expected to go deeper on implementation details than a mid-level could, and interviewers grade that depth',
+        'A bigger team and a longer timeline, since scope is measured in headcount and duration',
         'More polished, confident delivery',
       ],
       answer: 0,
@@ -34,9 +34,9 @@ export const behSeniorSignals: Deck = {
       prompt: 'Which closing line to a behavioral story signals the widest scope?',
       choices: [
         'The template we built became the default for every new service across the org',
-        'My code passed review with no major comments',
+        'My code passed review with no major comments from the two most senior engineers on the team',
         'We hit the deadline my manager set',
-        'I learned a lot about the framework',
+        'I learned a lot about the framework, which shows the growth mindset interviewers screen for',
       ],
       answer: 0,
       explanation:
@@ -54,8 +54,8 @@ export const behSeniorSignals: Deck = {
       prompt: 'You want three other teams to adopt a testing practice you have no authority to mandate. Which story do interviewers rate highest?',
       choices: [
         'Proved it on your own team, published the results, made adoption cheap with templates and docs, and let one early-adopter team pull in the rest',
-        'Convinced your director to add it to every team\'s quarterly goals',
-        'Presented an all-hands slide deck on why the practice is best',
+        'Convinced your director to add it to every team\'s quarterly goals, since lasting change needs leadership backing and official mandates are what actually get compliance',
+        'Presented a polished all-hands slide deck making the data-driven case for why the practice is best',
         'Rewrote the other teams\' tests yourself over a few weekends',
       ],
       answer: 0,
@@ -76,8 +76,8 @@ export const behSeniorSignals: Deck = {
       prompt: 'What are interviewers actually listening for in a mentorship story?',
       choices: [
         'Multiplied impact: the person you grew now ships independently, and something you taught spread beyond them',
-        'That you are generous with your time and patient with juniors',
-        'The number of people you have formally mentored',
+        'That you are generous with your time and patient with juniors, since empathy is the core signal behavioral rounds screen for',
+        'The number of people you have formally mentored, since scale of mentorship maps directly to seniority',
         'That you left detailed, thoughtful code review comments',
       ],
       answer: 0,
@@ -98,7 +98,7 @@ export const behSeniorSignals: Deck = {
       prompt: 'You chose Postgres over a trendy new datastore for a new service. Told well, what does that choice signal?',
       choices: [
         'Deliberate judgment: known failure modes and team familiarity were weighed as features, and you can name what would flip the decision',
-        'Risk aversion: seniors avoid new technology',
+        'Risk aversion in a good way: senior engineers always default to proven technology, because evaluating trendy tools is a junior habit that wastes team time',
         'You lacked experience with the newer option',
         'Nothing: technology choices are not behavioral signals',
       ],
@@ -108,9 +108,16 @@ export const behSeniorSignals: Deck = {
     },
     {
       id: 'bss-kill-project',
-      type: 'flash',
-      front: '"Tell me about a project you killed or argued to stop." Why is this asked, and what does a good answer include?',
-      back: 'It probes whether your judgment beats your sunk-cost attachment.\n1. Stakes: what the project was and what you personally had invested in it.\n2. Signal: the data or user evidence that said it would not pay off.\n3. Call: you proposed stopping and said it plainly to the people who funded it.\n4. Salvage: what was reused, learned, or redirected.\nKilling your own work lands harder than killing someone else\'s.',
+      type: 'order',
+      prompt: 'Order the beats of a strong "project you killed" answer.',
+      items: [
+        'Stakes: the project and what you personally had invested',
+        'Signal: the data or user evidence that it would not pay off',
+        'Call: you proposed stopping, plainly, to the people who funded it',
+        'Salvage: what was reused, learned, or redirected',
+      ],
+      explanation:
+        'The question probes whether your judgment beats your sunk-cost attachment; killing your own work lands harder than killing someone else\'s.',
     },
     {
       id: 'bss-migration-order',
@@ -146,9 +153,9 @@ export const behSeniorSignals: Deck = {
       prompt: 'Two stakeholders each insist their feature is your top priority, and there is capacity for one. Best move?',
       choices: [
         'Make the conflict visible: frame the tradeoff with shared criteria, bring a recommendation, and have the person who owns both priorities decide explicitly',
-        'Quietly interleave both so neither notices the slip',
-        'Do whichever stakeholder is more senior',
-        'Escalate to your manager immediately and let them sort it out',
+        'Quietly interleave both so each stakeholder sees steady progress: keeping everyone feeling prioritized protects the relationships and buys time until capacity frees up',
+        'Do whichever stakeholder is more senior, since organizational rank is the practical tiebreaker',
+        'Escalate to your manager immediately: prioritization calls between stakeholders are above your pay grade, and making them yourself oversteps your role',
       ],
       answer: 0,
       explanation:

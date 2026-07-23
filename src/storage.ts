@@ -88,6 +88,17 @@ function validCard(c: unknown): c is Card {
       Array.isArray(card.distractors)
     );
   }
+  if (card.type === 'multifill') {
+    return (
+      typeof card.prompt === 'string' &&
+      typeof card.code === 'string' &&
+      Array.isArray(card.blanks) &&
+      card.blanks.length >= 2 &&
+      (card.blanks as unknown[]).every((b) => typeof b === 'string') &&
+      (card.blanks as string[]).every((_, i) => (card.code as string).includes(`__${i + 1}__`)) &&
+      Array.isArray(card.distractors)
+    );
+  }
   if (card.type === 'tf') {
     return typeof card.prompt === 'string' && typeof card.answer === 'boolean';
   }
@@ -191,6 +202,19 @@ export function daysSinceBackup(): number {
   if (!last) return Infinity;
   const then = new Date(last).getTime();
   return Math.floor((Date.now() - then) / 86400000);
+}
+
+/**
+ * Days since the app was first opened; seeds the marker on first call.
+ * Nudges compare against this so a fresh install is never nagged on day one.
+ */
+export function daysSinceFirstSeen(): number {
+  const first = getSetting('firstSeen');
+  if (!first) {
+    setSetting('firstSeen', dayKey());
+    return 0;
+  }
+  return Math.floor((Date.now() - new Date(first).getTime()) / 86400000);
 }
 
 /** Parse an exported progress file; throws on anything malformed. */

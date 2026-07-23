@@ -11,6 +11,7 @@ import { FlashView } from './FlashView';
 import { RecallView } from './RecallView';
 import { TfView } from './TfView';
 import { OrderView } from './OrderView';
+import { MultiFillView } from './MultiFillView';
 
 interface Props {
   deck: Deck;
@@ -194,6 +195,9 @@ export function Session({ deck, progress, forceAll, sourceDecks, options, review
       )}
       {card.type === 'order' && (
         <OrderView key={key} card={card} onResult={(ok) => advance(ok ? 2 : 0)} />
+      )}
+      {card.type === 'multifill' && (
+        <MultiFillView key={key} card={card} onResult={(ok) => advance(ok ? 2 : 0)} />
       )}
       {card.type === 'flash' &&
         (recallMode && !fallbackIds.includes(card.id) ? (

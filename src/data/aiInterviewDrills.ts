@@ -26,8 +26,8 @@ export const aiInterviewDrills: Deck = {
       prompt: 'Your RAG bot answers well but never cites sources. First thing to check?',
       choices: [
         'The prompt: are citations explicitly instructed AND demonstrated in the expected output format?',
-        'The embedding model quality',
-        'The vector database index',
+        'The embedding model: weak embeddings return chunks stripped of their source metadata, leaving nothing to cite',
+        'The vector database index: citation support must be enabled at index build time or source IDs are discarded',
         'The GPU drivers',
       ],
       answer: 0,
@@ -44,7 +44,7 @@ export const aiInterviewDrills: Deck = {
       id: 'aid-token-math',
       type: 'mcq',
       prompt: 'Quick estimate: a 500-word document is roughly how many tokens?',
-      choices: ['~650–700 (≈1.3 tokens per English word)', '~250', '~500 exactly', '~2,000'],
+      choices: ['~650–700 (≈1.3 tokens per English word)', '~250 (≈0.5 tokens per word, since frequent words merge into shared tokens)', '~500 exactly (BPE tokenizers split on whitespace, one token per word)', '~2,000 (≈4 tokens per word, roughly one per syllable)'],
       answer: 0,
       explanation:
         'The 1.3×-words rule (or ~4 chars/token) powers every cost and context estimate. Code tokenizes worse (~2×).',
@@ -61,8 +61,8 @@ export const aiInterviewDrills: Deck = {
       prompt: 'Model returns valid JSON in dev; in production ~2% of responses are cut off mid-object. Likely cause?',
       choices: [
         'max_tokens truncation on longer inputs: raise the cap, validate + retry on parse failure, or use structured output',
-        'The model forgets JSON under load',
-        'Network packet loss',
+        'Provider load shedding: under high traffic, requests silently route to quantized fallback models that lose strict JSON compliance',
+        'Network packet loss clipping the tail of long streamed responses',
         'Temperature drift',
       ],
       answer: 0,
@@ -81,9 +81,9 @@ export const aiInterviewDrills: Deck = {
       prompt: 'A user pastes a 300-page contract; it exceeds the context window. Best strategy ladder?',
       choices: [
         'Depends on the task: RAG over the doc for Q&A; hierarchical map-reduce summarization for a summary; never silently truncate the middle',
-        'Truncate to the first N pages, silently',
-        'Refuse all long documents',
-        'Always summarize first regardless of task',
+        'Truncate to the first N pages, silently: contracts front-load the operative clauses, so anything past the cap is boilerplate the model can safely skip',
+        'Refuse documents over the window: a partial answer is worse than none',
+        'Always summarize first regardless of task: a compressed version fits any window and preserves what downstream tasks need',
       ],
       answer: 0,
       explanation:
@@ -136,9 +136,9 @@ export const aiInterviewDrills: Deck = {
       prompt: '"Our bot hallucinates. Fix it.": the strongest opening move in your answer?',
       choices: [
         'Quantify it first: build a groundedness eval to measure the rate, THEN apply grounding/citations/abstention; you can’t fix what you can’t measure',
-        'Switch to the biggest model available',
-        'Set temperature to 0 and declare it fixed',
-        'Add "do not hallucinate" to the prompt',
+        'Switch to the biggest model available: hallucination is a capability gap, and frontier-scale models have effectively trained it away',
+        'Set temperature to 0: hallucinations are sampling noise, so greedy decoding removes the randomness that produces them',
+        'Add "do not hallucinate" and "only state verified facts" to the system prompt: instruction-tuned models comply with explicit directives, so this closes the gap',
       ],
       answer: 0,
       explanation:

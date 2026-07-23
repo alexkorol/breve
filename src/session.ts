@@ -47,6 +47,9 @@ export function deckCounts(
 
 /**
  * One pack: due cards first (oldest due first), topped up with new cards.
+ * New cards keep their authored deck order: deck authors ramp from
+ * fundamentals to hard cases, and a first-time user should meet the deck
+ * that way, not at a random midpoint.
  * Within the pack, quick tap-cards come before longform drills so the
  * rhythm never alternates between 5-second taps and 60-second rehearsals.
  */
@@ -69,7 +72,7 @@ export function buildSession(
   const pack = due.slice(0, PACK_SIZE);
   if (includeNew && pack.length < PACK_SIZE) {
     const allowance = Math.min(PACK_SIZE - pack.length, maxNew ?? Infinity);
-    if (allowance > 0) pack.push(...shuffle(fresh).slice(0, allowance));
+    if (allowance > 0) pack.push(...fresh.slice(0, allowance));
   }
   // Stable partition: quick first, longform last.
   return [...pack.filter((c) => cardKind(c) === 'quick'), ...pack.filter((c) => cardKind(c) === 'longform')];

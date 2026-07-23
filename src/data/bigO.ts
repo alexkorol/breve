@@ -27,7 +27,7 @@ export const bigO: Deck = {
       id: 'bo-sequential',
       type: 'mcq',
       prompt: 'A loop over n items, THEN another separate loop over n items?',
-      choices: ['O(n); sequential work adds: O(n + n) = O(2n) = O(n)', 'O(n²)', 'O(n log n)', 'O(2ⁿ)'],
+      choices: ['O(n); sequential work adds: O(n + n) = O(2n) = O(n)', 'O(n²): two full passes over the same n items multiply: O(n · n)', 'O(n log n): repeated passes over one list add a log factor', 'O(2ⁿ)'],
       answer: 0,
       explanation:
         'Sequential = add, nested = multiply. Mixing these up is the most common Big-O error in live interviews.',
@@ -36,7 +36,7 @@ export const bigO: Deck = {
       id: 'bo-halving',
       type: 'mcq',
       prompt: 'A loop that halves the problem each iteration (while n > 1: n //= 2)?',
-      choices: ['O(log n)', 'O(n/2)', 'O(√n)', 'O(1)'],
+      choices: ['O(log n)', 'O(n/2): each pass discards half the items', 'O(√n): halving bottoms out near the square root', 'O(1)'],
       answer: 0,
       explanation:
         'Halving until 1 takes log₂(n) steps. Pattern-match: halving → log n, and "sort then scan" → n log n.',
@@ -47,9 +47,9 @@ export const bigO: Deck = {
       prompt: '`x in my_list` vs `x in my_set`?',
       choices: [
         'O(n) for the list scan, O(1) average for the set hash lookup',
-        'Both O(1)',
-        'Both O(n)',
-        'O(log n) for both',
+        'Both O(1): Python indexes both containers for fast membership',
+        'Both O(n): a set still has to walk its elements to find a match',
+        'O(log n) for both: membership uses binary search internally',
       ],
       answer: 0,
       explanation:
@@ -61,8 +61,8 @@ export const bigO: Deck = {
       prompt: 'Which Python list operation is O(n), not O(1)?',
       choices: [
         'list.insert(0, x): everything shifts right',
-        'list.append(x)',
-        'list[i] indexing',
+        'list.append(x): resizing copies the array on every call',
+        'list[i] indexing: it walks from the front like a linked list',
         'list.pop() from the end',
       ],
       answer: 0,
@@ -85,8 +85,8 @@ export const bigO: Deck = {
       prompt: 'Space complexity of `seen = set()` filled while scanning n items?',
       choices: [
         'O(n): up to every element stored',
-        'O(1): sets are constant size',
-        'O(log n)',
+        'O(1): only one set variable is declared, so space is fixed',
+        'O(log n): hashing compresses what the set has to keep',
         'O(n²)',
       ],
       answer: 0,
@@ -96,7 +96,7 @@ export const bigO: Deck = {
     {
       id: 'bo-recursion-tree',
       type: 'mcq',
-      prompt: 'Naive recursive fib(n): two recursive calls, no cache?',
+      prompt: 'Time complexity of naive recursive fib(n), where each call makes two recursive calls and nothing is memoized?',
       choices: ['O(2ⁿ)', 'O(n²)', 'O(n log n)', 'O(n)'],
       answer: 0,
       explanation:
@@ -114,8 +114,8 @@ export const bigO: Deck = {
       prompt: 'Hash map lookup: average O(1), but worst case?',
       choices: [
         'O(n): pathological collisions chain every key in one bucket',
-        'O(log n) always',
-        'O(1) unconditionally',
+        'O(log n) always: colliding buckets degrade to balanced trees, as in Java HashMap',
+        'O(1) unconditionally: the hash function maps each key to its own unique slot',
         'O(n log n)',
       ],
       answer: 0,
@@ -128,8 +128,8 @@ export const bigO: Deck = {
       prompt: 'Building an n-char string via `s += ch` in a loop?',
       choices: [
         'O(n²): each += copies the whole prefix; join a list for O(n)',
-        'O(n): strings append in place',
-        'O(n log n)',
+        'O(n): strings append in place, so each += is a constant-time write',
+        'O(n log n): the runtime doubles the buffer, adding a log factor',
         'O(1) per operation always',
       ],
       answer: 0,
@@ -152,9 +152,9 @@ export const bigO: Deck = {
       prompt: 'A scan keeps three counters (current streak, best streak, pass count) over n items. Extra space?',
       choices: [
         'O(1): the number of variables is fixed, even though their values grow',
-        'O(n): the counters can reach n',
+        'O(n): the counters can reach n, so the stored numbers grow with the input size',
         'O(3): three variables',
-        'O(n): one update per item',
+        'O(n): the scan performs one update per item, n writes of state in total',
       ],
       answer: 0,
       explanation:
@@ -166,8 +166,8 @@ export const bigO: Deck = {
       prompt: 'A check returns True at the first "fail" it sees. Best and worst case time?',
       choices: [
         'Best O(1), worst O(n), and you quote the worst case unless asked otherwise',
-        'O(1): it can exit immediately',
-        'O(n/2) on average, so O(n/2)',
+        'O(1): the early return makes the loop effectively constant time in practice',
+        'O(n/2): on average the fail sits halfway through, and the average is what you report',
         'Best O(1), worst O(1)',
       ],
       answer: 0,
@@ -194,9 +194,9 @@ export const bigO: Deck = {
       prompt: 'Sum all primes below 2,000,000. Trial-dividing each candidate up to its square root works but crawls. The scalable fix?',
       choices: [
         'Sieve of Eratosthenes: mark multiples once, O(n log log n) time, O(n) space',
-        'Check only odd numbers: halves the work but same complexity',
+        'Check only odd numbers and stop at the square root: cuts the constant enough to make O(n√n) scale',
         'Cache math.sqrt results',
-        'Multithread the trial division',
+        'Multithread the trial division: 8 cores turn O(n√n) into O(n√n / 8), effectively linear',
       ],
       answer: 0,
       explanation:

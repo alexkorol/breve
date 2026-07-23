@@ -10,9 +10,16 @@ export const sysFundamentals: Deck = {
   cards: [
     {
       id: 'sdf-first-five',
-      type: 'flash',
-      front: 'How do you spend the first five minutes of a system design interview?',
-      back: '1) Functional requirements: what the system does; pick the 2-3 core features.\n2) Non-functional requirements: scale, latency targets, availability, consistency needs.\n3) Numbers: DAU, read/write ratio, data size per item.\n4) Confirm scope out loud: "I will focus on X and Y, skipping Z."\nInterviewers grade the questions as much as the boxes; designing before scoping is the classic way to fail the round.',
+      type: 'order',
+      prompt: 'Order the first five minutes of a system design interview.',
+      items: [
+        'Functional requirements: pick the 2-3 core features',
+        'Non-functional requirements: scale, latency, availability, consistency',
+        'Numbers: DAU, read/write ratio, data size per item',
+        'Confirm scope out loud: "I will focus on X and Y, skipping Z"',
+      ],
+      explanation:
+        'Interviewers grade the questions as much as the boxes; designing before scoping is the classic way to fail the round.',
     },
     {
       id: 'sdf-func-vs-nonfunc',
@@ -20,8 +27,8 @@ export const sysFundamentals: Deck = {
       prompt: 'Which of these is a NON-functional requirement?',
       choices: [
         '99.9% availability with p99 latency under 200 ms',
-        'Users can follow other users',
-        'Posts support image attachments',
+        'Users can follow other users and see their posts in a chronological feed',
+        'Posts support image attachments up to 10 MB with server-side resizing',
         'Admins can delete any post',
       ],
       answer: 0,
@@ -34,9 +41,9 @@ export const sysFundamentals: Deck = {
       prompt: 'Why ask for the read/write ratio before designing anything?',
       choices: [
         'It decides the architecture: read-heavy favors caching and replicas, write-heavy favors queues and partitioning',
-        'It determines which programming language to use',
-        'It is only needed to price the hardware',
-        'It only matters for SQL databases',
+        'It determines the choice of programming language and framework for the service tier',
+        'It mainly sets the hardware budget: reads and writes are priced differently, so the ratio feeds cost estimates, not architecture',
+        'It only matters for SQL databases, since NoSQL stores handle both patterns identically',
       ],
       answer: 0,
       explanation:
@@ -58,8 +65,8 @@ export const sysFundamentals: Deck = {
       prompt: '1 million new 1 KB records per day. Roughly how much storage over 5 years?',
       choices: [
         '~2 TB: 1 GB/day, times 365, times 5, rounded up',
-        '~20 GB',
-        '~200 TB',
+        '~20 GB: 1M x 1 KB is roughly 10 MB/day, which stays small over 5 years',
+        '~200 TB: 1M x 1 KB comes to about 100 GB/day before compression',
         '~2 PB',
       ],
       answer: 0,
@@ -111,7 +118,7 @@ export const sysFundamentals: Deck = {
       prompt: 'A user updates their profile photo, refreshes, and briefly sees the old photo. What is happening, and what guarantee fixes it?',
       choices: [
         'A stale read from a lagging replica; read-your-writes consistency (route the user\'s own reads to the primary) fixes it',
-        'Strong consistency working as intended',
+        'Strong consistency working as intended: the model permits brief staleness inside the replication window after each write',
         'A CAP violation with no possible fix',
         'Purely browser caching, so no server-side fix exists',
       ],
@@ -139,8 +146,8 @@ export const sysFundamentals: Deck = {
       prompt: 'Vertical vs horizontal scaling: the core tradeoff?',
       choices: [
         'Vertical is simple but hits a hardware ceiling and stays one failure domain; horizontal scales further but buys distributed-systems problems',
-        'Horizontal is strictly better at any size',
-        'Vertical is always the cheaper option',
+        'Horizontal is strictly better at any size: commodity nodes beat big machines on price, and any workload can be partitioned across them cleanly',
+        'Vertical is always cheaper: one large machine avoids paying for network gear and balancers',
         'They are interchangeable, so the choice never matters',
       ],
       answer: 0,
@@ -153,8 +160,8 @@ export const sysFundamentals: Deck = {
       prompt: 'What does a load balancer actually contribute to the design?',
       choices: [
         'Spreads requests across servers, health-checks them, and routes around dead instances, so a fleet looks like one endpoint',
-        'Caches responses so servers do less work',
-        'Stores session state for the servers behind it',
+        'Caches hot responses and terminates requests at the edge of the fleet, so backend servers rarely do repeated work for common paths',
+        'Holds session state centrally so the servers behind it can stay stateless',
         'Makes each individual request complete faster',
       ],
       answer: 0,

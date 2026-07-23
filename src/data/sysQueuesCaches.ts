@@ -20,9 +20,9 @@ export const sysQueuesCaches: Deck = {
       prompt: 'Why is a plain TTL called the "honest default" for cache invalidation?',
       choices: [
         'It admits staleness up front: you bound how wrong the cache can be, instead of pretending explicit invalidation covers every write path',
-        'TTLs make cached data strongly consistent with the database',
-        'Explicit invalidation is impossible in distributed systems',
-        'TTL exists mainly to limit memory growth',
+        'TTLs make cached data strongly consistent with the database, because every entry is guaranteed to refresh before it can drift from the source of truth',
+        'Explicit invalidation is provably impossible in distributed systems, so TTL is the only mechanism that can work at all',
+        'TTL exists mainly to limit memory growth by expiring entries before the eviction policy has to run',
       ],
       answer: 0,
       explanation:
@@ -34,9 +34,9 @@ export const sysQueuesCaches: Deck = {
       prompt: 'When does LRU eviction lose to LFU?',
       choices: [
         'When a one-off scan touches many cold keys once, flushing the genuinely hot set (scan pollution)',
-        'When access patterns shift quickly, since LRU cannot adapt',
-        'LFU is always better; LRU survives only because it is simpler',
-        'When cached values vary a lot in size',
+        'When access patterns shift quickly: LRU keeps stale recency data while LFU adapts to the new hot set instantly',
+        'LFU is always better; LRU survives only because it is simpler to implement',
+        'When cached values vary a lot in size, since LRU only counts entries',
       ],
       answer: 0,
       explanation:
@@ -62,8 +62,8 @@ export const sysQueuesCaches: Deck = {
       prompt: 'Beyond caching, which is a canonical Redis use case?',
       choices: [
         'Leaderboards via sorted sets: ZADD to score, ZREVRANGE for top-N, O(log n) per update',
-        'System-of-record storage for relational data',
-        'Full-text search over documents out of the box',
+        'System-of-record storage: AOF persistence makes Redis as durable as any relational database',
+        'Full-text search over documents out of the box, via built-in inverted indexes on every string value',
         'Joins across normalized tables',
       ],
       answer: 0,
@@ -86,9 +86,9 @@ export const sysQueuesCaches: Deck = {
       prompt: 'The core semantic difference between a message queue and pub/sub?',
       choices: [
         'Queue: each message goes to exactly one worker (competing consumers). Pub/sub: every subscriber gets its own copy',
-        'Queues are durable, pub/sub never is',
-        'Pub/sub is faster because it skips acknowledgments',
-        'Queues push to consumers, pub/sub makes consumers poll',
+        'Queues always persist messages until acked, while pub/sub is fire-and-forget by definition and can never offer durability',
+        'Pub/sub is faster because it skips acknowledgments entirely',
+        'Queues push messages to consumers, while pub/sub makes every subscriber poll the broker',
       ],
       answer: 0,
       explanation:
@@ -106,9 +106,9 @@ export const sysQueuesCaches: Deck = {
       prompt: 'A payment worker may receive the same "charge card" message twice. The correct fix?',
       choices: [
         'Attach an idempotency key; the handler records completed keys so the second attempt becomes a no-op',
-        'Switch the queue to exactly-once delivery mode',
+        'Switch the queue to exactly-once delivery mode so the broker guarantees the handler never sees a duplicate',
         'Have the producer wait for the consumer to finish before sending the next message',
-        'Lower the redelivery timeout so duplicates arrive sooner',
+        'Lower the redelivery timeout so duplicates arrive close together and are easier to spot',
       ],
       answer: 0,
       explanation:
@@ -120,9 +120,9 @@ export const sysQueuesCaches: Deck = {
       prompt: 'When is at-most-once delivery the right choice over at-least-once?',
       choices: [
         'When a lost message is cheaper than a duplicate and staleness heals itself, like metrics or presence pings',
-        'For payments, where duplicates are unacceptable',
+        'For payments: a duplicate charge is unacceptable, so dropping a message is always safer than redelivering it',
         'Never; at-least-once strictly dominates',
-        'Whenever the consumer is already idempotent',
+        'Whenever the consumer is already idempotent, since dedup makes the delivery guarantee irrelevant',
       ],
       answer: 0,
       explanation:
@@ -134,9 +134,9 @@ export const sysQueuesCaches: Deck = {
       prompt: 'What problem does a dead letter queue solve?',
       choices: [
         'A poison message that fails every retry would block or churn the queue forever; after N attempts it is parked for inspection',
-        'It keeps a backup copy of every message for disaster recovery',
-        'It stores messages for consumers that are offline',
-        'It reorders failed messages back into sequence',
+        'It keeps a durable backup copy of every message that flows through the broker, so lost data can always be replayed after an outage',
+        'It stores messages for consumers that are offline until they reconnect and drain the backlog',
+        'It reorders failed messages back into their original sequence before redelivery',
       ],
       answer: 0,
       explanation:

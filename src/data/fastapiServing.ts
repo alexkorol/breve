@@ -31,9 +31,9 @@ export const fastapiServing: Deck = {
       code: '@app.get("/items/{item_id}")\ndef read(item_id: int, q: str | None = None):\n    ...',
       choices: [
         'item_id is path (in the route); q is query (?q=...)',
-        'Both are path parameters',
-        'item_id is query; q is path',
-        'FastAPI decides at runtime per request',
+        'Both are path parameters, since every typed argument of the endpoint maps into the route',
+        'item_id is query because it is typed; q is path because it has a default',
+        'FastAPI decides per request at runtime, based on where the client actually sends each value',
       ],
       answer: 0,
       explanation:
@@ -62,9 +62,9 @@ export const fastapiServing: Deck = {
       code: 'def get_db():\n    ...\n\n@app.get("/users")\ndef users(db=Depends(get_db)):\n    ...',
       choices: [
         'Dependency injection: shared per-request logic (DB session, auth) declared once, resolved automatically',
-        'Lazy imports to speed startup',
-        'Marking optional parameters',
-        'Declaring package requirements',
+        'Lazy imports: modules named in Depends are only loaded when the endpoint is first hit, cutting cold-start time',
+        'Marking a parameter as optional, so FastAPI skips validation when the client omits it',
+        'Declaring package requirements so FastAPI can verify installed versions at startup',
       ],
       answer: 0,
       explanation:
@@ -101,8 +101,8 @@ export const fastapiServing: Deck = {
       prompt: 'Log analytics after responding, without delaying the response?',
       choices: [
         'BackgroundTasks: schedule the function to run after the response is sent',
-        'A second endpoint the client must also call',
-        'time.sleep(0) before returning',
+        'A second /analytics endpoint the client fires after it receives the response',
+        'await asyncio.sleep(0) before returning, which yields the loop so logging runs in parallel',
         'Threading inside the endpoint with no cleanup',
       ],
       answer: 0,
@@ -115,9 +115,9 @@ export const fastapiServing: Deck = {
       prompt: 'Where do the interactive API docs come from?',
       choices: [
         'Generated automatically from type hints and Pydantic models at /docs',
-        'You write OpenAPI YAML by hand',
+        'You write an OpenAPI YAML spec by hand and point FastAPI at it in the constructor',
         'A paid FastAPI add-on',
-        'Only if you add docstrings to every function',
+        'Only if you add docstrings to every endpoint; the docs are rendered from those docstrings alone',
       ],
       answer: 0,
       explanation:
@@ -136,8 +136,8 @@ export const fastapiServing: Deck = {
       code: '@app.post("/users", response_model=UserOut)\ndef create_user(user: UserIn):\n    return db_create(user)  # has hashed_password',
       choices: [
         'It filters the output to only the declared fields, so internal ones like hashed_password never leave the API',
-        'It speeds up serialization by skipping validation',
-        'It is only for the OpenAPI docs and has no runtime effect',
+        'It speeds up serialization: FastAPI skips response validation entirely because the return type is declared up front',
+        'It only affects the OpenAPI schema at /docs; at runtime the returned object is serialized as-is',
         'It converts the response to XML when the client asks',
       ],
       answer: 0,
@@ -161,8 +161,8 @@ export const fastapiServing: Deck = {
       choices: [
         'Add CORSMiddleware with allow_origins listing the frontend origin',
         'Return status 200 instead of 201',
-        'Switch the endpoint from POST to GET',
-        'Have the frontend send an Authorization header',
+        'Switch the endpoint from POST to GET, since browsers only enforce cross-origin rules on POST',
+        'Have the frontend send an Authorization header so the browser treats the request as trusted',
       ],
       answer: 0,
       explanation:

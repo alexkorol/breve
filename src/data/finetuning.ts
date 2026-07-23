@@ -30,7 +30,7 @@ export const finetuning: Deck = {
       prompt: 'What does the Q in QLoRA add?',
       choices: [
         'The frozen base is quantized to 4-bit (NF4): a 7B model fine-tunes on a single consumer GPU',
-        'A queue for training batches',
+        'Quantized gradients: backprop runs in 4-bit so the optimizer states fit alongside the model on one consumer GPU',
         'Quadratic attention',
         'Quality filtering of data',
       ],
@@ -44,7 +44,7 @@ export const finetuning: Deck = {
       prompt: '500 meticulously curated training examples vs 50,000 scraped ones: for SFT, which wins?',
       choices: [
         'Usually the 500. SFT is format/behavior teaching, where quality and consistency dominate volume',
-        'Always the 50,000: scale wins',
+        'The 50,000: gradient noise from scraped examples averages out over enough steps, so scale reliably beats curation',
         'Neither works under 1M examples',
         'Exactly equal',
       ],
@@ -60,7 +60,7 @@ export const finetuning: Deck = {
         'Conversations in the model’s own chat template: system/user/assistant turns, loss on assistant tokens',
         'Raw text paragraphs',
         'Question–answer CSV columns',
-        'Just the desired outputs',
+        'Just the desired outputs with no prompts: the model already knows the questions, so training on answers alone suffices',
       ],
       answer: 0,
       explanation:
@@ -72,7 +72,7 @@ export const finetuning: Deck = {
       prompt: 'Starting hyperparameters for a LoRA SFT run?',
       choices: [
         '1–3 epochs, LR ~1e-4 to 2e-4 (LoRA) with warmup + cosine decay, watching val loss for memorization',
-        '50 epochs, LR 0.01',
+        '50+ epochs at LR 0.01: small datasets need many passes, and the frozen base makes LoRA immune to overfitting',
         'One epoch at LR 1e-7',
         'Whatever the defaults are, untouched',
       ],
@@ -87,7 +87,7 @@ export const finetuning: Deck = {
       choices: [
         'Catastrophic forgetting: mitigate with LoRA (frozen base limits damage), mixed general data, and fewer steps',
         'Data leakage',
-        'A tokenizer mismatch',
+        'A tokenizer mismatch: legal vocabulary shifted the embedding space, so retrain the tokenizer on general text to recover',
         'Expected and unfixable',
       ],
       answer: 0,
@@ -108,7 +108,7 @@ export const finetuning: Deck = {
         'Merge adapters into the base for zero-overhead single-model serving, or keep them separate to hot-swap many adapters on one base',
         'Adapters cannot be served',
         'Retrain the full model for production',
-        'Serve A and B as separate models',
+        'Serve the A and B matrices as two separate model endpoints and ensemble their logits at request time: averaging base and adapter outputs reproduces the fine-tune',
       ],
       answer: 0,
       explanation:
@@ -120,7 +120,7 @@ export const finetuning: Deck = {
       prompt: 'DPO vs RLHF for preference tuning?',
       choices: [
         'DPO optimizes preferences directly from (chosen, rejected) pairs, no reward model, no RL loop; simpler and usually sufficient',
-        'DPO requires more compute than RLHF',
+        'DPO needs more compute than RLHF: it jointly trains the policy, a reward model, and a reference model in a single combined loop',
         'RLHF needs no human data',
         'They are unrelated techniques',
       ],
@@ -136,7 +136,7 @@ export const finetuning: Deck = {
         'Generate training data with a strong model, fine-tune a small cheap model on it for the narrow task',
         'Compressing weights with gzip',
         'Removing layers at random',
-        'A synonym for quantization',
+        'Copy the teacher\'s attention weights into the student layer by layer, then quantize whatever does not fit the smaller model',
       ],
       answer: 0,
       explanation:
@@ -148,7 +148,7 @@ export const finetuning: Deck = {
       prompt: 'Train loss falls, validation loss rises from epoch 2. You…',
       choices: [
         'Stop at the epoch-2 checkpoint: it is memorizing; more data or stronger regularization if you need more',
-        'Train longer to push through',
+        'Train longer: validation loss often double-descends back down once the model groks the task, so push through the bump',
         'Raise the learning rate',
         'Ignore val loss; train loss is what matters',
       ],

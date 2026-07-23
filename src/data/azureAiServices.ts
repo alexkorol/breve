@@ -20,9 +20,9 @@ export const azureAiServices: Deck = {
       prompt: 'The standard Azure RAG retrieval layer is…',
       choices: [
         'Azure AI Search: vector, keyword, and hybrid search with semantic reranking, integrated into Foundry "add your data"',
-        'Azure SQL full-text search',
+        'Azure SQL full-text search: CONTAINS and FREETEXT predicates over an nvarchar column, keeping documents transactionally consistent with your source tables',
         'Blob storage prefix queries',
-        'Cosmos DB change feed',
+        'Cosmos DB change feed: streams every document update straight into the prompt so retrieval stays fresh without maintaining an index',
       ],
       answer: 0,
       explanation:
@@ -34,7 +34,7 @@ export const azureAiServices: Deck = {
       prompt: 'Extract fields from thousands of invoices on Azure, which service and mode?',
       choices: [
         'Document Intelligence: prebuilt invoice model first, custom-trained model if your layout defies it',
-        'AI Vision OCR + regex',
+        'AI Vision OCR for raw text, then per-vendor regex patterns to pull invoice numbers, totals, and line items at scale',
         'Azure OpenAI with screenshots only',
         'Manual entry via Logic Apps',
       ],
@@ -48,8 +48,8 @@ export const azureAiServices: Deck = {
       prompt: 'Azure OpenAI content filtering: what should you know for the exam?',
       choices: [
         'Filters run on BOTH prompt and completion, per category (hate/sexual/violence/self-harm) with configurable severity, plus prompt-shield for jailbreaks',
-        'Filtering is optional and off by default',
-        'Only outputs are filtered',
+        'Filtering is opt-in and off by default: you must attach a separate Content Safety resource to each deployment before any category filter runs',
+        'Only completions are filtered: user prompts pass through unmodified, so moderation can block what the model says back but never the incoming request itself',
         'Filters block all creative writing',
       ],
       answer: 0,
@@ -62,7 +62,7 @@ export const azureAiServices: Deck = {
       prompt: 'Exam-grade auth ranking for calling Azure AI services from an app?',
       choices: [
         'Managed identity + RBAC role > Entra service principal + Key Vault secret > raw API keys in config',
-        'API keys are the recommended production pattern',
+        'API keys are the recommended production pattern: they avoid Entra token acquisition latency on every call and rotate automatically on the service side',
         'Anonymous access with IP restrictions',
         'Shared SAS tokens in the frontend',
       ],
@@ -87,7 +87,7 @@ export const azureAiServices: Deck = {
       choices: [
         'Hosted agent runtime: threads/state, tool orchestration (code interpreter, search, functions), tracing; you supply instructions and tools',
         'Nothing; it is only documentation',
-        'It trains custom agent models',
+        'It fine-tunes a dedicated agent model on your tool schemas, baking the orchestration logic into the model weights so no runtime loop or state store is needed',
         'It replaces the need for evaluation',
       ],
       answer: 0,
@@ -100,7 +100,7 @@ export const azureAiServices: Deck = {
       prompt: 'Foundry evaluation runs measure genAI quality with metrics like…',
       choices: [
         'Groundedness, relevance, coherence, fluency, plus safety evaluations: run against datasets pre-deployment and as regressions',
-        'Only token counts',
+        'Token throughput, latency percentiles, and cost per call: generation quality is subjective, so Foundry restricts itself to operational metrics',
         'GPU utilization',
         'Azure Monitor CPU metrics',
       ],
@@ -114,7 +114,7 @@ export const azureAiServices: Deck = {
       prompt: 'Classify support tickets into your 12 custom categories, which service tier?',
       choices: [
         'AI Language custom text classification: label examples, train, deploy an endpoint; no GPU management',
-        'Fine-tune GPT-4 immediately',
+        'Fine-tune GPT-4 first: a fixed set of 12 labels is exactly the narrow supervised task where LLM fine-tuning is the cheapest and most accurate route',
         'Prebuilt sentiment analysis',
         'Azure Functions with keyword lists',
       ],
@@ -129,7 +129,7 @@ export const azureAiServices: Deck = {
       choices: [
         'Foundry tracing + Application Insights: per-run traces of model calls, tool invocations, and token usage',
         'print() statements',
-        'RDP into the model server',
+        'RDP into the GPU host serving your deployment and tail the inference logs directly, since managed model servers expose shell access for debugging',
         'Support tickets to Microsoft',
       ],
       answer: 0,
@@ -144,7 +144,7 @@ export const azureAiServices: Deck = {
         'Deploy in EU regions with a Data Zone/regional deployment type; data isn’t used to train models; private endpoints for network isolation',
         'Impossible on Azure',
         'Just promise it contractually',
-        'Only on-prem satisfies residency',
+        'Only on-prem or Azure Stack satisfies residency: hosted model inference always routes through US datacenters no matter which region you deploy in',
       ],
       answer: 0,
       explanation:

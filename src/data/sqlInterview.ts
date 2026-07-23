@@ -14,8 +14,8 @@ export const sqlInterview: Deck = {
       prompt: '`INNER JOIN` vs `LEFT JOIN`: the actual difference?',
       choices: [
         'LEFT keeps unmatched left-table rows with NULLs; INNER drops them',
-        'LEFT is faster than INNER',
-        'INNER can join more than two tables, LEFT cannot',
+        'LEFT is faster because the optimizer only has to scan the left table once',
+        'INNER can chain across many tables; LEFT is limited to exactly two',
         'They differ only in column order',
       ],
       answer: 0,
@@ -38,8 +38,8 @@ export const sqlInterview: Deck = {
       prompt: 'Filter to cities with more than 100 users. `WHERE` or `HAVING`?',
       choices: [
         'HAVING: it filters after aggregation; WHERE runs before groups exist',
-        'WHERE: it is always more efficient',
-        'Either works identically',
+        'WHERE: it can use the index on the aggregated column, so it is always more efficient',
+        'Either works: the optimizer rewrites one into the other',
         'Neither; you need a second query',
       ],
       answer: 0,
@@ -76,8 +76,8 @@ export const sqlInterview: Deck = {
       prompt: 'Why does `WHERE email = NULL` return nothing, ever?',
       choices: [
         'NULL compares as unknown: use IS NULL / IS NOT NULL',
-        'NULL must be quoted as a string',
-        'It should be == instead of =',
+        "NULL must be quoted: WHERE email = 'NULL' matches the missing values",
+        'It should be == instead of =: a single = is assignment in SQL',
         'The column needs an index first',
       ],
       answer: 0,
@@ -96,8 +96,8 @@ export const sqlInterview: Deck = {
       prompt: 'Keep one row per email (the lowest id), delete the rest. The standard pattern?',
       choices: [
         'ROW_NUMBER() OVER (PARTITION BY email ORDER BY id), delete rn > 1',
-        'SELECT DISTINCT email, then re-insert everything',
-        'GROUP BY id',
+        'SELECT DISTINCT into a temp table, truncate the original, then re-insert the distinct rows',
+        'GROUP BY email, which collapses the duplicate rows in place',
         'DELETE with LIMIT 1 in a loop',
       ],
       answer: 0,
@@ -110,8 +110,8 @@ export const sqlInterview: Deck = {
       prompt: 'What does adding an index to a column actually trade?',
       choices: [
         'Faster reads on that column for slower writes and extra storage',
-        'Faster everything at no cost',
-        'Compressed table storage',
+        'Faster reads and writes: the B-tree keeps the rows pre-sorted for both operations',
+        'Compressed storage: the index replaces column values with shorter pointers',
         'Enforced uniqueness',
       ],
       answer: 0,
@@ -124,7 +124,7 @@ export const sqlInterview: Deck = {
       prompt: '`UNION` vs `UNION ALL`?',
       choices: [
         'UNION deduplicates (and pays a sort for it); UNION ALL keeps everything and is faster',
-        'UNION ALL also joins the tables',
+        'UNION ALL performs an implicit join on matching column names before appending the row sets',
         'UNION works across databases, UNION ALL does not',
         'No difference in modern SQL',
       ],

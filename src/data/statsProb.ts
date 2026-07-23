@@ -14,7 +14,7 @@ export const statsProb: Deck = {
       prompt: 'Income data with a few billionaires, which center to report?',
       choices: [
         'Median: robust to the skew; the mean gets dragged upward',
-        'Mean: always the standard',
+        'Mean: it uses every data point, so it is strictly more informative than the median for any distribution',
         'Mode',
         'Midrange (max+min)/2',
       ],
@@ -67,7 +67,7 @@ export const statsProb: Deck = {
       choices: [
         '0.25: multiplied because the flips are independent',
         '0.5: probabilities add',
-        '0.25: probabilities always multiply',
+        '0.25: probabilities of two events always multiply, whether or not the events are independent',
         '0.75',
       ],
       answer: 0,
@@ -80,9 +80,9 @@ export const statsProb: Deck = {
       prompt: 'What a p-value of 0.03 actually means?',
       choices: [
         'If the null hypothesis were true, data this extreme would occur 3% of the time',
-        'There is a 3% chance the null hypothesis is true',
+        'There is a 3% probability that the null hypothesis is true, given the data you observed',
         'The effect size is 3%',
-        'The result is 97% likely to replicate',
+        'A replication of the experiment would find a significant effect 97% of the time',
       ],
       answer: 0,
       explanation:
@@ -100,9 +100,9 @@ export const statsProb: Deck = {
       prompt: 'Ice cream sales correlate with drownings. The best explanation?',
       choices: [
         'A confounder: summer drives both; correlation ≠ causation',
-        'Ice cream causes drowning',
+        'Ice cream causes drowning: swimming on a full stomach leads to cramps',
         'Coincidence, always',
-        'Reverse causality',
+        'Reverse causality: news coverage of drownings drives people to buy comfort ice cream',
       ],
       answer: 0,
       explanation:
@@ -114,7 +114,7 @@ export const statsProb: Deck = {
       prompt: 'Pearson r = 0 between X and Y. Can they still be strongly related?',
       choices: [
         'Yes. Pearson only measures LINEAR association; Y = X² gives r ≈ 0',
-        'No: r = 0 means independent',
+        'No: r = 0 implies X and Y are statistically independent, so no relationship of any kind exists',
         'Only if n is small',
         'Only for categorical data',
       ],
@@ -128,9 +128,9 @@ export const statsProb: Deck = {
       prompt: 'A lottery ticket costs $2, pays $500 with probability 0.001. Expected value of buying?',
       choices: [
         '−$1.50. EV = 0.001 × 500 − 2 = −1.5',
-        '+$0.50',
-        '$498',
-        'Cannot be computed',
+        '+$0.50: EV = 0.001 × 500; the ticket price is a sunk cost and stays out of the calculation',
+        '$498: the $500 prize minus the $2 ticket price',
+        'Cannot be computed without knowing how many tickets are sold',
       ],
       answer: 0,
       explanation:
@@ -142,9 +142,9 @@ export const statsProb: Deck = {
       prompt: 'Surveying app-store reviewers to estimate user satisfaction: the flaw?',
       choices: [
         'Selection bias: reviewers are self-selected extremes, not representative users',
-        'The sample is too small by definition',
+        'Sample size: review counts are too small for significance, so collect more reviews before inferring anything',
         'Reviews are text, so unusable',
-        'No flaw: reviews are users',
+        'No flaw: reviewers are real users, so the sample is drawn from the population of interest',
       ],
       answer: 0,
       explanation:
@@ -162,9 +162,9 @@ export const statsProb: Deck = {
       prompt: 'Number of support tickets arriving per hour is best modeled by…',
       choices: [
         'Poisson: counts of independent events in a fixed window',
-        'Normal: everything is normal',
+        'Normal: the CLT guarantees hourly counts are normally distributed',
         'Uniform',
-        'Binomial with n = 60',
+        'Binomial with n = 60: one Bernoulli trial per minute, success meaning a ticket arrived',
       ],
       answer: 0,
       explanation:
@@ -176,7 +176,7 @@ export const statsProb: Deck = {
       prompt: 'You average the predictions of 10 diverse models. What happens statistically?',
       choices: [
         'Variance drops (errors partially cancel) while bias stays: the statistical soul of ensembling',
-        'Bias drops, variance rises',
+        'Bias drops: combining models lets them correct each other\'s systematic errors, at the cost of some extra variance',
         'Both rise',
         'Nothing changes',
       ],

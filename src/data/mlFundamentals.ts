@@ -20,8 +20,8 @@ export const mlFundamentals: Deck = {
       prompt: 'Training accuracy is 99%, validation accuracy is 71%. What is happening?',
       choices: [
         'Overfitting: the model memorized the training set',
-        'Underfitting: the model is too simple',
-        'Data leakage from validation into training',
+        'Underfitting: the model is too simple to capture even the training distribution',
+        'Data leakage from validation into training, inflating the validation score',
         'The learning rate is too low',
       ],
       answer: 0,
@@ -34,8 +34,8 @@ export const mlFundamentals: Deck = {
       prompt: 'What does L2 regularization do?',
       choices: [
         'Penalizes large weights, shrinking them toward zero',
-        'Removes features with zero variance',
-        'Normalizes inputs to unit length',
+        'Removes features with zero variance from the design matrix before fitting',
+        'Normalizes each input vector to unit L2 norm before it reaches the model',
         'Increases the learning rate over time',
       ],
       answer: 0,
@@ -54,8 +54,8 @@ export const mlFundamentals: Deck = {
       prompt: 'For a cancer screening model, which metric matters most?',
       choices: [
         'Recall: a missed cancer (false negative) is the costly error',
-        'Precision: false alarms are the costly error',
-        'Accuracy: overall correctness',
+        'Precision: a false alarm sends a healthy patient to treatment, so false positives dominate the cost',
+        'Accuracy: it captures both error types in one number, making it the safest default',
         'Training loss',
       ],
       answer: 0,
@@ -85,7 +85,7 @@ export const mlFundamentals: Deck = {
         'Learning rate is too high',
         'Learning rate is too low',
         'Too much training data',
-        'Batch size is too large',
+        'Batch size is too large, so the averaged gradient overshoots the minimum',
       ],
       answer: 0,
       explanation:

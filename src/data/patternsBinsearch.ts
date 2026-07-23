@@ -30,9 +30,9 @@ export const patternsBinsearch: Deck = {
       prompt: 'Array has duplicates; you need the LEFTMOST occurrence of target. What changes?',
       choices: [
         'On equality keep searching left: record mid, set hi = mid - 1',
-        'Return the first mid that matches',
-        'Scan linearly after any match',
-        'Binary search cannot handle duplicates',
+        'Return the first mid that matches: binary search always lands on the leftmost duplicate',
+        'On a match, scan linearly leftward until the value changes: still O(log n) overall',
+        'Binary search cannot handle duplicates: the invariant breaks when a[mid] repeats',
       ],
       answer: 0,
       explanation:
@@ -54,8 +54,8 @@ export const patternsBinsearch: Deck = {
       prompt: 'Search in a rotated sorted array ([4,5,6,7,0,1,2]): the key insight?',
       choices: [
         'One half is always properly sorted: check which, and whether target lies in its range',
-        'Un-rotate first in O(n), then search',
-        'Rotated arrays need linear scan',
+        'Find the pivot, un-rotate the array in O(n), then run a normal binary search on the result',
+        'Rotation destroys the ordering, so only a linear scan guarantees correctness',
         'Use two independent binary searches always',
       ],
       answer: 0,
@@ -74,8 +74,8 @@ export const patternsBinsearch: Deck = {
       prompt: '"Minimum ship capacity to deliver packages in D days", where does binary search run?',
       choices: [
         'Over the ANSWER range (max package … total weight), with a feasibility check per guess',
-        'Over the package array indices',
-        'Over the days',
+        'Over the package array indices, splitting at the mid index to balance weight between halves',
+        'Over the days: binary search D down to 1 until the schedule stops fitting',
         'It is a DP problem, not binary search',
       ],
       answer: 0,
@@ -88,8 +88,8 @@ export const patternsBinsearch: Deck = {
       prompt: 'Why do other languages write `mid = lo + (hi - lo) // 2`, and does Python care?',
       choices: [
         '(lo + hi) can overflow fixed-width ints; Python ints are arbitrary precision so it’s safe, but say why',
-        'It rounds differently',
-        'It is faster in Python',
+        'The subtraction form rounds toward lo, preventing mid from ever equaling hi and looping; Python needs it too',
+        'Subtraction is cheaper than addition on most CPUs, so it is measurably faster in Python as well',
         'Python requires that form',
       ],
       answer: 0,
@@ -102,8 +102,8 @@ export const patternsBinsearch: Deck = {
       prompt: 'Integer square root of n without math.sqrt: approach?',
       choices: [
         'Binary search the answer in [0, n]: first k where k² > n, minus one',
-        'Try every integer up to n',
-        'Newton’s method is the only way',
+        'Increment k from 0 and stop when k² exceeds n: O(√n) is the best possible without floats',
+        'Newton’s method is the only approach that converges without floating point',
         'Impossible without floats',
       ],
       answer: 0,
@@ -116,8 +116,8 @@ export const patternsBinsearch: Deck = {
       prompt: 'Search a sorted m×n matrix (each row sorted, rows in order) in O(log(mn))?',
       choices: [
         'Treat it as one flat sorted array: index i maps to matrix[i // n][i % n]',
-        'Binary search each row: O(m log n) is optimal',
-        'Start from the top-left corner',
+        'Binary search each row separately: O(m log n) is the best achievable for a 2D layout',
+        'Start from the top-left corner and step right or down toward larger values',
         'Convert to a list first',
       ],
       answer: 0,
@@ -130,9 +130,9 @@ export const patternsBinsearch: Deck = {
       prompt: 'Find a peak element (bigger than both neighbors) in O(log n): how can that work on unsorted data?',
       choices: [
         'Walk toward the rising side: if a[mid] < a[mid+1], a peak must exist right of mid',
-        'It cannot: unsorted needs O(n)',
-        'Sort first',
-        'Random probing',
+        'It cannot: binary search requires sorted input, so unsorted data forces an O(n) scan',
+        'Sort a copy first, then binary search the maximum',
+        'Randomly probe indices: expected O(log n) trials to land on a peak',
       ],
       answer: 0,
       explanation:
@@ -150,8 +150,8 @@ export const patternsBinsearch: Deck = {
       prompt: 'When can you beat O(n log n) sorting?',
       choices: [
         'Small known value range: counting sort O(n + k), e.g. sorting letters or 0-100 scores',
-        'Never; n log n is a hard limit for all sorting',
-        'With a better pivot in quicksort',
+        'Never: the information-theoretic n log n lower bound applies to every possible sorting algorithm',
+        'With a median-of-medians pivot, quicksort drops to O(n) comparisons',
         'By sorting in parallel threads',
       ],
       answer: 0,

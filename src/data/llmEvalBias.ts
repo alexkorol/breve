@@ -26,8 +26,8 @@ export const llmEvalBias: Deck = {
       prompt: 'Your pairwise judge prefers response A, but when you swap the order, it prefers B. What is this and what do you do?',
       choices: [
         'Position bias: evaluate both orders and average (or count it a tie if they disagree)',
-        'The responses are exactly equal in quality',
-        'Temperature is too low',
+        'The responses are exactly equal in quality; the order swap is the judge breaking a true tie deterministically',
+        'Temperature is too low; raising it lets the judge weigh both answers before committing',
         'The judge needs a longer context window',
       ],
       answer: 0,
@@ -40,8 +40,8 @@ export const llmEvalBias: Deck = {
       prompt: 'A judge rates a beautifully formatted but factually wrong answer above a messy correct one. The fix?',
       choices: [
         'Rubric that scores correctness separately from presentation, plus programmatic fact checks where possible',
-        'A bigger judge model: size eliminates the bias',
-        'Ask the judge to "be objective"',
+        'A bigger judge model: at sufficient scale judges learn to weight facts over formatting, so size removes the bias',
+        'Ask the judge to "be objective and ignore style"; explicit instruction neutralizes the bias',
         'Strip all formatting and hope',
       ],
       answer: 0,
@@ -60,9 +60,9 @@ export const llmEvalBias: Deck = {
       prompt: 'Sampling the judge 5 times and taking the majority verdict is called…',
       choices: [
         'Self-consistency: it reduces variance from any single noisy sample',
-        'Distillation',
+        'Distillation: repeated sampling compresses the judge into a smaller model that scores faster',
         'Reinforcement learning',
-        'Beam search',
+        'Beam search: the decoder keeps the five most probable verdicts and returns the top-scoring one',
       ],
       answer: 0,
       explanation:
@@ -96,9 +96,9 @@ export const llmEvalBias: Deck = {
       prompt: 'You removed race from the features, but the model still discriminates. How?',
       choices: [
         'Proxy variables: zip code, name, school correlate with the removed attribute',
-        'Impossible; removing the column removes the signal',
+        'Impossible; once the column is dropped, no function of the remaining features can recover the signal',
         'The random seed is unlucky',
-        'The model memorized the original column',
+        'The model memorized the original column from earlier training runs and still applies those weights',
       ],
       answer: 0,
       explanation:
@@ -116,9 +116,9 @@ export const llmEvalBias: Deck = {
       prompt: 'A model scores suspiciously well on a public benchmark. First suspicion?',
       choices: [
         'Contamination: the benchmark leaked into its training data',
-        'The model is simply superior',
+        'The model is simply superior; strong public-benchmark scores are exactly what better models produce',
         'The benchmark is too hard',
-        'Someone set temperature to 0',
+        'Someone set temperature to 0, which maximizes benchmark accuracy for any model',
       ],
       answer: 0,
       explanation:
@@ -130,8 +130,8 @@ export const llmEvalBias: Deck = {
       prompt: 'Why does a rubric ("score correctness 0–2: 2 means…, with examples") beat "rate this 1–10"?',
       choices: [
         'Anchored criteria reduce drift, decompose quality, and make scores auditable',
-        'Longer prompts always improve any output',
-        'It runs cheaper',
+        'Longer prompts always improve any output: extra tokens give the judge more compute per decision',
+        'It runs cheaper: the rubric is cached once, so per-item scoring costs almost nothing',
         'Judges refuse numeric scales otherwise',
       ],
       answer: 0,

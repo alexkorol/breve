@@ -62,6 +62,33 @@ export function StudyItem({ card, index }: { card: Card; index: number }) {
           )}
         </>
       )}
+      {card.type === 'multifill' && (
+        <>
+          <p className="study-q">
+            <Rich text={card.prompt} />
+          </p>
+          <pre className="code-block">
+            <code>
+              {card.code.split(/__(\d+)__/).map((seg, i) =>
+                i % 2 === 0 ? (
+                  seg
+                ) : (
+                  <span key={i} className="study-blank">
+                    {card.blanks[Number(seg) - 1]}
+                  </span>
+                ),
+              )}
+            </code>
+          </pre>
+          {card.explanation && (
+            <div className="study-a">
+              <p>
+                <Rich text={card.explanation} />
+              </p>
+            </div>
+          )}
+        </>
+      )}
       {card.type === 'tf' && (
         <>
           <p className="study-q">

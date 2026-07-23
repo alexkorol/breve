@@ -63,8 +63,8 @@ export const pyPairs: Deck = {
       prompt: 'Group `[("a", 1), ("b", 2), ("a", 3)]` into `{"a": [1, 3], "b": [2]}`. The idiomatic tool?',
       choices: [
         'defaultdict(list), then d[k].append(v) in a loop',
-        'A nested list comprehension',
-        'dict(pairs) directly',
+        'A nested list comprehension that rebuilds the value list for each key in one pass',
+        'dict(pairs) directly: duplicate keys merge their values into a list',
         'set() then sorted()',
       ],
       answer: 0,
@@ -100,7 +100,7 @@ export const pyPairs: Deck = {
       type: 'mcq',
       prompt: 'What does this print?',
       code: 'pairs = [(3, 7), (1, 5)]\nresult = pairs.sort()\nprint(result)',
-      choices: ['None; .sort() sorts in place and returns None', '[(1, 5), (3, 7)]', '[(3, 7), (1, 5)]', 'TypeError'],
+      choices: ['None; .sort() sorts in place and returns None', '[(1, 5), (3, 7)]: .sort() hands back the freshly sorted list', '[(3, 7), (1, 5)]', 'TypeError'],
       answer: 0,
       explanation:
         'list.sort() mutates and returns None; sorted(pairs) returns a new sorted list. Assigning .sort()’s result is a bug that has sunk many live coding rounds.',
@@ -141,9 +141,17 @@ export const pyPairs: Deck = {
     },
     {
       id: 'pp-toolkit',
-      type: 'flash',
-      front: 'A "transform this list of pairs" question appears. Run the mental checklist.',
-      back: 'Ask in order:\n1. Does ORDER matter? Sort with a key first.\n2. Am I GROUPING or looking up? defaultdict/dict.\n3. AGGREGATING? Counter, sum, max(key=).\n4. Restructuring? zip(*pairs), comprehension.\nThen restate the problem plus one worked example, and only then code. Screening exercises are almost always some combination of these four moves.',
+      type: 'order',
+      prompt: 'A "transform this list of pairs" question appears. Order the mental checklist.',
+      items: [
+        'Does ORDER matter? Sort with a key first',
+        'GROUPING or looking up? defaultdict/dict',
+        'AGGREGATING? Counter, sum, max(key=)',
+        'Restructuring? zip(*pairs), comprehension',
+        'Restate the problem with one worked example, then code',
+      ],
+      explanation:
+        'Screening exercises are almost always some combination of these four moves.',
     },
   ],
 };

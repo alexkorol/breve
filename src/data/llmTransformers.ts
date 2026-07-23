@@ -30,8 +30,8 @@ export const llmTransformers: Deck = {
       prompt: 'Why divide by √d_k in attention?',
       choices: [
         'Large dot products would saturate softmax into near one-hot, killing gradients',
-        'To keep the matrix invertible',
-        'To normalize V to unit length',
+        'To keep the attention matrix well-conditioned for the inverse taken in the backward pass',
+        'To normalize the value vectors to unit length so heads concatenate on a common scale',
         'To halve the memory usage',
       ],
       answer: 0,
@@ -44,8 +44,8 @@ export const llmTransformers: Deck = {
       prompt: 'Why multiple attention heads instead of one big one?',
       choices: [
         'Each head can learn a different relationship type in its own subspace',
-        'More heads reduce total parameter count',
-        'Softmax only works up to 64 dimensions',
+        'More heads reduce total parameter count: splitting d_model across heads shrinks the projections',
+        'Softmax only works up to 64 dimensions, so attention must be computed in chunks',
         'They exist purely for GPU parallelism',
       ],
       answer: 0,
@@ -64,8 +64,8 @@ export const llmTransformers: Deck = {
       prompt: 'The causal mask in a decoder-only LLM exists so that…',
       choices: [
         'Each position can only attend to earlier positions, no peeking at the future it must predict',
-        'Attention runs faster on GPUs',
-        'The model cannot see padding tokens',
+        'Attention runs faster on GPUs: masking zeroes half the score matrix, so those entries are skipped',
+        'The model cannot see padding tokens: the triangular mask is how batched sequences of different lengths ignore padding',
         'Beam search stays deterministic',
       ],
       answer: 0,
@@ -84,9 +84,9 @@ export const llmTransformers: Deck = {
       prompt: 'Why do LLMs stumble on "how many r’s are in strawberry?"',
       choices: [
         'They see BPE tokens, not letters: "strawberry" may be 2–3 opaque chunks',
-        'They cannot count above three',
+        'They cannot count: counting is not differentiable, so gradient descent never teaches it',
         'The training data lacks fruit',
-        'Attention ignores short words',
+        'Attention weights scale with word length, so short words get too little attention to inspect',
       ],
       answer: 0,
       explanation:
@@ -104,9 +104,9 @@ export const llmTransformers: Deck = {
       prompt: 'Temperature 0 vs temperature 1 at sampling time?',
       choices: [
         'T=0 always picks the top token (near-deterministic); T=1 samples the full distribution',
-        'T=0 disables the model’s safety filters',
+        'T=0 disables the model’s safety filters, since alignment tuning only applies to sampled decoding',
         'T=1 doubles response length',
-        'Temperature changes the model weights',
+        'Temperature scales the weight matrices before the forward pass, trading determinism for creativity',
       ],
       answer: 0,
       explanation:
@@ -145,8 +145,8 @@ export const llmTransformers: Deck = {
       prompt: 'LoRA fine-tunes a large model by…',
       choices: [
         'Freezing base weights and training tiny low-rank matrices added to them',
-        'Retraining only the embedding table',
-        'Distilling into a smaller model',
+        'Retraining only the embedding table, since task knowledge lives in the token representations',
+        'Distilling the base model into a smaller student, then fine-tuning the student on the task',
         'Pruning inactive neurons then retraining',
       ],
       answer: 0,
@@ -165,8 +165,8 @@ export const llmTransformers: Deck = {
       prompt: 'Root cause of hallucination in LLMs?',
       choices: [
         'The objective rewards plausible continuations, not verified truth',
-        'Insufficient GPU memory at inference',
-        'Bugs in the attention implementation',
+        'Insufficient GPU memory at inference: evicted KV-cache entries force the model to guess dropped context',
+        'Bugs in the attention implementation: precision loss in long contexts misroutes attention heads',
         'Adversarial users',
       ],
       answer: 0,

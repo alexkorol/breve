@@ -16,9 +16,18 @@ export const credAi103: Deck = {
     },
     {
       id: 'a103-foundry-map',
-      type: 'flash',
-      front: 'Recite the Foundry deployment map: the seven concepts in order.',
-      back: '1. Project: your workspace.\n2. Hub/resource: the Azure backing (quota, networking, keys).\n3. Model deployment: a catalog model instantiated under a deployment name.\n4. Endpoint: the URL your app calls.\n5. Auth: API key or Entra ID / managed identity.\n6. Evaluation: built-in eval runs over datasets.\n7. Monitoring: traces, token usage, content-filter hits.\nEvery AI-103 scenario question lives somewhere on this map.',
+      type: 'order',
+      prompt: 'Arrange the Foundry deployment map, from workspace to production oversight.',
+      items: [
+        'Project: your workspace',
+        'Hub/resource: the Azure backing (quota, networking, keys)',
+        'Model deployment: a catalog model under a deployment name',
+        'Endpoint: the URL your app calls',
+        'Auth: API key or Entra ID / managed identity',
+        'Evaluation and monitoring: eval runs, traces, token usage',
+      ],
+      explanation:
+        'Every AI-103 scenario question lives somewhere on this map.',
     },
     {
       id: 'a103-before-call',
@@ -26,9 +35,9 @@ export const credAi103: Deck = {
       prompt: 'What must exist before your Python app can call a model on Azure?',
       choices: [
         'A Foundry project with a model deployed from the catalog to an endpoint, plus credentials for it',
-        'Just an Azure subscription ID',
-        'A fine-tuned model: base models can’t be called',
-        'A Kubernetes cluster running the model',
+        'Just an Azure subscription ID: model access is enabled tenant-wide the moment the subscription exists',
+        'A fine-tuned model: catalog base models cannot be called until at least one tuning job has run',
+        'A Kubernetes cluster running the model, since Foundry only orchestrates compute you provision yourself',
       ],
       answer: 0,
       explanation:
@@ -40,8 +49,8 @@ export const credAi103: Deck = {
       prompt: 'Cost, latency, and quality conflict when picking a model. The exam-grade approach?',
       choices: [
         'Define eval criteria first, test candidate models against them, pick the cheapest that passes',
-        'Always deploy the largest model available',
-        'Always pick the cheapest and accept the quality',
+        'Always deploy the largest model available: retries on bad output cost more than the bigger model does',
+        'Always pick the cheapest and accept the quality: cost is the only criterion you can measure objectively',
         'Let each end user choose a model',
       ],
       answer: 0,
@@ -70,8 +79,8 @@ export const credAi103: Deck = {
       prompt: 'What makes a tool safe enough for an agent to call?',
       choices: [
         'Constrained input/output schemas, least privilege, blocked-action list, audit logging, human approval for consequential actions',
-        'A large model that rarely makes mistakes',
-        'Read-only access to everything',
+        'A large model that rarely makes mistakes: model-level alignment makes tool-level guardrails redundant',
+        'Read-only access to everything: an agent that can only read cannot cause harm, so no schemas, logging, or approval steps are needed',
         'A rate limit alone',
       ],
       answer: 0,
@@ -84,8 +93,8 @@ export const credAi103: Deck = {
       prompt: 'When should an agent retrieve knowledge instead of relying on model memory?',
       choices: [
         'When the data is fresh, private, or must be verifiable/citable',
-        'Always: model memory should never be used',
-        'Only when the context window is full',
+        'Always: model memory should never be used, since weights are frozen at training time and every answer from them is unverifiable',
+        'Only when the context window is full and older turns must be paged out to a store',
         'When latency doesn’t matter',
       ],
       answer: 0,
@@ -104,9 +113,9 @@ export const credAi103: Deck = {
       prompt: 'How do you keep evaluation data from leaking into production prompts?',
       choices: [
         'Keep eval sets in separate storage, never source few-shot examples from them, and audit prompt content',
-        'Encrypt the eval set at rest',
+        'Encrypt the eval set at rest: ciphertext cannot appear in a prompt, so encryption is the leakage control',
         'Use the eval set only on Fridays',
-        'Leakage only matters for fine-tuning, not prompts',
+        'Leakage only matters for fine-tuning, not prompts: prompts are stateless, so few-shot reuse of eval rows changes nothing',
       ],
       answer: 0,
       explanation:
@@ -124,8 +133,8 @@ export const credAi103: Deck = {
       prompt: 'When is automated content understanding enough, and when do you add human review?',
       choices: [
         'Automate high-volume structured extraction; route low-confidence, ambiguous, or high-stakes items to humans',
-        'Humans review everything, always',
-        'Automation is always enough once accuracy exceeds 90%',
+        'Humans review everything, always: model confidence scores are too unreliable to route on, so no item may skip review',
+        'Automation is always enough once measured accuracy exceeds 90%; past that threshold review adds no value',
         'Human review is only for images',
       ],
       answer: 0,

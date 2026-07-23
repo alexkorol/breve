@@ -10,9 +10,16 @@ export const sysCaseDrills: Deck = {
   cards: [
     {
       id: 'sdc-shortener-open',
-      type: 'flash',
-      front: '"Design a URL shortener." What is the model opening, before any deep dive?',
-      back: '1) Clarify scale: writes/sec, read:write ratio (often 100:1 read-heavy), and required code length.\n2) API: POST long URL returns a code; GET code returns a redirect.\n3) Storage: one table mapping code to long URL; generate codes deliberately rather than hashing and hoping.\n4) The read path is the product: cache hot code-to-URL mappings in Redis so most redirects never touch the database.\nNaming the read-heavy skew early justifies the cache and frames every later choice.',
+      type: 'order',
+      prompt: 'Order the model opening for "Design a URL shortener."',
+      items: [
+        'Clarify scale: writes/sec, read:write ratio, code length',
+        'API: POST long URL returns a code; GET code redirects',
+        'Storage: one table mapping code to long URL, codes generated deliberately',
+        'Read path: cache hot code-to-URL mappings in Redis',
+      ],
+      explanation:
+        'Naming the read-heavy skew (often 100:1) early justifies the cache and frames every later choice.',
     },
     {
       id: 'sdc-shortener-keygen',
@@ -20,9 +27,9 @@ export const sysCaseDrills: Deck = {
       prompt: 'Best way to generate short codes at scale?',
       choices: [
         'Pre-allocated counter ranges (or a key service) per app server, encoded base62',
-        'MD5 the long URL and keep the first 7 characters',
-        'One global auto-increment counter queried on every request',
-        'Random 7-char strings with no collision check',
+        'MD5 the long URL and keep the first 7 characters, so the same URL always maps to the same code',
+        'One global auto-increment counter queried on every request, since it guarantees unique sequential codes',
+        'Random 7-char strings with no collision check; the keyspace is too large for collisions to matter',
       ],
       answer: 0,
       explanation:
@@ -48,9 +55,9 @@ export const sysCaseDrills: Deck = {
       prompt: 'Two gateway nodes both read a Redis counter at 9 of 10, both allow the request, both write back 10. Standard fix?',
       choices: [
         'Make check-and-update one atomic Redis operation: a Lua script, or INCR with EXPIRE',
-        'Wrap every request in a distributed lock',
-        'Give each gateway node its own local counter',
-        'Lower the configured limit to leave headroom',
+        'Wrap every request in a distributed lock so only one gateway node can touch the counter at a time',
+        'Give each gateway node its own local counter to eliminate the shared-state race entirely',
+        'Lower the configured limit to leave headroom for the occasional double-grant',
       ],
       answer: 0,
       explanation:
@@ -76,8 +83,8 @@ export const sysCaseDrills: Deck = {
       prompt: 'Fan-out on write precomputes every feed, but one post from a 50M-follower account means 50M list writes. Standard answer?',
       choices: [
         'Hybrid: push for normal accounts, pull for high-follower accounts, merge the two at read time',
-        'Switch everyone to fan-out on read',
-        'Shard the followers and fan out to all 50M anyway',
+        'Switch everyone to fan-out on read, since computing feeds at request time removes the write amplification entirely',
+        'Shard the follower list and fan out to all 50M anyway; enough parallel workers make the write cost invisible',
         'Cap how many followers an account can have',
       ],
       answer: 0,
@@ -96,8 +103,8 @@ export const sysCaseDrills: Deck = {
       prompt: 'How do you guarantee message order within a conversation?',
       choices: [
         'Per-conversation monotonic sequence numbers assigned by the server',
-        'Trust client timestamps',
-        'Trust server wall-clock timestamps',
+        'Trust client timestamps, which record the moment each user actually hit send',
+        'Trust server wall-clock timestamps, since NTP keeps nodes within a few milliseconds of each other',
         'Deliver in arrival order; TCP already guarantees ordering',
       ],
       answer: 0,
@@ -134,9 +141,17 @@ export const sysCaseDrills: Deck = {
     },
     {
       id: 'sdc-crawler-open',
-      type: 'flash',
-      front: '"Design a web crawler." Model opening: what are the core components?',
-      back: '1) URL frontier: the prioritized queue of URLs to fetch, and the heart of the design.\n2) Fetcher pool: workers downloading pages.\n3) Parser: extracts links and feeds new URLs back into the frontier.\n4) Dedup: a seen-URL filter plus content fingerprints.\n5) Politeness: honor robots.txt and rate-limit per domain; give each host its own frontier sub-queue so no single site gets hammered.',
+      type: 'order',
+      prompt: 'Order the data flow of one crawl cycle in a web crawler.',
+      items: [
+        'URL frontier: the prioritized queue hands out the next URL',
+        'Fetcher pool: a worker downloads the page',
+        'Parser: extracts links from the page',
+        'Dedup: seen-URL filter plus content fingerprints',
+        'Surviving new URLs re-enter the frontier',
+      ],
+      explanation:
+        'The frontier is the heart of the design. Politeness lives there too: honor robots.txt, rate-limit per domain, and give each host its own sub-queue.',
     },
     {
       id: 'sdc-crawler-dedup',
@@ -144,8 +159,8 @@ export const sysCaseDrills: Deck = {
       prompt: 'A crawler needs dedup at two distinct levels. Which pair?',
       choices: [
         'Normalized seen-URLs (Bloom filter) plus content fingerprints (e.g. SimHash)',
-        'Seen URLs plus seen domains',
-        'Content checksums only; refetching URLs is fine',
+        'Seen URLs plus seen domains, marking a whole domain as done once its pages have been fetched',
+        'Exact content checksums only; refetching URLs is fine because the fetch is cheap compared to parsing',
         'A distributed lock held per URL',
       ],
       answer: 0,
@@ -158,8 +173,8 @@ export const sysCaseDrills: Deck = {
       prompt: 'Typeahead must return suggestions within ~100ms per keystroke. The key decision?',
       choices: [
         'Serve precomputed top-k lists per prefix; rebuild them offline from query logs',
-        'Walk a trie and rank every completion at query time',
-        'SQL LIKE \'prefix%\' with ORDER BY frequency',
+        'Walk a trie and rank every completion at query time, so results always reflect live frequencies',
+        'SQL LIKE \'prefix%\' with ORDER BY frequency, which a B-tree index on the column makes fast enough',
         'Query the main search index directly per keystroke',
       ],
       answer: 0,
@@ -190,8 +205,8 @@ export const sysCaseDrills: Deck = {
       prompt: 'UUIDv4 vs Snowflake-style ids: what does Snowflake actually buy you?',
       choices: [
         'Time-ordered 64-bit ids that index well; the cost is machine-id assignment and trusting clocks',
-        'Stronger randomness guarantees',
-        'A lower collision probability than UUIDs',
+        'Stronger randomness guarantees, since the timestamp bits add entropy a UUID does not have',
+        'A lower collision probability than UUIDs, whose 122 random bits still collide at high write rates',
         'The same zero-coordination property as UUIDs',
       ],
       answer: 0,

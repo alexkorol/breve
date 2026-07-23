@@ -25,7 +25,7 @@ export const pyOopTesting: Deck = {
       code: 'class Dog:\n    tricks = []\n    def learn(self, t):\n        self.tricks.append(t)',
       choices: [
         'tricks is a class attribute. ALL dogs share one list; assign self.tricks = [] in __init__',
-        'learn() needs @staticmethod',
+        'learn() needs @staticmethod: without it, self points at the class, so every append lands on the class attribute',
         'Lists cannot be class attributes',
         'No bug',
       ],
@@ -39,7 +39,7 @@ export const pyOopTesting: Deck = {
       prompt: '`__repr__` vs `__str__`?',
       choices: [
         '__repr__ is the unambiguous developer view (debugger, containers); __str__ the friendly print view; define __repr__ at minimum',
-        '__str__ is called by lists when printing them',
+        '__str__ is what lists call on their elements when printed; __repr__ is only used by the interactive prompt, so define __str__ first',
         'They must always be identical',
         '__repr__ only exists on dataclasses',
       ],
@@ -65,7 +65,7 @@ export const pyOopTesting: Deck = {
         'staticmethod gets no implicit argument; classmethod gets cls: the idiom for alternate constructors like from_json()',
         'classmethod is faster',
         'staticmethod can only be private',
-        'They are interchangeable',
+        'They are interchangeable: Python passes cls to both, but staticmethod silently discards it, so choosing one is purely a style call',
       ],
       answer: 0,
       explanation:
@@ -78,7 +78,7 @@ export const pyOopTesting: Deck = {
       code: 'class Circle:\n    @property\n    def area(self):\n        return 3.14159 * self.r ** 2',
       choices: [
         'Computed attribute access: c.area without parentheses, no API break if it later becomes stored',
-        'It caches the result automatically',
+        'It caches the result after the first access and recomputes only when self.r changes, like a spreadsheet cell',
         'It makes the attribute private',
         'It enables multiple inheritance',
       ],
@@ -93,7 +93,7 @@ export const pyOopTesting: Deck = {
       choices: [
         'Default __eq__ is identity: implement __eq__ (and __hash__), or use @dataclass which generates them',
         'Points can never be equal',
-        'You must override __cmp__',
+        'You must override __cmp__, the master comparison hook that == delegates to before it ever looks at __eq__',
         'Use is instead of ==',
       ],
       answer: 0,
@@ -106,7 +106,7 @@ export const pyOopTesting: Deck = {
       prompt: 'How do you force subclasses to implement a method?',
       choices: [
         'Inherit from ABC and mark it @abstractmethod: instantiation fails until it’s implemented',
-        'raise NotImplementedError is compile-time enforced',
+        'raise NotImplementedError in the base method: the interpreter checks for it at class creation and rejects incomplete subclasses',
         'Name it with a leading underscore',
         'Python cannot express this',
       ],
@@ -148,7 +148,7 @@ export const pyOopTesting: Deck = {
         'A named setup function; tests receive its return value by declaring the name as a parameter',
         'A hardcoded test data file',
         'A class every test must inherit',
-        'A mock object',
+        'A mock object that automatically replaces every dependency the test imports, restored after each run',
       ],
       answer: 0,
       explanation:
@@ -161,7 +161,7 @@ export const pyOopTesting: Deck = {
       choices: [
         '@pytest.mark.parametrize("raw,expected", [("a,b", 2), ("", 0)])',
         'Copy-paste the test per case',
-        'A for-loop of asserts inside one test',
+        'A for-loop of asserts inside one test body: pytest detects the loop and reports each iteration as its own test case',
         'pytest cannot do this',
       ],
       answer: 0,
@@ -176,7 +176,7 @@ export const pyOopTesting: Deck = {
         'monkeypatch/mock the client call to return a canned response; assert your handling logic',
         'Call the real API in every test run',
         'Skip testing that code path',
-        'Lower the temperature to 0 so it’s deterministic',
+        'Lower the temperature to 0 so the output is deterministic, then assert against the exact real completion text',
       ],
       answer: 0,
       explanation:

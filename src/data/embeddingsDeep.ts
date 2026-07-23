@@ -14,8 +14,8 @@ export const embeddingsDeep: Deck = {
       prompt: 'Where does a sentence embedding actually come from?',
       choices: [
         'A transformer encoder’s token outputs pooled (mean/CLS) into one vector, trained contrastively so similar texts land close',
-        'Word2vec vectors averaged, always',
-        'A hash of the characters',
+        'Static word2vec vectors looked up per token and averaged together, which is why word order and surrounding context never change the embedding',
+        'A locality-sensitive hash of the characters, so similar spellings get similar vectors',
         'The LLM’s final answer tokens',
       ],
       answer: 0,
@@ -28,7 +28,7 @@ export const embeddingsDeep: Deck = {
       prompt: 'Why do models like E5 prefix inputs with "query:" vs "passage:"?',
       choices: [
         'Asymmetric search: short questions and long answers live in different distributions; the prefix tells the model which side it’s embedding',
-        'It is only branding',
+        'The prefixes are prompt-style instructions the encoder interprets freely, so any descriptive label ("text:", "input:") works just as well',
         'To count tokens',
         'For language detection',
       ],
@@ -52,8 +52,8 @@ export const embeddingsDeep: Deck = {
       prompt: 'When does old-school BM25 keyword search beat your embedding model?',
       choices: [
         'Exact identifiers: error codes, SKUs, function names, rare jargon the embedder never learned',
-        'Never; vectors are strictly better',
-        'Only on tiny corpora',
+        'Never: embedding vectors preserve token identity, so lexical matching is a strict subset of semantic search',
+        'Only on tiny corpora, where nearest-neighbor search lacks enough data to be meaningful',
         'When documents are short',
       ],
       answer: 0,
@@ -72,8 +72,8 @@ export const embeddingsDeep: Deck = {
       prompt: 'Bi-encoder retrieval vs cross-encoder reranking?',
       choices: [
         'Bi-encoder embeds query and docs separately (fast, indexable); cross-encoder reads them TOGETHER for accuracy, so retrieve top-100 fast, rerank top-100 well',
-        'Cross-encoders are faster',
-        'Bi-encoders are more accurate',
+        'Cross-encoders are faster since they score in one forward pass, so use them for first-stage retrieval and keep the bi-encoder for final reranking of the top few',
+        'Bi-encoders are more accurate because each text gets a dedicated forward pass',
         'They are the same model used twice',
       ],
       answer: 0,
@@ -102,7 +102,7 @@ export const embeddingsDeep: Deck = {
       prompt: 'Retrieval keeps returning the right DOCUMENT but the wrong SECTION. Prime suspect?',
       choices: [
         'Chunking: sections split mid-thought or lack heading context; add headers to chunk text and align boundaries to structure',
-        'The vector database is corrupt',
+        'Index corruption: the ANN graph holds stale pointers, so document vectors resolve to neighboring sections; rebuild the index',
         'Cosine similarity is broken',
         'top-k is too small',
       ],
@@ -116,7 +116,7 @@ export const embeddingsDeep: Deck = {
       prompt: 'User asks "why did it break again like last week?": retrieval returns junk. The fix family?',
       choices: [
         'Query transformation: rewrite with an LLM (resolve references, add context), or HyDE: embed a hypothetical answer instead of the question',
-        'Bigger embedding model',
+        'A larger embedding model: higher-dimensional vectors carry the world knowledge needed to resolve pronouns and temporal references on their own',
         'More chunks',
         'Lower temperature',
       ],
@@ -130,8 +130,8 @@ export const embeddingsDeep: Deck = {
       prompt: 'Embedding dimensions (384 vs 1536 vs 3072): what actually trades?',
       choices: [
         'Storage, search latency, and cost scale with dims; quality gains flatten: small models often suffice for narrow domains',
-        'Bigger is always meaningfully better',
-        'Dimensions only affect training',
+        'Bigger is always meaningfully better: retrieval quality scales linearly with dimensions the way model quality scales with parameters',
+        'Dimensions only affect training cost; at query time every model searches the same projected space',
         'All models use 768',
       ],
       answer: 0,
@@ -152,8 +152,8 @@ export const embeddingsDeep: Deck = {
       prompt: 'You upgrade the embedding model. What MUST happen to the vector store?',
       choices: [
         'Re-embed the entire corpus: old and new vectors live in incompatible spaces',
-        'Nothing; vectors are forward-compatible',
-        'Only new documents need the new model',
+        'Nothing: embedding spaces are aligned across model versions, so old vectors stay comparable',
+        'Only new documents need the new model; cosine similarity normalizes away differences between spaces',
         'Normalize the old vectors again',
       ],
       answer: 0,
@@ -172,9 +172,9 @@ export const embeddingsDeep: Deck = {
       prompt: 'System A puts the first relevant result at rank 1 for half of queries and rank 4 for the rest. What does MRR measure here?',
       choices: [
         'How early the FIRST relevant result appears: mean of 1/rank, so (1/1 + 1/4)/2 = 0.625',
-        'The fraction of relevant results in the top K',
+        'The fraction of retrieved results in the top K that are relevant, averaged over queries (precision@K)',
         'The fraction of all relevant chunks retrieved',
-        'Average rank of every relevant result',
+        'Average rank of every relevant result: here (1 + 4)/2 = 2.5, lower being better',
       ],
       answer: 0,
       explanation:
@@ -186,7 +186,7 @@ export const embeddingsDeep: Deck = {
       prompt: 'The corpus spans five languages. Translate everything to English before indexing?',
       choices: [
         'No: use multilingual embeddings to retrieve across languages, translate only returned results, and validate on your actual data',
-        'Yes: embeddings only work within one language',
+        'Yes: embedding models are monolingual by construction, since contrastive training pairs are drawn from a single language at a time',
         'Yes: translation is cheaper than multilingual models',
         'No: keep separate per-language indexes and query them all',
       ],

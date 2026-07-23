@@ -20,8 +20,8 @@ export const patternsIntervals: Deck = {
       prompt: 'First move in almost every interval problem?',
       choices: [
         'Sort the intervals (usually by start)',
-        'Build a hash map of starts to ends',
-        'Binary search for overlaps',
+        'Build a hash map from each start to its end for O(1) overlap lookups',
+        'Binary search each interval against the rest for overlaps',
         'Convert to a linked list',
       ],
       answer: 0,
@@ -79,8 +79,8 @@ export const patternsIntervals: Deck = {
       prompt: 'Do `[1, 5]` and `[5, 8]` merge?',
       choices: [
         'Yes: s <= le treats touching endpoints as overlap, giving [1, 8]',
-        'No: they only share a single point',
-        'Only if the intervals are open',
+        'No: overlap requires s < le, and sharing the single point 5 fails that test',
+        'Only if the intervals are open: closed endpoints never count as overlap',
         'It causes an infinite loop',
       ],
       answer: 0,
@@ -91,7 +91,12 @@ export const patternsIntervals: Deck = {
       id: 'iv-complexity',
       type: 'mcq',
       prompt: 'Time complexity of merge intervals?',
-      choices: ['O(n log n)', 'O(n)', 'O(n²)', 'O(log n)'],
+      choices: [
+        'O(n log n)',
+        'O(n): one linear merge pass',
+        'O(n²) from pairwise overlap checks',
+        'O(log n)',
+      ],
       answer: 0,
       explanation:
         'The sort costs O(n log n); the merge walk is O(n). Say both parts in the interview: it shows you know where the cost comes from.',

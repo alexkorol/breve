@@ -71,10 +71,13 @@ export function pickFocus(
 
   const usedTracks = new Set(chosen.map((d) => d.track));
   const rng = mulberry32(hashSeed(`${dateKey}:${reroll}`));
-  const pool = seededShuffle(
+  const drawn = seededShuffle(
     counted.filter((x) => x.fresh > 0 && !chosen.includes(x.deck)),
     rng,
   );
+  // Playable decks claim variety slots before paywalled ones, so a free
+  // user's focus strip is never a wall of locks.
+  const pool = [...drawn.filter((x) => !x.deck.locked), ...drawn.filter((x) => x.deck.locked)];
 
   for (const x of pool) {
     if (chosen.length >= FOCUS_SIZE) break;
