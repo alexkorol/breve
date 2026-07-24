@@ -158,6 +158,18 @@ export const dsaInterview: Deck = {
       back: 'Two. Loop a and b, then COMPUTE c = 1000 - a - b instead of searching for it: the constraint fully determines it. Turns O(n³) into O(n²). Bonus: start b at a + 1 to skip duplicate orderings. General move: every equation you can solve for a variable deletes a loop. (Euler 9: Pythagorean triplet.)',
     },
     {
+      id: 'dsa-grid-directions',
+      type: 'flash',
+      front: 'Scanning a 2D grid for k-in-a-row products (Euler 11): which direction vectors, and what bounds?',
+      back: 'Four (dr, dc) vectors suffice: right (0, 1), down (1, 0), down-right (1, 1), down-left (1, -1). The reverses are unnecessary because multiplication commutes: left-to-right sees the same four numbers. A window of 4 starting at col ends at col + 3, so valid starts run through len - 4 (i.e. range(len - 3)); down-left additionally needs col - 3 >= 0. Learn the four directions as separate explicit loops first, then compress into one loop over the vector list.',
+    },
+    {
+      id: 'dsa-decompose',
+      type: 'flash',
+      front: 'The shared engineering principle behind debugging an agent system AND solving a grid problem?',
+      back: 'Reduce to the smallest independently testable component, verify it, then add one piece at a time. Agent: model alone, then one tool, then one task, then a batch, then one failure category at a time. Grid: one fixed row, then the horizontal loop, then the whole grid, then one direction at a time, generalizing only after the explicit cases work. Progressive decomposition is how complex systems are debugged reliably, not just a teaching device.',
+    },
+    {
       id: 'dsa-memo',
       type: 'flash',
       front: 'Memoization vs tabulation in dynamic programming?',

@@ -132,5 +132,65 @@ export const credHfAgents: Deck = {
       front: 'Bonus unit: what actually happens when you fine-tune for function calling?',
       back: 'SFT (often LoRA) on conversations whose assistant turns contain structured tool calls: teaching the model the emit-a-call format natively instead of relying on prompt engineering. Worth doing for smaller local models that ignore tool instructions; pointless for frontier APIs that already do it.',
     },
+    {
+      id: 'hfa-observation-loop',
+      type: 'flash',
+      front: 'Why is the Observation step what separates an agent from a one-shot LLM response?',
+      back: 'Observation feeds the REAL result of each action back into the next decision, turning generation into a control loop: the agent can react to tool failures, unexpected outputs, environment changes, and whether the goal is actually reached. Without it you have a linear pipeline that cannot correct itself.',
+    },
+    {
+      id: 'hfa-agent-memory',
+      type: 'mcq',
+      prompt: 'What does agent "working memory" contain, versus plain chat history?',
+      choices: [
+        'The structured record of the current run: instructions, task, actions, tool calls and outputs, code results, observations, and errors, replayed as messages each step',
+        'Only the user and assistant turns',
+        'The model’s weights from fine-tuning',
+        'A vector store of all past conversations',
+      ],
+      answer: 0,
+      explanation:
+        'It is working memory for iterative problem-solving on THIS task, structured around actions and observations: not conversational turns, and not long-term memory across sessions.',
+    },
+    {
+      id: 'hfa-debug-order',
+      type: 'mcq',
+      prompt: 'Correct order for debugging an agent system that is failing?',
+      choices: [
+        'Test the model alone, then one tool, then one agent task, then a small batch',
+        'Run the full benchmark and read the aggregate score',
+        'Add more tools until something works',
+        'Switch frameworks first',
+      ],
+      answer: 0,
+      explanation:
+        'Isolate the smallest component first: a one-line "model works" generation before any tools, one tool call before the loop, one question before a batch. Then read the EARLIEST meaningful error in the traceback, not the loudest.',
+    },
+    {
+      id: 'hfa-provider-debug',
+      type: 'flash',
+      front: 'Your agent 500s on its first call. What is the lesson about inference providers?',
+      back: 'Model availability and provider routing are EXTERNAL dependencies: providers drop models, auto-routing changes, servers fail with no bug in your code. (Lived example: InferenceClientModel auto-routed to a provider returning 500s; fix was a supported model + provider="auto", verified with an isolated one-line generation first.) Production answer: retries, fallbacks, a swappable model adapter (agent and tools unchanged when HF credits ran out and the backend moved to OpenRouter), monitoring, graceful degradation.',
+    },
+    {
+      id: 'hfa-baseline-first',
+      type: 'mcq',
+      prompt: 'When should multi-agent orchestration, memory systems, or a heavier framework be added to an agent?',
+      choices: [
+        'Only after the simple baseline demonstrably hits a limitation that specifically needs them',
+        'From the start, to future-proof the design',
+        'Whenever the benchmark score plateaus',
+        'When the framework releases a new version',
+      ],
+      answer: 0,
+      explanation:
+        '"Boring before fancy." Framework selection follows workflow requirements, not popularity: smolagents is the shortest path to a working GAIA baseline; explicit state or orchestration earns its complexity only when the baseline exposes the need.',
+    },
+    {
+      id: 'hfa-failure-analysis',
+      type: 'flash',
+      front: 'What is more informative than a benchmark score alone, and what do you log per run to get it?',
+      back: 'A categorized failure analysis: WHY runs failed (format miss, weak evidence, calculation slip, stopped before verifying) and how each change moved each category. Per run log: question, tools selected, intermediate outputs, errors/retries, final vs expected answer, pass/fail, failure category, cost/latency. The interview story is the failure taxonomy and the fixes, not the number.',
+    },
   ],
 };
